@@ -6,8 +6,8 @@ import styled from "styled-components";
 import palette from "../../lib/styles/palette";
 import Responsive from "../common/Responsive";
 import client from "../../lib/api/client";
-import ImageResize from "quill-image-resize";
-Quill.register("modules/ImageResize", ImageResize);
+//import ImageResize from "quill-image-resize";
+//Quill.register("modules/ImageResize", ImageResize);
 
 const EditorBlock = styled(Responsive)`
   padding-top: 5rem;
@@ -98,6 +98,10 @@ const Editor = ({ title, content, onChangeField }) => {
                   const editor = quillInstence.current; // 에디터 객체 가져오기
                   const range = editor.getSelection();
                   editor.insertEmbed(range.index, "image", IMG_URL);
+                  onChangeField({
+                    key: "content",
+                    value: quill.root.innerHTML,
+                  });
                 } catch (error) {
                   console.log("실패", error);
                 }

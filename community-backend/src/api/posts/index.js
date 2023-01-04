@@ -19,6 +19,7 @@ posts.patch(
   postsCtrl.getPostById,
   checkLoggedIn,
   postsCtrl.checkOwnPost,
+  postsCtrl.unassociateHashtag,
   postsCtrl.update
 );
 posts.post("/file", postsCtrl.upload.single("file"), postsCtrl.file);

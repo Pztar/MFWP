@@ -65,7 +65,6 @@ export const getPostById = async (ctx, next) => {
 
 export const checkOwnPost = (ctx, next) => {
   const { user, post } = ctx.state;
-  console.log("확인", ctx.state);
   if (post.UserId !== user.id) {
     ctx.status = 403;
     return;
@@ -91,7 +90,7 @@ export const write = async (ctx, next) => {
       content: sanitizeHtml(ctx.request.body.content, sanitizeOption),
       UserId: ctx.state.user.id,
     });
-    const hashtags = ctx.request.body.content.match(/#[^\s#]*/g);
+    const hashtags = ctx.request.body.content.match(/#[^\s#<]*/g);
     if (hashtags) {
       const result = await Promise.all(
         hashtags.map((tag) => {
@@ -124,7 +123,6 @@ export const list = async (ctx, next) => {
   }
   try {
     const { hashtag, userId } = ctx.query;
-    console.log(ctx.query, ctx.query.userId);
     let posts = [];
     let postCount = undefined;
     if (hashtag) {
@@ -201,9 +199,23 @@ export const remove = async (ctx) => {
   }
 };
 
+export const unassociateHashtag = async (ctx, next) => {
+  const { postId } = ctx.params;
+  try {
+    const post = await Post.findOne({ where: { id: postId } });
+    if (!post) {
+      ctx.status = 404;
+      return;
+    }
+    await post.setHashtags([]); // Un-associate all previously associated hashtags
+    return next();
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
 export const update = async (ctx) => {
   const { postId } = ctx.params;
-  console.log("확인", postId);
 
   const schema = Joi.object().keys({
     title: Joi.string().required(),
@@ -226,28 +238,19 @@ export const update = async (ctx) => {
   }
   try {
     await Post.update(
-      { title: nextData.title },
+      { title: nextData.title, content: nextData.content },
       {
         where: {
           id: postId,
         },
       }
     );
-    await Post.update(
-      { content: nextData.content },
-      {
-        where: {
-          id: postId,
-        },
-      }
-    );
-
     const post = await Post.findOne({ where: { id: postId } });
     if (!post) {
       ctx.status = 404;
       return;
     }
-    const hashtags = ctx.request.body.content.match(/#[^\s#]*/g);
+    const hashtags = ctx.request.body.content.match(/#[^\s#<]*/g);
     if (hashtags) {
       const result = await Promise.all(
         hashtags.map((tag) => {
@@ -271,12 +274,17 @@ const fileFilter = (ctx, file, callback) => {
   const fileType = typeArray[1]; // 이미지 확장자 추출
 
   //이미지 확장자 구분 검사
-  if (fileType == "jpg" || fileType == "jpeg" || fileType == "png") {
+  if (
+    fileType == "jpg" ||
+    fileType == "jpeg" ||
+    fileType == "png" ||
+    fileType == "gif"
+  ) {
     callback(null, true);
   } else {
     // return callback(new Error("*.jpg, *.jpeg, *.png 파일만 업로드가 가능합니다."), false)
     return callback(
-      { message: "*.jpg, *.jpeg, *.png 파일만 업로드가 가능합니다." },
+      { message: "*.jpg, *.jpeg, *.png, *.gif 파일만 업로드가 가능합니다." },
       false
     );
   }

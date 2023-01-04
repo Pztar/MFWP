@@ -4,7 +4,7 @@ import palette from "../../lib/styles/palette";
 
 const TagsBlock = styled.div`
   margin-top: 0.5rem;
-  .tag {
+  .hashtag {
     display: inline-block;
     color: ${palette.cyan[7]};
     text-decoration: none;
@@ -15,12 +15,16 @@ const TagsBlock = styled.div`
   }
 `;
 
-const Tags = ({ tags }) => {
+const Tags = ({ Hashtags }) => {
   return (
     <TagsBlock>
-      {tags.map((tag) => (
-        <Link className="tag" to={`/?tag=${tag}`} key={tag}>
-          #{tag}
+      {Hashtags.map((hashtag) => (
+        <Link
+          className="hashtag"
+          to={`/?hashtag=${hashtag.title}`}
+          key={hashtag.title}
+        >
+          #{hashtag.title}
         </Link>
       ))}
     </TagsBlock>

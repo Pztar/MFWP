@@ -14,7 +14,7 @@ const PageNumber = styled.div``;
 
 const buildLink = ({ userId, hashtag, page }) => {
   const query = qs.stringify({ hashtag, page });
-  return userId ? `/@${userId}?${query}` : `/?${query}`;
+  return userId ? `/${userId}?${query}` : `/?${query}`;
 };
 
 const Pagination = ({ page, lastPage, userId, hashtag }) => {

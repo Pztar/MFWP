@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
-import qs from 'qs';
-import { useDispatch, useSelector } from 'react-redux';
-import { useParams, useLocation } from 'react-router-dom';
-import PostList from '../../components/posts/PostList';
-import { listPosts } from '../../modules/posts';
+import { useEffect } from "react";
+import qs from "qs";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useLocation } from "react-router-dom";
+import PostList from "../../components/posts/PostList";
+import { listPosts } from "../../modules/posts";
 
 const PostListContainer = () => {
   const dispatch = useDispatch();
@@ -13,17 +13,18 @@ const PostListContainer = () => {
     ({ posts, loading, user }) => ({
       posts: posts.posts,
       error: posts.error,
-      loading: loading['posts/LIST_POSTS'],
+      loading: loading["posts/LIST_POSTS"],
       user: user.user,
-    }),
+    })
   );
 
   useEffect(() => {
-    const { username } = params;
-    const { tag, page } = qs.parse(search, {
+    const { userId } = params;
+    const { hashtag, page } = qs.parse(search, {
       ignoreQueryPrefix: true,
     });
-    dispatch(listPosts({ tag, username, page }));
+
+    dispatch(listPosts({ page, userId, hashtag }));
   }, [dispatch, search, params]);
 
   return (

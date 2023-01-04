@@ -41,10 +41,16 @@ export const getPostById = async (ctx, next) => {
   try {
     const post = await Post.findOne({
       where: { id: postId },
-      include: {
-        model: User,
-        attributes: ["id", "nick"],
-      },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nick"],
+        },
+        {
+          model: Hashtag,
+          attributes: ["title"],
+        },
+      ],
     });
     if (!post) {
       ctx.status = 404;
@@ -116,24 +122,59 @@ export const list = async (ctx, next) => {
     ctx.status = 400;
     return;
   }
-  const { hashtag, nick } = ctx.query;
-  console.log(ctx.query);
-  const query = {
-    ...(nick ? { "user.nick": nick } : {}),
-    ...(hashtag ? { hashtag: hashtag } : {}),
-  };
   try {
-    const { count, rows } = await Post.findAndCountAll({
-      include: {
-        model: User,
-        attributes: ["id", "nick"],
-      },
-      limit: 10,
-      offset: (page - 1) * 10,
-      order: [["createdAt", "DESC"]],
-    });
-    const posts = rows;
-    const postCount = count;
+    const { hashtag, userId } = ctx.query;
+    console.log(ctx.query, ctx.query.userId);
+    let posts = [];
+    let postCount = undefined;
+    if (hashtag) {
+      const findedHashtag = await Hashtag.findOne({
+        where: { title: hashtag },
+      });
+      if (findedHashtag) {
+        posts = await findedHashtag.getPosts({
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nick"],
+            },
+          ],
+          limit: 10,
+          offset: (page - 1) * 10,
+          order: [["createdAt", "DESC"]],
+        });
+        postCount = await findedHashtag.countPosts();
+      }
+    } else if (userId) {
+      const { count, rows } = await Post.findAndCountAll({
+        where: { UserId: userId },
+        include: [
+          {
+            model: User,
+            attributes: ["id", "nick"],
+          },
+        ],
+        limit: 10,
+        offset: (page - 1) * 10,
+        order: [["createdAt", "DESC"]],
+      });
+      posts = rows;
+      postCount = count;
+    } else {
+      const { count, rows } = await Post.findAndCountAll({
+        include: [
+          {
+            model: User,
+            attributes: ["id", "nick"],
+          },
+        ],
+        limit: 10,
+        offset: (page - 1) * 10,
+        order: [["createdAt", "DESC"]],
+      });
+      posts = rows;
+      postCount = count;
+    }
     ctx.set("Last-Page", Math.ceil(postCount / 10));
     ctx.body = posts;
   } catch (err) {

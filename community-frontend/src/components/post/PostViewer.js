@@ -2,7 +2,7 @@ import styled from "styled-components";
 import palette from "../../lib/styles/palette";
 import Responsive from "../common/Responsive";
 import SubInfo from "../common/SubInfo";
-//import Tags from "../common/Tags";
+import Tags from "../common/Tags";
 import { Helmet } from "react-helmet-async";
 
 const PostViewerBlock = styled(Responsive)`
@@ -47,8 +47,17 @@ const PostViewer = ({ post, error, loading, actionButtons }) => {
     return <div>포스트 데이터가 없습니다</div>;
   }
 
-  const { id, title, content, likes, unlikes, createdAt, updatedAt, User } =
-    post;
+  const {
+    id,
+    title,
+    content,
+    likes,
+    unlikes,
+    createdAt,
+    updatedAt,
+    User,
+    Hashtags,
+  } = post;
   const postId = id;
   const likeCount = likes - unlikes;
 
@@ -66,7 +75,7 @@ const PostViewer = ({ post, error, loading, actionButtons }) => {
           likeCount={likeCount}
           hasMarginTop
         />
-        {/* <Tags tags={tags} />*/}
+        <Tags Hashtags={Hashtags} />
       </PostHead>
       {actionButtons}
       <PostContent dangerouslySetInnerHTML={{ __html: content }} />

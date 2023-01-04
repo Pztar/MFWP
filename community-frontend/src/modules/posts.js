@@ -1,16 +1,16 @@
-import { createAction, handleActions } from 'redux-actions';
+import { createAction, handleActions } from "redux-actions";
 import createRequestSaga, {
   createRequestActionTypes,
-} from '../lib/createRequestSaga';
-import * as postsAPI from '../lib/api/posts';
-import { takeLatest } from 'redux-saga/effects';
+} from "../lib/createRequestSaga";
+import * as postsAPI from "../lib/api/posts";
+import { takeLatest } from "redux-saga/effects";
 
 const [LIST_POSTS, LIST_POSTS_SUCCESS, LIST_POSTS_FAILURE] =
-  createRequestActionTypes('posts/LIST_POSTS');
+  createRequestActionTypes("posts/LIST_POSTS");
 
 export const listPosts = createAction(
   LIST_POSTS,
-  ({ tag, username, page }) => ({ tag, username, page }),
+  ({ hashtag, userId, page }) => ({ hashtag, userId, page })
 );
 
 const listPostsSaga = createRequestSaga(LIST_POSTS, postsAPI.listPosts);
@@ -29,14 +29,14 @@ const posts = handleActions(
     [LIST_POSTS_SUCCESS]: (state, { payload: posts, meta: response }) => ({
       ...state,
       posts,
-      lastPage: parseInt(response.headers['last-page'], 10),
+      lastPage: parseInt(response.headers["last-page"], 10),
     }),
     [LIST_POSTS_FAILURE]: (state, { payload: error }) => ({
       ...state,
       error,
     }),
   },
-  initialState,
+  initialState
 );
 
 export default posts;

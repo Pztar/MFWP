@@ -8,7 +8,7 @@ const auth = new Router();
 
 auth.post("/register", authCtrl.register);
 auth.post("/login", authCtrl.login);
-auth.use("social", social.routes());
+auth.use("/social", social.routes());
 auth.get("/check", authCtrl.check);
 auth.post("/logout", authCtrl.logout);
 
@@ -16,7 +16,7 @@ export const generateToken = (account) => {
   const token = jwt.sign(
     {
       id: account.id,
-      email: account.email,
+      nick: account.nick,
     },
     process.env.JWT_SECRET,
     jwtCookieConfig.jwt.options

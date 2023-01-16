@@ -11,7 +11,7 @@ const jwtMiddleware = async (ctx, next) => {
     //console.log("토큰 해석", decoded);
     ctx.state.user = {
       id: decoded.id,
-      email: decoded.email,
+      nick: decoded.nick,
     };
 
     //console.log(ctx.state.user);

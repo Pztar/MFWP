@@ -29,7 +29,7 @@ export const register = async (ctx) => {
       password: hash,
     });
     const registUser = await User.findOne({ where: { email } });
-    const user = { id: registUser.id, email: registUser.email };
+    const user = { id: registUser.id, nick: registUser.nick };
     ctx.body = user;
 
     const token = generateToken(registUser);
@@ -57,7 +57,7 @@ export const login = async (ctx) => {
       ctx.status = 401;
       return;
     }
-    const user = { id: exUser.id, email: exUser.email };
+    const user = { id: exUser.id, nick: exUser.nick };
     ctx.body = user;
 
     const token = generateToken(exUser);

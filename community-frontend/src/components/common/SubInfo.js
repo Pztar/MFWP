@@ -34,8 +34,10 @@ const SubInfo = ({
           <Link to={`/${userId}`}>{nick}</Link>
         </b>
       </span>
-      <span>write:{createdTime.toLocaleString("en-US")}</span>
-      <span>update:{updatedTime.toLocaleString("en-US")}</span>
+      <span>write:{createdTime.toLocaleString("en-ZA", { hour12: true })}</span>
+      <span>
+        update:{updatedTime.toLocaleString("en-ZA", { hour12: true })}
+      </span>
       <span>likes:{likeCount}</span>
     </SubInfoBlock>
   );

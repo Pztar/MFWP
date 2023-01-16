@@ -29,6 +29,11 @@ const PostContent = styled.div`
     height: auto;
     min-height: 3%;
   }
+  iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9 auto;
+    background: gray;
+  }
 `;
 
 const PostViewer = ({ post, error, loading, actionButtons }) => {

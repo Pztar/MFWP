@@ -6,8 +6,8 @@ import styled from "styled-components";
 import palette from "../../lib/styles/palette";
 import Responsive from "../common/Responsive";
 import client from "../../lib/api/client";
-//import ImageResize from "quill-image-resize";
-//Quill.register("modules/ImageResize", ImageResize);
+import ImageResize from "quill-image-resize";
+Quill.register("modules/ImageResize", ImageResize);
 
 const EditorBlock = styled(Responsive)`
   padding-top: 5rem;
@@ -35,6 +35,11 @@ const QuillWrapper = styled.div`
   .ql-editor.ql-blank::before {
     left: 0px;
   }
+  iframe {
+    width: 95%;
+    aspect-ratio: auto 16 / 9;
+    background: gray;
+  }
 `;
 
 const Editor = ({ title, content, onChangeField }) => {
@@ -49,7 +54,7 @@ const Editor = ({ title, content, onChangeField }) => {
         toolbar: {
           container: [
             ["bold", "italic", "underline", "strike"], // toggled buttons
-            ["blockquote", "code-block", "link", "image"],
+            ["blockquote", "code-block", "link", "image", "video"],
 
             //[{ header: 1 }, { header: 2 }], // custom button values
             [{ list: "ordered" }, { list: "bullet" }],
@@ -109,9 +114,9 @@ const Editor = ({ title, content, onChangeField }) => {
             },
           },
         },
-        /*ImageResize: {
+        ImageResize: {
           parchment: Quill.import("parchment"),
-        },*/
+        },
       },
     });
 

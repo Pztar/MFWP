@@ -26,14 +26,23 @@ const sanitizeOption = {
     "a",
     "img",
     "image",
+    "iframe",
   ],
   allowedAttributes: {
     a: ["href", "name", "target"],
-    img: ["src"],
+    img: ["src", "width", "height"],
     image: ["src"],
+    iframe: [
+      "src",
+      "class",
+      "frameborder",
+      "allowfullscreen",
+      "width",
+      "height",
+    ],
     li: ["class"],
   },
-  allowedSchemes: ["data", "http"],
+  allowedSchemes: ["data", "http", "https"],
 };
 
 export const getPostById = async (ctx, next) => {

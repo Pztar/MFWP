@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../../models/user";
 import { generateToken } from "../api/auth";
+import jwtCookieConfig from "./jwtCookieConfig";
 
 const jwtMiddleware = async (ctx, next) => {
   const token = ctx.cookies.get("access_token");
@@ -21,10 +22,7 @@ const jwtMiddleware = async (ctx, next) => {
       const user = await User.findOne({ where: { email: decoded.email } });
       const token = generateToken(user);
 
-      ctx.cookies.set("access_token", token, {
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        httpOnly: true,
-      });
+      ctx.cookies.set("access_token", token, jwtCookieConfig.cookie);
     }
     //console.log(decoded);
     return next();

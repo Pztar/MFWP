@@ -2,6 +2,9 @@ import styled from "styled-components";
 import Responsive from "./Responsive";
 import Button from "./Button";
 import { Link } from "react-router-dom";
+import Menu from "./Menu";
+import { useState } from "react";
+import Sidebar from "./Sidebar";
 
 const HeaderBlock = styled.div`
   position: fixed;
@@ -11,10 +14,11 @@ const HeaderBlock = styled.div`
 `;
 
 const Wrapper = styled(Responsive)`
-  height: 4rem;
+  height: 3rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  z-index: 3;
   .logo {
     font-size: 1.125rem;
     font-weight: 800;
@@ -27,7 +31,7 @@ const Wrapper = styled(Responsive)`
 `;
 
 const Spacer = styled.div`
-  height: 4rem;
+  height: 3rem;
 `;
 
 const UserInfo = styled.div`
@@ -36,16 +40,22 @@ const UserInfo = styled.div`
 `;
 
 const Header = ({ user, onLogout }) => {
+  const [openSidebar, setOpenSidebar] = useState(false);
+  const toggleOpenSidebar = () => {
+    setOpenSidebar(!openSidebar);
+  };
   return (
     <>
+      {openSidebar ? <Sidebar /> : null}
       <HeaderBlock>
         <Wrapper>
+          <Button onClick={toggleOpenSidebar}>menu</Button>
           <Link to="/" className="logo">
             REACTERS
           </Link>
           {user ? (
             <div className="right">
-              <UserInfo>{user.username}</UserInfo>
+              <UserInfo>{user.nick}</UserInfo>
               <Button onClick={onLogout}>로그아웃</Button>
             </div>
           ) : (
@@ -54,6 +64,7 @@ const Header = ({ user, onLogout }) => {
             </div>
           )}
         </Wrapper>
+        <Menu />
       </HeaderBlock>
       <Spacer />
     </>

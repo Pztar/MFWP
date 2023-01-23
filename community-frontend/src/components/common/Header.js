@@ -34,11 +34,6 @@ const Spacer = styled.div`
   height: 3rem;
 `;
 
-const UserInfo = styled.div`
-  font-weight: 800;
-  margin-right: 1rem;
-`;
-
 const Header = ({ user, onLogout }) => {
   const [openSidebar, setOpenSidebar] = useState(false);
   const toggleOpenSidebar = () => {
@@ -46,7 +41,7 @@ const Header = ({ user, onLogout }) => {
   };
   return (
     <>
-      {openSidebar ? <Sidebar /> : null}
+      {openSidebar ? <Sidebar user={user} /> : null}
       <HeaderBlock>
         <Wrapper>
           <Button onClick={toggleOpenSidebar}>menu</Button>
@@ -55,12 +50,11 @@ const Header = ({ user, onLogout }) => {
           </Link>
           {user ? (
             <div className="right">
-              <UserInfo>{user.nick}</UserInfo>
-              <Button onClick={onLogout}>로그아웃</Button>
+              <Button onClick={onLogout}>logout</Button>
             </div>
           ) : (
             <div className="right">
-              <Button to="/login">로그인</Button>
+              <Button to="/login">login</Button>
             </div>
           )}
         </Wrapper>

@@ -24,10 +24,23 @@ const Sidebarblock = styled.div`
   }
 `;
 
-const Sidebar = () => {
+const UserInfo = styled(Link)`
+  background: ${palette.gray[6]};
+  border-radius: 4px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  margin: 2px 0px 10px 0px;
+  padding: 0.5rem 1rem;
+`;
+
+const Sidebar = ({ user }) => {
   return (
     <>
       <Sidebarblock>
+        {user ? <UserInfo to="/">{user.nick}'s myPage</UserInfo> : null}
         <ul>
           <li>
             <Link to="/" className="MenuItem">

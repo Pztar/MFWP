@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import palette from "../../lib/styles/palette";
 
 const SubInfoBlock = styled.div`
+  display: flex;
+  justify-content: space-between;
   ${(props) =>
     props.hasMarginTop &&
     css`
@@ -34,11 +36,15 @@ const SubInfo = ({
           <Link to={`/${userId}`}>{nick}</Link>
         </b>
       </span>
-      <span>write:{createdTime.toLocaleString("en-ZA", { hour12: true })}</span>
       <span>
-        update:{updatedTime.toLocaleString("en-ZA", { hour12: true })}
+        <span>
+          write:{createdTime.toLocaleString("en-ZA", { hour12: true })}
+        </span>
+        <span>
+          update:{updatedTime.toLocaleString("en-ZA", { hour12: true })}
+        </span>
+        <span>likes:{likeCount}</span>
       </span>
-      <span>likes:{likeCount}</span>
     </SubInfoBlock>
   );
 };

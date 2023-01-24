@@ -91,7 +91,7 @@ const Editor = ({ title, content, onChangeField }) => {
                 // 백엔드 multer라우터에 이미지를 보낸다.
                 try {
                   const result = await client.post(
-                    "http://localhost:4000/api/posts/file",
+                    "http://localhost:4000/api/file",
                     formData,
                     {
                       headers: {

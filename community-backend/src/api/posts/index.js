@@ -22,5 +22,5 @@ posts.patch(
   postsCtrl.unassociateHashtag,
   postsCtrl.update
 );
-posts.post("/file", postsCtrl.upload.single("file"), postsCtrl.file);
+
 export default posts;

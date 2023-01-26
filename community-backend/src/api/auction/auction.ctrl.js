@@ -1,14 +1,24 @@
 import { Op } from "sequelize";
-import db from "../models";
+import db from "../../../models";
 import { scheduleJob } from "node-schedule";
 
-export const renderMain = async (ctx, next) => {
+export const listGoods = async (ctx, next) => {
+  const page = parseInt(ctx.query.page || "1", 10);
+  if (page < 1) {
+    ctx.status = 400;
+    return;
+  }
   try {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1); // 어제 시간
-    const goods = await db.Good.findAll({
-      where: { SoldId: null, createdAt: { [Op.gte]: yesterday } },
+    const now = new Date();
+    const { count, rows } = await db.Good.findAndCountAll({
+      where: { SoldId: null, TerminatedAt: { [Op.gte]: now } },
+      limit: 20,
+      offset: (page - 1) * 20,
+      order: [["createdAt", "DESC"]],
     });
+    const goods = rows;
+    const goodsCount = count;
+    ctx.set("Last-Page", Math.ceil(goodsCount / 20));
     ctx.body = goods;
   } catch (error) {
     console.error(error);
@@ -18,16 +28,18 @@ export const renderMain = async (ctx, next) => {
 
 export const createGood = async (ctx, next) => {
   try {
-    const { name, price } = ctx.request.body;
+    const { name, category, explanation, price, TerminatedAt } =
+      ctx.request.body;
     const good = await db.Good.create({
       OwnerId: ctx.state.user.id,
       name,
+      category,
       img: ctx.file.filename,
+      explanation,
       price,
+      TerminatedAt,
     });
-    const end = new Date();
-    end.setDate(end.getDate() + 1); // 하루 뒤
-    const job = scheduleJob(end, async () => {
+    const job = scheduleJob(TerminatedAt, async () => {
       const success = await db.Auction.findOne({
         where: { GoodId: good.id },
         order: [["bid", "DESC"]],
@@ -35,7 +47,7 @@ export const createGood = async (ctx, next) => {
       await good.setSold(success.UserId);
       await db.User.update(
         {
-          money: db.sequelize.literal(`money - ${success.bid}`),
+          point: db.sequelize.literal(`point - ${success.bid}`),
         },
         {
           where: { id: success.UserId },
@@ -59,14 +71,14 @@ export const renderAuction = async (ctx, next) => {
   try {
     const [good, auction] = await Promise.all([
       db.Good.findOne({
-        where: { id: ctx.params.id },
+        where: { id: ctx.params.goodId },
         include: {
           model: db.User,
           as: "Owner",
         },
       }),
       db.Auction.findAll({
-        where: { GoodId: ctx.params.id },
+        where: { GoodId: ctx.params.goodId },
         include: { model: db.User },
         order: [["bid", "ASC"]],
       }),

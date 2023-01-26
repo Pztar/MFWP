@@ -58,8 +58,8 @@ const Sidebar = ({ user }) => {
             </Link>
           </li>
           <li>
-            <Link to="/" className="MenuItem">
-              advertisement
+            <Link to="/auction" className="MenuItem">
+              auction
             </Link>
           </li>
         </ul>

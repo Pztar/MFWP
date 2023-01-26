@@ -35,8 +35,8 @@ const Menu = () => {
       <Link to="/" className="MenuItem">
         chat
       </Link>
-      <Link to="/" className="MenuItem">
-        advertisement
+      <Link to="/auction" className="MenuItem">
+        auction
       </Link>
     </MenuBlock>
   );

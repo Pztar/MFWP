@@ -1,11 +1,12 @@
-import { combineReducers } from 'redux';
-import { all } from 'redux-saga/effects';
-import auth, { authSaga } from './auth';
-import loading from './loading';
-import post, { postSaga } from './post';
-import posts, { postsSaga } from './posts';
-import user, { userSaga } from './user';
-import write, { writeSaga } from './write';
+import { combineReducers } from "redux";
+import { all } from "redux-saga/effects";
+import auth, { authSaga } from "./auth";
+import loading from "./loading";
+import post, { postSaga } from "./post";
+import posts, { postsSaga } from "./posts";
+import user, { userSaga } from "./user";
+import write, { writeSaga } from "./write";
+import goods, { goodsSaga } from "./goods";
 
 const rootReducer = combineReducers({
   auth,
@@ -14,10 +15,18 @@ const rootReducer = combineReducers({
   write,
   post,
   posts,
+  goods,
 });
 
 export function* rootSaga() {
-  yield all([authSaga(), userSaga(), writeSaga(), postSaga(), postsSaga()]);
+  yield all([
+    authSaga(),
+    userSaga(),
+    writeSaga(),
+    postSaga(),
+    postsSaga(),
+    goodsSaga(),
+  ]);
 }
 
 export default rootReducer;

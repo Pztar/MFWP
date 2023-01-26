@@ -10,16 +10,25 @@ export default class Good extends Sequelize.Model {
         },
         category: {
           type: Sequelize.STRING(40),
-          allowNull: false,
+          allowNull: true,
         },
         img: {
-          type: Sequelize.STRING(200),
+          type: Sequelize.STRING(100),
+          allowNull: true,
+        },
+        explanation: {
+          type: Sequelize.STRING(150),
           allowNull: true,
         },
         price: {
           type: Sequelize.INTEGER,
           allowNull: false,
           defaultValue: 0,
+        },
+        TerminatedAt: {
+          type: Sequelize.DATE,
+          allowNull: false,
+          defaultValue: Sequelize.NOW,
         },
       },
       {

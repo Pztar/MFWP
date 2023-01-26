@@ -1,6 +1,7 @@
 import Router from "koa-router";
 import posts from "./posts";
 import auth from "./auth";
+import auction from "./auction";
 import multer from "@koa/multer";
 import path from "path";
 
@@ -64,5 +65,6 @@ const file = async (ctx, next) => {
 
 api.use("/posts", posts.routes());
 api.use("/auth", auth.routes());
+api.use("/auction", auction.route);
 api.post("/file", upload.single("file"), file);
 export default api;

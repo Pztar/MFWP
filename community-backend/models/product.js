@@ -1,6 +1,6 @@
 import Sequelize from "sequelize";
 
-export default class Good extends Sequelize.Model {
+export default class Product extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
@@ -35,8 +35,8 @@ export default class Good extends Sequelize.Model {
         sequelize,
         timestamps: true,
         paranoid: true,
-        modelName: "Good",
-        tableName: "goods",
+        modelName: "Product",
+        tableName: "products",
         charset: "utf8",
         collate: "utf8_general_ci",
       }
@@ -44,8 +44,8 @@ export default class Good extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Good.belongsTo(db.User, { as: "Owner" });
-    db.Good.belongsTo(db.User, { as: "Sold" });
-    db.Good.hasMany(db.Auction);
+    db.Product.belongsTo(db.User, { as: "Owner" });
+    db.Product.belongsTo(db.User, { as: "Sold" });
+    db.Product.hasMany(db.Auction);
   }
 }

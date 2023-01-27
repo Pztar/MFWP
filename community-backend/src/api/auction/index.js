@@ -6,19 +6,19 @@ const action = new Router();
 /*
 action.get("/", auctionCtrl.list);
 action.post("/", checkLoggedIn, auctionCtrl.regist);
-action.get("/:goodId", auctionCtrl.getGoodById, auctionCtrl.read);
+action.get("/:productId", auctionCtrl.getProductById, auctionCtrl.read);
 action.delete(
   "/:postId",
-  auctionCtrl.getGoodById,
+  auctionCtrl.getProductById,
   checkLoggedIn,
-  auctionCtrl.checkOwnGood,
+  auctionCtrl.checkOwnProduct,
   auctionCtrl.remove
 );
 action.patch(
   "/:postId",
-  auctionCtrl.getGoodById,
+  auctionCtrl.getProductById,
   checkLoggedIn,
-  auctionCtrl.checkOwnGood,
+  auctionCtrl.checkOwnProduct,
   auctionCtrl.update
 );
 */

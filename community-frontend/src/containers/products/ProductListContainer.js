@@ -2,18 +2,18 @@ import { useEffect } from "react";
 import qs from "qs";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation } from "react-router-dom";
-import GoodList from "../../components/goods/goodsList";
-import { listGoods } from "../../modules/goods";
+import ProductList from "../../components/products/productList";
+import { listProducts } from "../../modules/products";
 
-const GoodsListContainer = () => {
+const ProductListContainer = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const { search } = useLocation();
-  const { goods, error, loading, user } = useSelector(
-    ({ goods, loading, user }) => ({
-      goods: goods.goods,
-      error: goods.error,
-      loading: loading["goods/LIST_GOODS"],
+  const { products, error, loading, user } = useSelector(
+    ({ products, loading, user }) => ({
+      products: products.products,
+      error: products.error,
+      loading: loading["products/LIST_PRODUCTS"],
       user: user.user,
     })
   );
@@ -24,17 +24,17 @@ const GoodsListContainer = () => {
       ignoreQueryPrefix: true,
     });
 
-    dispatch(listGoods({ page, category }));
+    dispatch(listProducts({ page, category }));
   }, [dispatch, search, params]);
 
   return (
-    <GoodList
+    <ProductList
       loading={loading}
       error={error}
-      goods={goods}
-      showRegistGoodButton={user}
+      products={products}
+      showRegistProductButton={user}
     />
   );
 };
 
-export default GoodsListContainer;
+export default ProductListContainer;

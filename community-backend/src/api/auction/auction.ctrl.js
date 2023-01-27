@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 import db from "../../../models";
 import { scheduleJob } from "node-schedule";
 
-export const listGoods = async (ctx, next) => {
+export const listProducts = async (ctx, next) => {
   const page = parseInt(ctx.query.page || "1", 10);
   if (page < 1) {
     ctx.status = 400;
@@ -10,27 +10,31 @@ export const listGoods = async (ctx, next) => {
   }
   try {
     const now = new Date();
-    const { count, rows } = await db.Good.findAndCountAll({
+    const { count, rows } = await db.Product.findAndCountAll({
       where: { SoldId: null, TerminatedAt: { [Op.gte]: now } },
+      include: {
+        model: db.User,
+        as: "Owner",
+      },
       limit: 20,
       offset: (page - 1) * 20,
       order: [["createdAt", "DESC"]],
     });
-    const goods = rows;
-    const goodsCount = count;
-    ctx.set("Last-Page", Math.ceil(goodsCount / 20));
-    ctx.body = goods;
+    const products = rows;
+    const productsCount = count;
+    ctx.set("Last-Page", Math.ceil(productsCount / 20));
+    ctx.body = products;
   } catch (error) {
     console.error(error);
     next(error);
   }
 };
 
-export const createGood = async (ctx, next) => {
+export const createProduct = async (ctx, next) => {
   try {
     const { name, category, explanation, price, TerminatedAt } =
       ctx.request.body;
-    const good = await db.Good.create({
+    const product = await db.Product.create({
       OwnerId: ctx.state.user.id,
       name,
       category,
@@ -41,10 +45,10 @@ export const createGood = async (ctx, next) => {
     });
     const job = scheduleJob(TerminatedAt, async () => {
       const success = await db.Auction.findOne({
-        where: { GoodId: good.id },
+        where: { ProductId: product.id },
         order: [["bid", "DESC"]],
       });
-      await good.setSold(success.UserId);
+      await product.setSold(success.UserId);
       await db.User.update(
         {
           point: db.sequelize.literal(`point - ${success.bid}`),
@@ -69,21 +73,21 @@ export const createGood = async (ctx, next) => {
 
 export const renderAuction = async (ctx, next) => {
   try {
-    const [good, auction] = await Promise.all([
-      db.Good.findOne({
-        where: { id: ctx.params.goodId },
+    const [product, auction] = await Promise.all([
+      db.Product.findOne({
+        where: { id: ctx.params.productId },
         include: {
           model: db.User,
           as: "Owner",
         },
       }),
       db.Auction.findAll({
-        where: { GoodId: ctx.params.goodId },
+        where: { ProductId: ctx.params.productId },
         include: { model: db.User },
         order: [["bid", "ASC"]],
       }),
     ]);
-    ctx.body = [good, auction];
+    ctx.body = [product, auction];
   } catch (error) {
     console.error(error);
     next(error);
@@ -93,28 +97,31 @@ export const renderAuction = async (ctx, next) => {
 export const bid = async (ctx, next) => {
   try {
     const { bid, msg } = ctx.request.body;
-    const good = await db.Good.findOne({
+    const product = await db.Product.findOne({
       where: { id: ctx.params.id },
       include: { model: db.Auction },
       order: [[{ model: db.Auction }, "bid", "DESC"]],
     });
-    if (!good) {
+    if (!product) {
       return ctx.status(404).send("해당 상품은 존재하지 않습니다.");
     }
-    if (good.price >= bid) {
+    if (product.price >= bid) {
       return ctx.status(403).send("시작 가격보다 높게 입찰해야 합니다.");
     }
-    if (new Date(good.createdAt).valueOf() + 24 * 60 * 60 * 1000 < new Date()) {
+    if (
+      new Date(product.createdAt).valueOf() + 24 * 60 * 60 * 1000 <
+      new Date()
+    ) {
       return ctx.status(403).send("경매가 이미 종료되었습니다");
     }
-    if (good.Auctions[0].bid * 1.05 > bid) {
+    if (product.Auctions[0].bid * 1.05 > bid) {
       return ctx.status(403).send("이전 입찰가보다 5% 이상 높아야 합니다");
     }
     const result = await db.Auction.create({
       bid,
       msg,
       UserId: ctx.state.user.id,
-      GoodId: ctx.params.id,
+      ProductId: ctx.params.id,
     });
     // 실시간으로 입찰 내역 전송
     ctx.io.to(ctx.params.id).emit("bid", {

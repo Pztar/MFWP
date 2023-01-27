@@ -6,7 +6,7 @@ import post, { postSaga } from "./post";
 import posts, { postsSaga } from "./posts";
 import user, { userSaga } from "./user";
 import write, { writeSaga } from "./write";
-import goods, { goodsSaga } from "./goods";
+import goods, { goodsSaga } from "./products";
 
 const rootReducer = combineReducers({
   auth,

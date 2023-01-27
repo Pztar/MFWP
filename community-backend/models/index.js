@@ -6,7 +6,7 @@ import Post from "./post";
 import Hashtag from "./hashtag";
 import Comment from "./comment";
 import Auction from "./auction";
-import Good from "./good";
+import Product from "./product";
 
 const db = {};
 const sequelize = new Sequelize(
@@ -22,20 +22,20 @@ db.Post = Post;
 db.Comment = Comment;
 db.Hashtag = Hashtag;
 db.Auction = Auction;
-db.Good = Good;
+db.Product = Product;
 
 User.init(sequelize);
 Post.init(sequelize);
 Comment.init(sequelize);
 Hashtag.init(sequelize);
 Auction.init(sequelize);
-Good.init(sequelize);
+Product.init(sequelize);
 
 User.associate(db);
 Post.associate(db);
 Comment.associate(db);
 Hashtag.associate(db);
 Auction.associate(db);
-Good.associate(db);
+Product.associate(db);
 
 export default db;

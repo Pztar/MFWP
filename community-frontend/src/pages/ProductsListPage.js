@@ -1,12 +1,12 @@
 import HeaderContainer from "../containers/common/HeaderContainer";
 import PaginationContainer from "../containers/posts/PaginationContainer";
-import GoodsListContainer from "../containers/goods/GoodsListContainer";
+import ProductListContainer from "../containers/products/ProductListContainer";
 
 const AuctionListPage = () => {
   return (
     <>
       <HeaderContainer />
-      <GoodsListContainer />
+      <ProductListContainer />
     </>
   );
 };

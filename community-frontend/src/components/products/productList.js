@@ -6,17 +6,17 @@ import Responsive from "../common/Responsive";
 import { useState } from "react";
 import useScript from "../../useScript";
 
-const GoodsLitstBlock = styled(Responsive)`
+const ProductLitstBlock = styled(Responsive)`
   margin-top: 3rem;
 `;
 
-const RegistGoodButtonWrapper = styled.div`
+const RegistProductButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: 3rem;
 `;
 
-const GoodItemBlock = styled.tr`
+const ProductItemBlock = styled.tr`
   padding-top: 3rem;
   padding-bottom: 3rem;
   &:first-child {
@@ -41,7 +41,7 @@ const GoodItemBlock = styled.tr`
   }
 `;
 
-const GoodItem = ({ good, serverTime }) => {
+const ProductItem = ({ product, serverTime }) => {
   const {
     id,
     name,
@@ -52,10 +52,10 @@ const GoodItem = ({ good, serverTime }) => {
     TerminatedAt,
     createdAt,
     OwnerId,
-    User,
-  } = good;
-  const goodId = id;
-  const userId = OwnerId;
+    Owner,
+  } = product;
+  const productId = id;
+  const OwnerNick = Owner.nick;
   const end = new Date(TerminatedAt); // 경매 종료 시간
   let restTime = "00d00:00:00";
   if (serverTime >= end) {
@@ -69,10 +69,15 @@ const GoodItem = ({ good, serverTime }) => {
     restTime = days + "d" + hours + ":" + minutes + ":" + seconds;
   }
   return (
-    <GoodItemBlock>
+    <ProductItemBlock>
+      <td>
+        <Link to={`/${OwnerId}`} target="_blank" rel="noopener noreferrer">
+          {OwnerNick}
+        </Link>
+      </td>
       <td>{name}</td>
       <td>
-        <img src={`/img/${img}`} alt="goodImg" />
+        <img src={`/img/${img}`} alt="productImg" />
       </td>
       <td>
         <Link to={`${explanation}`} target="_blank" rel="noopener noreferrer">
@@ -82,13 +87,13 @@ const GoodItem = ({ good, serverTime }) => {
       <td>{price}</td>
       <td>{restTime}</td>
       <td>
-        <Link to={`/acution/${goodId}`}>입장</Link>
+        <Link to={`/acution/${productId}`}>입장</Link>
       </td>
-    </GoodItemBlock>
+    </ProductItemBlock>
   );
 };
 
-const GoodList = ({ goods, loading, error, showRegistGoodButton }) => {
+const ProductList = ({ products, loading, error, showRegistProductButton }) => {
   useScript("https://unpkg.com/event-source-polyfill/src/eventsource.min.js");
   const [serverTime, setServerTime] = useState(new Date());
   const es = new EventSource("/sse");
@@ -97,21 +102,22 @@ const GoodList = ({ goods, loading, error, showRegistGoodButton }) => {
   };
 
   if (error) {
-    return <GoodsLitstBlock>에러가 발생했습니다.</GoodsLitstBlock>;
+    return <ProductLitstBlock>에러가 발생했습니다.</ProductLitstBlock>;
   }
 
   return (
-    <GoodsLitstBlock>
-      <RegistGoodButtonWrapper>
-        {showRegistGoodButton && (
-          <Button cyan to="/resistGood">
+    <ProductLitstBlock>
+      <RegistProductButtonWrapper>
+        {showRegistProductButton && (
+          <Button cyan to="/resistProduct">
             상품등록
           </Button>
         )}
-      </RegistGoodButtonWrapper>
-      {!loading && goods && (
+      </RegistProductButtonWrapper>
+      {!loading && products && (
         <table>
           <tr>
+            <td>판매자</td>
             <th>상품명</th>
             <th>이미지</th>
             <th>설명(링크)</th>
@@ -119,13 +125,17 @@ const GoodList = ({ goods, loading, error, showRegistGoodButton }) => {
             <th>잔여 시간</th>
             <th>입장</th>
           </tr>
-          {goods.map((good) => (
-            <GoodItem good={good} key={good.id} server={serverTime} />
+          {products.map((product) => (
+            <ProductItem
+              product={product}
+              key={product.id}
+              server={serverTime}
+            />
           ))}
         </table>
       )}
-    </GoodsLitstBlock>
+    </ProductLitstBlock>
   );
 };
 
-export default GoodList;
+export default ProductList;

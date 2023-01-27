@@ -5,7 +5,7 @@ import PostListPage from "./pages/PostListPage";
 import PostPage from "./pages/PostPage";
 import RegisterPage from "./pages/RegisterPage";
 import WritePage from "./pages/WritePage";
-import GoodsListPage from "./pages/GoodsListPage";
+import ProductListPage from "./pages/ProductsListPage";
 import { Helmet } from "react-helmet-async";
 import { Reset } from "styled-reset";
 
@@ -23,7 +23,7 @@ const App = () => {
         <Route element={<RegisterPage />} path="/register" />
         <Route element={<WritePage />} path="/write" />
         <Route element={<PostPage />} path="/:userId/:postId" />
-        <Route element={<GoodsListPage />} path="/auction/:category" />
+        <Route element={<ProductListPage />} path="/auction/:category" />
       </Routes>
     </>
   );

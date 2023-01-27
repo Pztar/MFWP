@@ -28,6 +28,6 @@ export default class Auction extends Sequelize.Model {
 
   static associate(db) {
     db.Auction.belongsTo(db.User);
-    db.Auction.belongsTo(db.Good);
+    db.Auction.belongsTo(db.Product);
   }
 }

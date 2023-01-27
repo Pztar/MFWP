@@ -4,6 +4,7 @@ import { scheduleJob } from "node-schedule";
 
 export const listProducts = async (ctx, next) => {
   const page = parseInt(ctx.query.page || "1", 10);
+  const category = ctx.query.category;
   if (page < 1) {
     ctx.status = 400;
     return;
@@ -71,7 +72,7 @@ export const createProduct = async (ctx, next) => {
   }
 };
 
-export const renderAuction = async (ctx, next) => {
+export const participateAcution = async (ctx, next) => {
   try {
     const [product, auction] = await Promise.all([
       db.Product.findOne({

@@ -31,7 +31,7 @@ const products = handleActions(
   {
     [LIST_PRODUCTS_SUCCESS]: (
       state,
-      { payload: goproductsods, meta: response }
+      { payload: products, meta: response }
     ) => ({
       ...state,
       products,

@@ -25,7 +25,7 @@ export default class Product extends Sequelize.Model {
           allowNull: false,
           defaultValue: 0,
         },
-        TerminatedAt: {
+        terminatedAt: {
           type: Sequelize.DATE,
           allowNull: false,
           defaultValue: Sequelize.NOW,

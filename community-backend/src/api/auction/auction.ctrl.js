@@ -12,7 +12,7 @@ export const listProducts = async (ctx, next) => {
   try {
     const now = new Date();
     const { count, rows } = await db.Product.findAndCountAll({
-      where: { SoldId: null, TerminatedAt: { [Op.gte]: now } },
+      where: { SoldId: null, terminatedAt: { [Op.gte]: now } },
       include: {
         model: db.User,
         as: "Owner",
@@ -33,7 +33,7 @@ export const listProducts = async (ctx, next) => {
 
 export const createProduct = async (ctx, next) => {
   try {
-    const { name, category, explanation, price, TerminatedAt } =
+    const { name, category, explanation, price, terminatedAt } =
       ctx.request.body;
     const product = await db.Product.create({
       OwnerId: ctx.state.user.id,
@@ -42,9 +42,9 @@ export const createProduct = async (ctx, next) => {
       img: ctx.file.filename,
       explanation,
       price,
-      TerminatedAt,
+      terminatedAt,
     });
-    const job = scheduleJob(TerminatedAt, async () => {
+    const job = scheduleJob(terminatedAt, async () => {
       const success = await db.Auction.findOne({
         where: { ProductId: product.id },
         order: [["bid", "DESC"]],
@@ -99,7 +99,7 @@ export const bid = async (ctx, next) => {
   try {
     const { bid, msg } = ctx.request.body;
     const product = await db.Product.findOne({
-      where: { id: ctx.params.id },
+      where: { id: ctx.params.productId },
       include: { model: db.Auction },
       order: [[{ model: db.Auction }, "bid", "DESC"]],
     });
@@ -110,7 +110,7 @@ export const bid = async (ctx, next) => {
       return ctx.status(403).send("시작 가격보다 높게 입찰해야 합니다.");
     }
     if (
-      new Date(product.createdAt).valueOf() + 24 * 60 * 60 * 1000 <
+      new Date(product.terminatedAt).valueOf() + 24 * 60 * 60 * 1000 <
       new Date()
     ) {
       return ctx.status(403).send("경매가 이미 종료되었습니다");
@@ -122,10 +122,10 @@ export const bid = async (ctx, next) => {
       bid,
       msg,
       UserId: ctx.state.user.id,
-      ProductId: ctx.params.id,
+      ProductId: ctx.params.productId,
     });
     // 실시간으로 입찰 내역 전송
-    ctx.io.to(ctx.params.id).emit("bid", {
+    ctx.io.to(ctx.params.productId).emit("bid", {
       bid: result.bid,
       msg: result.msg,
       nick: ctx.state.user.nick,

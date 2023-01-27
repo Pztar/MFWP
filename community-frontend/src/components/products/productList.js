@@ -49,14 +49,14 @@ const ProductItem = ({ product, serverTime }) => {
     img,
     explanation,
     price,
-    TerminatedAt,
+    terminatedAt,
     createdAt,
     OwnerId,
     Owner,
   } = product;
   const productId = id;
   const OwnerNick = Owner.nick;
-  const end = new Date(TerminatedAt); // 경매 종료 시간
+  const end = new Date(terminatedAt); // 경매 종료 시간
   let restTime = "00d00:00:00";
   if (serverTime >= end) {
     // 경매가 종료되었으면

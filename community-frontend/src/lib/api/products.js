@@ -14,21 +14,21 @@ export const registProduct = ({
   category,
   explanation,
   price,
-  TerminatedAt,
+  terminatedAt,
 }) =>
   client.post("/api/auction", {
     name,
     category,
     explanation,
     price,
-    TerminatedAt,
+    terminatedAt,
   });
 
 export const participateAcution = (productId) =>
-  client.get(`/api/auction/${productId}`);
+  client.get(`/api/auction/product/${productId}`);
 
-export const bid = () => {
-  return;
+export const bid = (productId, { bid, msg }) => {
+  return client.post(`/api/auction/product/${productId}/bid`, { bid, msg });
 };
 
 export const removeProduct = (productId) =>

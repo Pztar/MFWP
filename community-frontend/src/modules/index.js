@@ -7,6 +7,7 @@ import posts, { postsSaga } from "./posts";
 import user, { userSaga } from "./user";
 import write, { writeSaga } from "./write";
 import products, { productsSaga } from "./products";
+import regist, { registSaga } from "./registProduct";
 
 const rootReducer = combineReducers({
   auth,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   post,
   posts,
   products,
+  regist,
 });
 
 export function* rootSaga() {
@@ -26,6 +28,7 @@ export function* rootSaga() {
     postSaga(),
     postsSaga(),
     productsSaga(),
+    registSaga(),
   ]);
 }
 

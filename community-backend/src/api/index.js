@@ -23,6 +23,6 @@ const file = async (ctx, next) => {
 
 api.use("/posts", posts.routes());
 api.use("/auth", auth.routes());
-api.use("/auction", auction.route);
+api.use("/auction", auction.routes());
 api.post("/file", upload.single("file"), file);
 export default api;

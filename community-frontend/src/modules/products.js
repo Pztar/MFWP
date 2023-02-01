@@ -16,9 +16,12 @@ export const listProducts = createAction(
   })
 );
 
-//const listProductsSaga = createRequestSaga(LIST_PRODUCTS, productsAPI.listProducts);
+const listProductsSaga = createRequestSaga(
+  LIST_PRODUCTS,
+  productsAPI.listProducts
+);
 export function* productsSaga() {
-  //yield takeLatest(LIST_PRODUCTS, listProductsSaga);
+  yield takeLatest(LIST_PRODUCTS, listProductsSaga);
 }
 
 const initialState = {

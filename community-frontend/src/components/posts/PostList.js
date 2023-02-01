@@ -14,6 +14,7 @@ const WritePostButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: 3rem;
+  margin-bottom: 5px;
 `;
 
 const PostItemBlock = styled.div`

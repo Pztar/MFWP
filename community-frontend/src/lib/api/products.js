@@ -12,13 +12,15 @@ export const listProducts = ({ page, category }) => {
 export const registProduct = ({
   name,
   category,
+  img,
   explanation,
   price,
   terminatedAt,
 }) =>
-  client.post("/api/auction", {
+  client.post("/api/auction/product", {
     name,
     category,
+    img,
     explanation,
     price,
     terminatedAt,

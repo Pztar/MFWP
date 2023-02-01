@@ -74,7 +74,7 @@ export const createProduct = async (ctx, next) => {
 
 export const participateAcution = async (ctx, next) => {
   try {
-    const [product, auction] = await Promise.all([
+    const { product, auction } = await Promise.all([
       db.Product.findOne({
         where: { id: ctx.params.productId },
         include: {
@@ -88,7 +88,8 @@ export const participateAcution = async (ctx, next) => {
         order: [["bid", "ASC"]],
       }),
     ]);
-    ctx.body = [product, auction];
+    const productAction = { product, auction };
+    ctx.body = productAction;
   } catch (error) {
     console.error(error);
     next(error);

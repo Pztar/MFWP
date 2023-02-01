@@ -8,18 +8,47 @@ import useScript from "../../useScript";
 
 const ProductLitstBlock = styled(Responsive)`
   margin-top: 3rem;
+
+  table {
+    width: 100%;
+  }
+
+  th {
+    flex: 1;
+    border: solid 1px black;
+    padding: 3px 1px 3px 1px;
+  }
+
+  .tdImg {
+    flex: 1.5;
+  }
+
+  .tdLink {
+    flex: 2;
+  }
 `;
 
 const RegistProductButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
   margin-top: 3rem;
+  margin-bottom: 5px;
 `;
 
 const ProductItemBlock = styled.tr`
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-  &:first-child {
+  border: solid 1px black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  justify-items: stretch;
+  width: 100%;
+  padding: 3px 1px 3px 1px;
+  td {
+    flex: 1;
+    border: solid 1px black;
+  }
+
+  &:last-child {
     padding-top: 0;
   }
 
@@ -76,10 +105,10 @@ const ProductItem = ({ product, serverTime }) => {
         </Link>
       </td>
       <td>{name}</td>
-      <td>
+      <td className="tdImg">
         <img src={`/img/${img}`} alt="productImg" />
       </td>
-      <td>
+      <td className="tdLink">
         <Link to={`${explanation}`} target="_blank" rel="noopener noreferrer">
           {explanation}
         </Link>
@@ -96,10 +125,10 @@ const ProductItem = ({ product, serverTime }) => {
 const ProductList = ({ products, loading, error, showRegistProductButton }) => {
   useScript("https://unpkg.com/event-source-polyfill/src/eventsource.min.js");
   const [serverTime, setServerTime] = useState(new Date());
-  const es = new EventSource("/sse");
+  /*const es = new EventSource("/sse");
   es.onmessage = function (e) {
     setServerTime(new Date(parseInt(e.data, 10)));
-  };
+  };*/
 
   if (error) {
     return <ProductLitstBlock>에러가 발생했습니다.</ProductLitstBlock>;
@@ -116,22 +145,26 @@ const ProductList = ({ products, loading, error, showRegistProductButton }) => {
       </RegistProductButtonWrapper>
       {!loading && products && (
         <table>
-          <tr>
-            <td>판매자</td>
-            <th>상품명</th>
-            <th>이미지</th>
-            <th>설명(링크)</th>
-            <th>시작 가격</th>
-            <th>잔여 시간</th>
-            <th>입장</th>
-          </tr>
-          {products.map((product) => (
-            <ProductItem
-              product={product}
-              key={product.id}
-              server={serverTime}
-            />
-          ))}
+          <thead>
+            <ProductItemBlock>
+              <th>판매자</th>
+              <th>상품명</th>
+              <th className="tdImg">이미지</th>
+              <th className="tdLink">설명(링크)</th>
+              <th>시작 가격</th>
+              <th>잔여 시간</th>
+              <th>입장</th>
+            </ProductItemBlock>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <ProductItem
+                product={product}
+                key={product.id}
+                server={serverTime}
+              />
+            ))}
+          </tbody>
         </table>
       )}
     </ProductLitstBlock>

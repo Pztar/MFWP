@@ -9,7 +9,9 @@ const storage = multer.diskStorage({
   // 저장할 이미지의 파일명
   filename(ctx, file, cb) {
     const ext = path.extname(file.originalname); // 파일의 확장자
-    file.originalname = Buffer.from(file.originalname, "utf8").toString("utf8");
+    file.originalname = Buffer.from(file.originalname, "latin1").toString(
+      "utf8"
+    );
     console.log("file.originalname", file.originalname);
     // 파일명이 절대 겹치지 않도록 해줘야한다.
     // 파일이름 + 현재시간밀리초 + 파일확장자명

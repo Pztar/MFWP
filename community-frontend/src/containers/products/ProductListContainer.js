@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import qs from "qs";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useLocation } from "react-router-dom";
-import ProductList from "../../components/products/productList";
+import ProductList from "../../components/products/ProductList";
 import { listProducts } from "../../modules/products";
 
 const ProductListContainer = () => {
@@ -19,12 +19,12 @@ const ProductListContainer = () => {
   );
 
   useEffect(() => {
-    const { category } = params;
-    const { page } = qs.parse(search, {
+    const { productId } = params;
+    const { page, category } = qs.parse(search, {
       ignoreQueryPrefix: true,
     });
 
-    dispatch(listProducts({ page, category }));
+    dispatch(listProducts({ productId, page, category }));
   }, [dispatch, search, params]);
 
   return (

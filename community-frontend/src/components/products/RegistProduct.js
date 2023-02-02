@@ -7,18 +7,27 @@ import { useDispatch } from "react-redux";
 const RegistProductBlock = styled.div`
   div {
     margin-top: 1rem;
-    height: 50px;
+    width: 100%;
+    border-bottom: 1px solid ${palette.gray[5]};
   }
+
   input {
     font-size: 1rem;
     display: block;
+    padding-top: 3px;
+    padding-bottom: 0.5rem;
+  }
+
+  img {
+    max-width: 50%;
+    max-height: 50px;
   }
 `;
 
 const StyledInput = styled.input`
   font-size: 1rem;
   border: none;
-  border-bottom: 1px solid ${palette.gray[5]};
+  padding-top: 3px;
   padding-bottom: 0.5rem;
   outline: none;
   width: 100%;
@@ -38,7 +47,6 @@ const RegistProduct = ({
   price,
   terminatedAt,
 }) => {
-  let imgInput = "";
   const dispatch = useDispatch();
   const inputImg = useRef(null);
   const input = inputImg.current;
@@ -75,6 +83,7 @@ const RegistProduct = ({
       <div className="input-group">
         <label>상품명</label>
         <StyledInput
+          placeholder="상품명"
           type="text"
           name="name"
           onChange={onChange}
@@ -86,6 +95,7 @@ const RegistProduct = ({
       <div className="input-group">
         <label>카테고리</label>
         <StyledInput
+          placeholder="상품 분류"
           type="text"
           name="category"
           onChange={onChange}
@@ -96,7 +106,7 @@ const RegistProduct = ({
       </div>
       <div className="input-group">
         <label>상품 사진</label>
-        <img alt="inputImg" src={img} height="100%" align="right" />
+        <img alt="inputImg" src={img} align="right" />
         <input
           type="file"
           accept="image/*"
@@ -108,6 +118,7 @@ const RegistProduct = ({
       <div className="input-group">
         <label>설명(링크)</label>
         <StyledInput
+          placeholder="상품 설명글의 url(웹주소)"
           type="text"
           name="explanation"
           onChange={onChange}

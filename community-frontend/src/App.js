@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
+import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
 import PostListPage from "./pages/PostListPage";
 import PostPage from "./pages/PostPage";
@@ -18,7 +19,8 @@ const App = () => {
         <title>REACTERS</title>
       </Helmet>
       <Routes>
-        <Route element={<PostListPage />} path={"/"} exact />
+        <Route element={<MainPage />} path={"/"} exact />
+        <Route element={<PostListPage />} path={"/posts"} exact />
         <Route element={<PostListPage />} path={"/posts/:userId"} exact />
         <Route element={<LoginPage />} path="/login" />
         <Route element={<RegisterPage />} path="/register" />

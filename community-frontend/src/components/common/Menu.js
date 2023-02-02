@@ -26,7 +26,7 @@ const MenuBlock = styled(Responsive)`
 const Menu = () => {
   return (
     <MenuBlock>
-      <Link to="/" className="MenuItem">
+      <Link to="/posts" className="MenuItem">
         posts
       </Link>
       <Link to="/" className="MenuItem">

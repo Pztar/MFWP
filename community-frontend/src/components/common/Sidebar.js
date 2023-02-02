@@ -43,7 +43,7 @@ const Sidebar = ({ user }) => {
         {user ? <UserInfo to="/">{user.nick}'s myPage</UserInfo> : null}
         <ul>
           <li>
-            <Link to="/" className="MenuItem">
+            <Link to="/posts" className="MenuItem">
               posts
             </Link>
           </li>

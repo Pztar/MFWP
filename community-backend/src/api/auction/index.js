@@ -1,10 +1,6 @@
 import Router from "koa-router";
 import checkLoggedIn from "../../lib/checkLoggedIn";
 import * as auctionCtrl from "./auction.ctrl";
-import multer from "@koa/multer";
-import multerOption from "../multerOption";
-
-const upload = multer(multerOption);
 
 const auction = new Router();
 /*
@@ -15,12 +11,7 @@ auction.use((req, res, next) => {
 */
 auction.get("/", auctionCtrl.listProducts);
 
-auction.post(
-  "/product",
-  checkLoggedIn,
-  upload.single("file"),
-  auctionCtrl.createProduct
-);
+auction.post("/product", checkLoggedIn, auctionCtrl.createProduct);
 
 auction.get(
   "/product/:productId",

@@ -33,13 +33,13 @@ export const listProducts = async (ctx, next) => {
 
 export const createProduct = async (ctx, next) => {
   try {
-    const { name, category, explanation, price, terminatedAt } =
+    const { name, category, img, explanation, price, terminatedAt } =
       ctx.request.body;
     const product = await db.Product.create({
       OwnerId: ctx.state.user.id,
       name,
       category,
-      img: ctx.file.filename,
+      img,
       explanation,
       price,
       terminatedAt,
@@ -65,7 +65,7 @@ export const createProduct = async (ctx, next) => {
     job.on("success", () => {
       console.log("스케줄링 성공");
     });
-    ctx.redirect("/");
+    ctx.body = product;
   } catch (error) {
     console.error(error);
     next(error);

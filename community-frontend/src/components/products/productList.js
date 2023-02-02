@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
 import Responsive from "../common/Responsive";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useScript from "../../useScript";
 
 const ProductLitstBlock = styled(Responsive)`
@@ -14,17 +14,8 @@ const ProductLitstBlock = styled(Responsive)`
   }
 
   th {
-    flex: 1;
     border: solid 1px black;
     padding: 3px 1px 3px 1px;
-  }
-
-  .tdImg {
-    flex: 1.5;
-  }
-
-  .tdLink {
-    flex: 2;
   }
 `;
 
@@ -37,15 +28,18 @@ const RegistProductButtonWrapper = styled.div`
 
 const ProductItemBlock = styled.tr`
   border: solid 1px black;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  justify-items: stretch;
   width: 100%;
-  padding: 3px 1px 3px 1px;
   td {
-    flex: 1;
+    height: 30px;
     border: solid 1px black;
+    border-collapse: collapse;
+    text-align: center;
+    vertical-align: middle;
+    img {
+      height: 100px;
+      padding: 0px;
+      vertical-align: top;
+    }
   }
 
   &:last-child {
@@ -89,6 +83,7 @@ const ProductItem = ({ product, serverTime }) => {
   let restTime = "00d00:00:00";
   if (serverTime >= end) {
     // 경매가 종료되었으면
+    restTime = "종료";
   } else {
     const t = end - serverTime; // 경매 종료까지 남은 시간
     const seconds = ("0" + Math.floor((t / 1000) % 60)).slice(-2);
@@ -100,21 +95,33 @@ const ProductItem = ({ product, serverTime }) => {
   return (
     <ProductItemBlock>
       <td>
-        <Link to={`/${OwnerId}`} target="_blank" rel="noopener noreferrer">
+        <Link
+          to={`/posts/${OwnerId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           {OwnerNick}
         </Link>
       </td>
       <td>{name}</td>
       <td className="tdImg">
-        <img src={`/img/${img}`} alt="productImg" />
+        {img ? <img src={`${img}`} alt="productImg" /> : "null"}
       </td>
       <td className="tdLink">
-        <Link to={`${explanation}`} target="_blank" rel="noopener noreferrer">
-          {explanation}
-        </Link>
+        {explanation ? (
+          <a
+            href={`http://${explanation}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {explanation}
+          </a>
+        ) : (
+          "링크가 없습니다."
+        )}
       </td>
       <td>{price}</td>
-      <td>{restTime}</td>
+      <td className="tdImg">{restTime}</td>
       <td>
         <Link to={`/acution/${productId}`}>입장</Link>
       </td>
@@ -124,18 +131,47 @@ const ProductItem = ({ product, serverTime }) => {
 
 const ProductList = ({ products, loading, error, showRegistProductButton }) => {
   useScript("https://unpkg.com/event-source-polyfill/src/eventsource.min.js");
-  const [serverTime, setServerTime] = useState(new Date());
-  /*const es = new EventSource("/sse");
-  es.onmessage = function (e) {
-    setServerTime(new Date(parseInt(e.data, 10)));
-  };*/
+
+  const [listening, setListening] = useState(false);
+  const [serverTime, setServerTime] = useState(null);
+
+  let es = undefined;
+  useEffect(() => {
+    if (!listening) {
+      es = new EventSource("/sse");
+      es.onopen = (event) => {
+        console.log("connection opened");
+      };
+      es.onmessage = function (e) {
+        setServerTime(e.data);
+      };
+      es.onerror = (event) => {
+        console.log(event.target.readyState);
+        if (event.target.readyState === EventSource.CLOSED) {
+          console.log("eventsource closed (" + event.target.readyState + ")");
+        }
+        es.close();
+      };
+
+      setListening(true);
+    }
+
+    return () => {
+      es.close();
+      console.log("eventsource closed");
+    };
+  }, []);
 
   if (error) {
+    console.log(error);
     return <ProductLitstBlock>에러가 발생했습니다.</ProductLitstBlock>;
   }
+  const ServerTime = Date(serverTime);
+  const timeToLocale = ServerTime.toLocaleString("en-ZA", { hour12: true });
 
   return (
     <ProductLitstBlock>
+      {/*<div>서버시간: {timeToLocale}</div>*/}
       <RegistProductButtonWrapper>
         {showRegistProductButton && (
           <Button cyan to="/resistProduct">
@@ -152,7 +188,7 @@ const ProductList = ({ products, loading, error, showRegistProductButton }) => {
               <th className="tdImg">이미지</th>
               <th className="tdLink">설명(링크)</th>
               <th>시작 가격</th>
-              <th>잔여 시간</th>
+              <th className="tdImg">잔여 시간</th>
               <th>입장</th>
             </ProductItemBlock>
           </thead>
@@ -161,7 +197,7 @@ const ProductList = ({ products, loading, error, showRegistProductButton }) => {
               <ProductItem
                 product={product}
                 key={product.id}
-                server={serverTime}
+                serverTime={serverTime}
               />
             ))}
           </tbody>

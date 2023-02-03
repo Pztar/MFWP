@@ -16,7 +16,7 @@ auction.post("/product", checkLoggedIn, auctionCtrl.createProduct);
 auction.get(
   "/product/:productId",
   checkLoggedIn,
-  auctionCtrl.participateAcution
+  auctionCtrl.participateAuction
 );
 
 auction.post("/product/:productId/bid", checkLoggedIn, auctionCtrl.bid);

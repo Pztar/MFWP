@@ -72,24 +72,23 @@ export const createProduct = async (ctx, next) => {
   }
 };
 
-export const participateAcution = async (ctx, next) => {
+export const participateAuction = async (ctx, next) => {
   try {
-    const { product, auction } = await Promise.all([
-      db.Product.findOne({
-        where: { id: ctx.params.productId },
-        include: {
-          model: db.User,
-          as: "Owner",
-        },
-      }),
-      db.Auction.findAll({
-        where: { ProductId: ctx.params.productId },
-        include: { model: db.User },
-        order: [["bid", "ASC"]],
-      }),
-    ]);
-    const productAction = { product, auction };
-    ctx.body = productAction;
+    const product = await db.Product.findOne({
+      where: { id: ctx.params.productId },
+      include: {
+        model: db.User,
+        as: "Owner",
+      },
+    });
+    const auction = await db.Auction.findAll({
+      where: { ProductId: ctx.params.productId },
+      include: { model: db.User },
+      order: [["bid", "ASC"]],
+    });
+
+    const productAuction = { product, auction };
+    ctx.body = productAuction;
   } catch (error) {
     console.error(error);
     next(error);

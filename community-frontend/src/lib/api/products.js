@@ -16,8 +16,8 @@ export const registProduct = ({
   explanation,
   price,
   terminatedAt,
-}) =>
-  client.post("/api/auction/product", {
+}) => {
+  return client.post("/api/auction/product", {
     name,
     category,
     img,
@@ -25,9 +25,11 @@ export const registProduct = ({
     price,
     terminatedAt,
   });
+};
 
-export const participateAcution = (productId) =>
-  client.get(`/api/auction/product/${productId}`);
+export const participateAuction = (productId) => {
+  return client.get(`/api/auction/product/${productId}`);
+};
 
 export const bid = (productId, { bid, msg }) => {
   return client.post(`/api/auction/product/${productId}/bid`, { bid, msg });

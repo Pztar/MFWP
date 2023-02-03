@@ -14,7 +14,7 @@ export const unloadProduct = createAction(UNLOAD_PRODUCT);
 
 const readProductSaga = createRequestSaga(
   READ_PRODUCT,
-  productsAPI.participateAcution
+  productsAPI.participateAuction
 );
 export function* productSaga() {
   yield takeLatest(READ_PRODUCT, readProductSaga);
@@ -22,16 +22,16 @@ export function* productSaga() {
 
 const initialState = {
   product: null,
-  auction: null,
+  auctions: null,
   error: null,
 };
 
 const product = handleActions(
   {
-    [READ_PRODUCT_SUCCESS]: (state, { payload: productAction }) => ({
+    [READ_PRODUCT_SUCCESS]: (state, { payload: productAuction }) => ({
       ...state,
-      product: productAction.product,
-      auction: productAction.auction,
+      product: productAuction.product,
+      auctions: productAuction.auctions,
     }),
     [READ_PRODUCT_FIALURE]: (state, { payload: error }) => ({
       ...state,

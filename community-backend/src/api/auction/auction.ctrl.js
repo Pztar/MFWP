@@ -15,6 +15,7 @@ export const listProducts = async (ctx, next) => {
       where: { SoldId: null, terminatedAt: { [Op.gte]: now } },
       include: {
         model: db.User,
+        attributes: ["id", "nick"],
         as: "Owner",
       },
       limit: 20,
@@ -78,12 +79,13 @@ export const participateAuction = async (ctx, next) => {
       where: { id: ctx.params.productId },
       include: {
         model: db.User,
+        attributes: ["id", "nick"],
         as: "Owner",
       },
     });
     const auction = await db.Auction.findAll({
       where: { ProductId: ctx.params.productId },
-      include: { model: db.User },
+      include: { model: db.User, attributes: ["id", "nick"] },
       order: [["bid", "ASC"]],
     });
 

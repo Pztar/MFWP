@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
 import Responsive from "../common/Responsive";
-import { useEffect, useState } from "react";
-import useScript from "../../useScript";
 
 const AuctionBlock = styled(Responsive)`
   margin-top: 3rem;
@@ -17,13 +15,6 @@ const AuctionBlock = styled(Responsive)`
     border: solid 1px black;
     padding: 3px 1px 3px 1px;
   }
-`;
-
-const SendButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 3rem;
-  margin-bottom: 5px;
 `;
 
 const ProductItemBlock = styled.tr`
@@ -42,7 +33,7 @@ const ProductItemBlock = styled.tr`
     }
   }
 `;
-const AuctionItemBlock = styled.div`
+const MessageItemBlock = styled.div`
   border: solid 1px black;
   width: 100%;
   td {
@@ -122,58 +113,27 @@ const ProductItem = ({ product, serverTime }) => {
   );
 };
 
-const AuctionItem = ({ auction }) => {
-  const { id, bid, msg, createdAt, User } = auction;
+const MessageItem = ({ message }) => {
+  const { id, bid, msg, createdAt, User } = message;
 
   return (
-    <AuctionItemBlock>
+    <MessageItemBlock>
       <div>{new Date(createdAt).toLocaleString("en-ZA", { hour12: true })}</div>
       <span>{User.nick}님: </span>
       <strong>{bid}원에 입찰하셨습니다.</strong>
       {msg ? <span>{msg}</span> : <span />}
-    </AuctionItemBlock>
+    </MessageItemBlock>
   );
 };
 
-const Auction = ({ product, auctions, loading, error }) => {
-  useScript("https://unpkg.com/event-source-polyfill/src/eventsource.min.js");
-
-  const [listening, setListening] = useState(false);
-  const [serverTime, setServerTime] = useState(null);
-
-  let es = undefined;
-  useEffect(() => {
-    if (!listening) {
-      es = new EventSource("/sse");
-      es.onopen = (event) => {
-        console.log("connection opened");
-      };
-      es.onmessage = function (e) {
-        setServerTime(e.data);
-      };
-      es.onerror = (event) => {
-        console.log(event.target.readyState);
-        if (event.target.readyState === EventSource.CLOSED) {
-          console.log("eventsource closed (" + event.target.readyState + ")");
-        }
-        es.close();
-      };
-
-      setListening(true);
-    }
-
-    return () => {
-      es.close();
-      console.log("eventsource closed");
-    };
-  }, []);
+const Auction = ({ product, messages, loading, error, serverTime }) => {
+  const ServerTime = new Date(parseInt(serverTime, 10));
+  const timeToLocale = ServerTime.toLocaleString("en-ZA", { hour12: true });
 
   if (error) {
     console.log(error);
     return <AuctionBlock>에러가 발생했습니다.</AuctionBlock>;
   }
-  const ServerTime = new Date(parseInt(serverTime, 10));
-  const timeToLocale = ServerTime.toLocaleString("en-ZA", { hour12: true });
 
   return (
     <AuctionBlock>
@@ -200,10 +160,10 @@ const Auction = ({ product, auctions, loading, error }) => {
           )}
         </tbody>
       </table>
-      {!loading && auctions && (
+      {!loading && messages && (
         <div>
-          {auctions.map((auction) => (
-            <AuctionItem auction={auction} key={auction.id} />
+          {messages.map((message) => (
+            <MessageItem message={message} key={message.id} />
           ))}
         </div>
       )}

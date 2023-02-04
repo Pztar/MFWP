@@ -128,8 +128,10 @@ export const bid = async (ctx, next) => {
     });
     // 실시간으로 입찰 내역 전송
     ctx.io.to(ctx.params.productId).emit("bid", {
+      id: result.id,
       bid: result.bid,
       msg: result.msg,
+      createdAt: result.createdAt,
       nick: ctx.state.user.nick,
     });
     return ctx.send("ok");

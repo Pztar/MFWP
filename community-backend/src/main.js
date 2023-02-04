@@ -46,7 +46,7 @@ checkAuction();
 const port = PORT || 4000;
 
 app.use(morgan("dev"));
-app.use(cors());
+app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 // Test를 하기 위해서 세팅 "실제 서버에 배포할 때는 아이피를 설정 해야된다."
 
 /*

@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
 import Responsive from "../common/Responsive";
-import { useEffect, useState } from "react";
-import useScript from "../../useScript";
 
 const ProductLitstBlock = styled(Responsive)`
   margin-top: 3rem;
@@ -64,7 +62,7 @@ const ProductItemBlock = styled.tr`
   }
 `;
 
-const ProductItem = ({ product, serverTime }) => {
+const ProductItem = ({ product, serverTime, logedIn }) => {
   const {
     id,
     name,
@@ -124,51 +122,30 @@ const ProductItem = ({ product, serverTime }) => {
       <td>{price}</td>
       <td className="tdImg">{restTime}</td>
       <td>
-        <Link to={`/auction/${productId}`}>입장</Link>
+        {logedIn ? (
+          <Link to={`/auction/${productId}`}>입장</Link>
+        ) : (
+          "로그인 필요"
+        )}
       </td>
     </ProductItemBlock>
   );
 };
 
-const ProductList = ({ products, loading, error, showRegistProductButton }) => {
-  useScript("https://unpkg.com/event-source-polyfill/src/eventsource.min.js");
-
-  const [listening, setListening] = useState(false);
-  const [serverTime, setServerTime] = useState(null);
-
-  let es = undefined;
-  useEffect(() => {
-    if (!listening) {
-      es = new EventSource("/sse");
-      es.onopen = (event) => {
-        console.log("connection opened");
-      };
-      es.onmessage = function (e) {
-        setServerTime(e.data);
-      };
-      es.onerror = (event) => {
-        console.log(event.target.readyState);
-        if (event.target.readyState === EventSource.CLOSED) {
-          console.log("eventsource closed (" + event.target.readyState + ")");
-        }
-        es.close();
-      };
-
-      setListening(true);
-    }
-
-    return () => {
-      es.close();
-      console.log("eventsource closed");
-    };
-  }, []);
+const ProductList = ({
+  products,
+  loading,
+  error,
+  showRegistProductButton,
+  serverTime,
+}) => {
+  const ServerTime = new Date(parseInt(serverTime, 10));
+  const timeToLocale = ServerTime.toLocaleString("en-ZA", { hour12: true });
 
   if (error) {
     console.log(error);
     return <ProductLitstBlock>에러가 발생했습니다.</ProductLitstBlock>;
   }
-  const ServerTime = new Date(parseInt(serverTime, 10));
-  const timeToLocale = ServerTime.toLocaleString("en-ZA", { hour12: true });
 
   return (
     <ProductLitstBlock>
@@ -200,6 +177,7 @@ const ProductList = ({ products, loading, error, showRegistProductButton }) => {
                 product={product}
                 key={product.id}
                 serverTime={serverTime}
+                logedIn={showRegistProductButton}
               />
             ))}
           </tbody>

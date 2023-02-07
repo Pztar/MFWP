@@ -1,9 +1,10 @@
 import Router from "koa-router";
+import multer from "@koa/multer";
+import multerOption from "./multerOption";
 import posts from "./posts";
 import auth from "./auth";
 import auction from "./auction";
-import multer from "@koa/multer";
-import multerOption from "./multerOption";
+import chat from "./chat";
 
 const api = new Router();
 
@@ -21,8 +22,9 @@ const file = async (ctx, next) => {
   ctx.body = { url: IMG_URL };
 };
 
+api.post("/file", upload.single("file"), file);
 api.use("/posts", posts.routes());
 api.use("/auth", auth.routes());
 api.use("/auction", auction.routes());
-api.post("/file", upload.single("file"), file);
+api.use("/chat", chat.routes());
 export default api;

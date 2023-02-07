@@ -27,6 +27,7 @@ mongoose
   })
   .catch((e) => {
     console.error(e);
+    console.error("@mongoDB에러발생@");
   });
 
 console.log("MYSQL연결 시작");
@@ -37,6 +38,7 @@ mysql.sequelize
   })
   .catch((err) => {
     console.error(err);
+    console.error("@mySQL에러발생@");
   });
 
 const app = new Koa();

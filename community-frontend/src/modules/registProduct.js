@@ -9,10 +9,11 @@ const INITIALIZE = "regist/INITIALIZE";
 const CHANGE_FIELD = "regist/CHANGE_FIELD";
 const [REGIST_PRODUCT, REGIST_PRODUCT_SUCCESS, REGIST_PRODUCT_FAILURE] =
   createRequestActionTypes("regist/REGIST_PRODUCT");
+/*
 const SET_ORIGINAL_PRODUCT = "regist/SET_ORIGINAL_PRODUCT";
 const [UPDATE_PRODUCT, UPDATE_PRODUCT_SUCCESS, UPDATE_PRODUCT_FAILURE] =
   createRequestActionTypes("regist/UPDATE_PRODUCT");
-
+*/
 export const initialize = createAction(INITIALIZE);
 export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
   key,

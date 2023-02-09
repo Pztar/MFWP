@@ -39,27 +39,6 @@ const ProductItemBlock = styled.tr`
       vertical-align: top;
     }
   }
-
-  &:last-child {
-    padding-top: 0;
-  }
-
-  & + & {
-    border-top: 1px solid ${palette.gray[2]};
-  }
-
-  h2 {
-    font-size: 2rem;
-    margin-bottom: 0;
-    margin-top: 0;
-    &:hover {
-      color: ${palette[6]};
-    }
-  }
-
-  p {
-    margin-top: 2rem;
-  }
 `;
 
 const ProductItem = ({ product, serverTime, logedIn }) => {

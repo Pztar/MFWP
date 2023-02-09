@@ -53,7 +53,7 @@ const Sidebar = ({ user }) => {
             </Link>
           </li>
           <li>
-            <Link to="/" className="MenuItem">
+            <Link to="/chat" className="MenuItem">
               chat
             </Link>
           </li>

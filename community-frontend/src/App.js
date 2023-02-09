@@ -12,6 +12,7 @@ import ProductListPage from "./pages/ProductsListPage";
 import RegistProductPage from "./pages/RegistProductPage";
 import AuctionPage from "./pages/AuctionPage";
 import ChatRoomListPage from "./pages/ChatRoomListPage";
+import CreateRoomPage from "./pages/CreateRoomPage";
 
 const App = () => {
   return (
@@ -29,7 +30,7 @@ const App = () => {
         <Route element={<WritePage />} path="/write" />
         <Route element={<PostPage />} path="/:userId/:postId" />
         <Route element={<ChatRoomListPage />} path="/chat" />
-        <Route element={<div />} path="/chat/createRoom" />
+        <Route element={<CreateRoomPage />} path="/chat/createRoom" />
         <Route element={<div />} path="/chat/:roomId" />
         <Route element={<ProductListPage />} path="/auction" />
         <Route element={<RegistProductPage />} path="/resistProduct" />

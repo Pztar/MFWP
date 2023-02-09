@@ -9,6 +9,8 @@ import write, { writeSaga } from "./write";
 import products, { productsSaga } from "./products";
 import regist, { registSaga } from "./registProduct";
 import product, { productSaga } from "./product";
+import rooms, { roomsSaga } from "./rooms";
+import room, { roomSaga } from "./createRoom";
 
 const rootReducer = combineReducers({
   auth,
@@ -20,6 +22,8 @@ const rootReducer = combineReducers({
   products,
   regist,
   product,
+  rooms,
+  room,
 });
 
 export function* rootSaga() {
@@ -32,6 +36,8 @@ export function* rootSaga() {
     productsSaga(),
     registSaga(),
     productSaga(),
+    roomsSaga(),
+    roomSaga(),
   ]);
 }
 

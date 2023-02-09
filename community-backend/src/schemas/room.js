@@ -6,7 +6,6 @@ const OwnerSchema = new Schema({
   id: Number,
   nick: {
     type: String,
-    required: true,
   },
 });
 

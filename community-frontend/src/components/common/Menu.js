@@ -32,7 +32,7 @@ const Menu = () => {
       <Link to="/" className="MenuItem">
         hashtags
       </Link>
-      <Link to="/" className="MenuItem">
+      <Link to="/chat" className="MenuItem">
         chat
       </Link>
       <Link to="/auction" className="MenuItem">

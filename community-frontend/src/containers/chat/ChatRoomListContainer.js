@@ -10,9 +10,9 @@ const ChatRoomListContainer = () => {
   const params = useParams();
   const { search } = useLocation();
   const { rooms, error, loading, user } = useSelector(
-    ({ Rooms, loading, user }) => ({
-      Rooms: Rooms.Rooms,
-      error: Rooms.error,
+    ({ rooms, loading, user }) => ({
+      rooms: rooms.rooms,
+      error: rooms.error,
       loading: loading["rooms/LIST_ROOMS"],
       user: user.user,
     })

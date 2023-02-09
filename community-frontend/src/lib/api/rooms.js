@@ -5,11 +5,11 @@ export const listRooms = ({ page }) => {
   const queryString = qs.stringify({
     page,
   });
-  return client.get(`/api/auction?${queryString}`);
+  return client.get(`/api/room?${queryString}`);
 };
 
 export const createRoom = ({ title, max, Owner, password }) => {
-  return client.post("/api/auction/product", {
+  return client.post("/api/room", {
     title,
     max,
     Owner,
@@ -17,19 +17,19 @@ export const createRoom = ({ title, max, Owner, password }) => {
   });
 };
 
-export const enterRoom = (roomId) => {
-  return client.get(`/api/auction/product/${roomId}`);
+export const enterRoom = ({ roomId, inputPassword }) => {
+  return client.get(`/api/room/${roomId}?password=${inputPassword}`);
 };
 export const removeRoom = (roomId) => {
-  return client.delete(`/api/auction/product/${roomId}`);
+  return client.delete(`/api/room/${roomId}`);
 };
 
 export const sendChat = (roomId, { room, user, chat }) => {
-  return client.post(`/api/auction/product/${roomId}/bid`, {
+  return client.post(`/api/room/${roomId}/chat`, {
     room,
     user,
     chat,
   });
 };
 
-export const sendGif = (roomId) => client.post(`/api/auction/${roomId}`);
+export const sendGif = (roomId) => client.post(`/api/room/${roomId}`);

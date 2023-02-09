@@ -4,7 +4,7 @@ import multerOption from "./multerOption";
 import posts from "./posts";
 import auth from "./auth";
 import auction from "./auction";
-import chat from "./chat";
+import room from "./room";
 
 const api = new Router();
 
@@ -26,5 +26,5 @@ api.post("/file", upload.single("file"), file);
 api.use("/posts", posts.routes());
 api.use("/auth", auth.routes());
 api.use("/auction", auction.routes());
-api.use("/chat", chat.routes());
+api.use("/room", room.routes());
 export default api;

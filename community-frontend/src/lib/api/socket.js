@@ -1,6 +1,10 @@
 import { createContext } from "react";
 import socketIo from "socket.io-client";
 
+export const es = new EventSource("/sse");
+
+export const EventSourceContext = createContext(es);
+
 export const socket = socketIo("http://localhost:4000", {
   withCredentials: true,
 });

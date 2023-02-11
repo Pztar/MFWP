@@ -3,8 +3,8 @@ import { useParams } from "react-router-dom";
 import { readProduct, unloadProduct } from "../../modules/product";
 import Auction from "../../components/auction/Auction";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { SocketContext } from "../../lib/api/socket";
 import useScript from "../../useScript";
+import io from "socket.io-client";
 
 const AuctionContainer = () => {
   const dispatch = useDispatch();
@@ -59,7 +59,6 @@ const AuctionContainer = () => {
   }, []);
 
   const chatWindow = useRef(null);
-  const socket = useContext(SocketContext);
   // 새 메시지를 받으면 스크롤을 이동하는 함수
   const moveScrollToReceiveMessage = useCallback(() => {
     if (chatWindow.current) {
@@ -87,12 +86,16 @@ const AuctionContainer = () => {
   );
 
   useEffect(() => {
+    const socket = io.connect("http://localhost:4000/chat", {
+      // 네임스페이스
+      path: "/socket.io",
+    });
     socket.on("bid", handleReceiveMessage); // 이벤트 리스너 설치
 
     return () => {
       socket.off("bid", handleReceiveMessage); // 이벤트 리스너 해제
     };
-  }, [socket, handleReceiveMessage]);
+  }, [handleReceiveMessage]);
 
   return (
     <Auction

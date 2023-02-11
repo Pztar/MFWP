@@ -8,10 +8,10 @@ room.get("/", roomCtrl.listRooms);
 
 room.post("/", roomCtrl.createRoom);
 
-room.get("/:id", roomCtrl.enterRoom);
+room.get("/:roomId", roomCtrl.enterRoom);
 
-room.delete("/:id", roomCtrl.removeRoom);
+room.delete("/:roomId", roomCtrl.removeRoom);
 
-room.post("/:id/chat", roomCtrl.sendChat);
+room.post("/:roomId/chat", roomCtrl.sendChat);
 
 export default room;

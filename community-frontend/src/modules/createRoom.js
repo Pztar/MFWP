@@ -47,10 +47,14 @@ const room = handleActions(
       [key]: value,
     }),
     [INITIALIZE]: (state) => initialState,
-    [CREATE_ROOM_SUCCESS]: (state, { payload: room }) => ({
+    [CREATE_ROOM]: (state) => ({
       ...state,
+      room: null,
       roomError: null,
-      room,
+    }),
+    [CREATE_ROOM_SUCCESS]: (state, { payload: newRoom }) => ({
+      ...state,
+      room: newRoom,
     }),
 
     [CREATE_ROOM_FAILURE]: (state, { payload: error }) => ({

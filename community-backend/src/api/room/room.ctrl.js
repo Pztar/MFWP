@@ -37,16 +37,8 @@ export const createRoom = async (ctx, next) => {
     });
     const io = ctx.io;
     io.of("/room").emit("newRoom", newRoom);
-    if (ctx.request.body.password) {
-      // 비밀번호가 있는 방이면
-      ctx.redirect(
-        `/room/${newRoom._id}?password=${ctx.request.body.password}`
-      );
-      ctx.body = newRoom;
-    } else {
-      ctx.redirect(`/room/${newRoom._id}`);
-      ctx.body = newRoom;
-    }
+
+    ctx.body = newRoom;
   } catch (error) {
     console.error(error);
     next(error);
@@ -55,20 +47,24 @@ export const createRoom = async (ctx, next) => {
 
 export const enterRoom = async (ctx, next) => {
   try {
-    const room = await Room.findOne({ _id: ctx.params.id });
+    const roomId = ctx.params.roomId;
+    const room = await Room.findOne({ _id: roomId });
     if (!room) {
-      return ctx.redirect("/?error=존재하지 않는 방입니다.");
+      return console.log("존재하지 않는 방입니다.");
     }
     if (room.password && room.password !== ctx.query.password) {
-      return ctx.redirect("/?error=비밀번호가 틀렸습니다.");
+      return console.log("/?error=비밀번호가 틀렸습니다.");
     }
     const io = ctx.io;
     const { rooms } = io.of("/chat").adapter;
-    console.log(rooms, rooms.get(ctx.params.id), rooms.get(ctx.params.id));
-    if (room.max <= rooms.get(ctx.params.id).size) {
-      return ctx.redirect("/?error=허용 인원이 초과하였습니다.");
+    console.log(rooms);
+
+    console.log(rooms, rooms.get(roomId));
+    if (room.max <= rooms.get(roomId).size) {
+      return console.log("/?error=허용 인원이 초과하였습니다.");
     }
-    return ctx.body;
+
+    ctx.body = room;
   } catch (error) {
     console.error(error);
     return next(error);

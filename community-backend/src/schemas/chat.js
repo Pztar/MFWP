@@ -14,7 +14,7 @@ const UserSchema = new Schema({
 });
 
 const ChatSchema = new Schema({
-  room: {
+  Room: {
     type: ObjectId,
     required: true,
     ref: "Room",

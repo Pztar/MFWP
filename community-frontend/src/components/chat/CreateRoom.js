@@ -24,14 +24,7 @@ const StyledInput = styled.input`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 3rem;
-  margin-bottom: 5px;
-`;
-
-const CreateRoom = ({ onChange, onPublish, title, max, password }) => {
+const CreateRoom = ({ onChange, title, max, password }) => {
   return (
     <CreateRoomBlock>
       <form>
@@ -60,16 +53,6 @@ const CreateRoom = ({ onChange, onPublish, title, max, password }) => {
           onChange={onChange}
           value={password}
         />
-        <ButtonWrapper>
-          <Button onClick={onPublish}>채팅방 생성</Button>
-          <Button
-            onClick={(e) => {
-              window.close();
-            }}
-          >
-            취소
-          </Button>
-        </ButtonWrapper>
       </form>
     </CreateRoomBlock>
   );

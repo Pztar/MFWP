@@ -2,8 +2,8 @@ import ChatRoomList from "../../components/chat/ChatRoomList";
 import { useEffect } from "react";
 import qs from "qs";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useLocation } from "react-router-dom";
-import { listRooms } from "../../modules/rooms";
+import { useLocation } from "react-router-dom";
+import { listRooms, concatRooms, removeRoom } from "../../modules/rooms";
 import io from "socket.io-client";
 
 const ChatRoomListContainer = () => {
@@ -22,17 +22,27 @@ const ChatRoomListContainer = () => {
     const { page } = qs.parse(search, {
       ignoreQueryPrefix: true,
     });
+    dispatch(listRooms({ page }));
+
     const socket = io.connect("http://localhost:4000/room", {
       // 네임스페이스
       path: "/socket.io",
     });
     socket.on("newRoom", function (data) {
       // 새 방 이벤트 시 새 방 생성
+      console.log("newRoom", data);
+      dispatch(concatRooms({ newRoom: data }));
     });
     socket.on("removeRoom", function (data) {
       // 방 제거 이벤트 시 id가 일치하는 방 제거
+      console.log("removeRoom", data);
+      dispatch(removeRoom({ roomId: data }));
     });
-    dispatch(listRooms({ page }));
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("pong");
+    };
   }, [dispatch, search]);
 
   return (

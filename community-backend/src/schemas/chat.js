@@ -30,7 +30,7 @@ const ChatSchema = new Schema({
     title: String,
   },
   */
-  user: UserSchema,
+  User: UserSchema,
   chat: String,
   gif: String,
   createdAt: {

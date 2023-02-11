@@ -32,10 +32,9 @@ const AuctionContainer = () => {
   const [listening, setListening] = useState(false);
   const [serverTime, setServerTime] = useState(null);
 
-  let es = undefined;
   useEffect(() => {
+    const es = new EventSource("/sse");
     if (!listening) {
-      es = new EventSource("/sse");
       es.onopen = (event) => {
         console.log("sse connection opened");
       };

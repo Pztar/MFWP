@@ -28,7 +28,6 @@ const ChatContainer = () => {
     });
     const inputPassword = password;
 
-    const room = roomsAPI.enterRoom({ roomId, inputPassword });
     const socket = io.connect("http://localhost:4000/chat", {
       // 네임스페이스
       path: "/socket.io",
@@ -43,6 +42,8 @@ const ChatContainer = () => {
     socket.on("chat", function (data) {
       // 누군가 채팅
     });
+
+    const room = roomsAPI.enterRoom({ roomId, inputPassword });
   }, [dispatch, params, search]);
 
   return <Chat chats={chats} user={user} />;

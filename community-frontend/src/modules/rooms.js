@@ -26,11 +26,9 @@ export const removeRoom = createAction(REMOVE_ROOM, ({ roomId }) => ({
 }));
 
 const listRoomsSaga = createRequestSaga(LIST_ROOMS, roomsAPI.listRooms);
-const removeRoomSaga = createRequestSaga(REMOVE_ROOM, roomsAPI.removeRoom);
 
 export function* roomsSaga() {
   yield takeLatest(LIST_ROOMS, listRoomsSaga);
-  yield takeLatest(REMOVE_ROOM, removeRoomSaga);
 }
 
 const initialState = {
@@ -54,13 +52,9 @@ const rooms = handleActions(
       ...state,
       rooms: [...state.rooms, newRoom],
     }),
-    [REMOVE_ROOM_SUCCESS]: (state, { payload: roomId, meta: response }) => ({
+    [REMOVE_ROOM]: (state, { payload: { roomId } }) => ({
       ...state,
       rooms: state.rooms.filter((room) => room._id !== roomId),
-    }),
-    [REMOVE_ROOM_FAILURE]: (state, { payload: error }) => ({
-      ...state,
-      error,
     }),
   },
   initialState

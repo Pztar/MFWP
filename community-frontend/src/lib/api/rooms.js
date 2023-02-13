@@ -20,11 +20,11 @@ export const createRoom = ({ title, max, Owner, password }) => {
 export const enterRoom = ({ roomId, inputPassword }) => {
   return client.get(`/api/room/${roomId}?password=${inputPassword}`);
 };
-export const removeRoom = (roomId) => {
+export const removeRoom = ({ roomId }) => {
   return client.delete(`/api/room/${roomId}`);
 };
 
-export const sendChat = (roomId, { room, user, chat }) => {
+export const sendChat = ({ roomId, room, user, chat }) => {
   return client.post(`/api/room/${roomId}/chat`, {
     room,
     user,
@@ -32,4 +32,4 @@ export const sendChat = (roomId, { room, user, chat }) => {
   });
 };
 
-export const sendGif = (roomId) => client.post(`/api/room/${roomId}`);
+export const sendGif = ({ roomId }) => client.post(`/api/room/${roomId}`);

@@ -50,20 +50,21 @@ export const enterRoom = async (ctx, next) => {
     const roomId = ctx.params.roomId;
     const room = await Room.findOne({ _id: roomId });
     if (!room) {
-      return console.log("존재하지 않는 방입니다.");
+      return ctx.redirect("존재하지 않는 방입니다.");
     }
     if (room.password && room.password !== ctx.query.password) {
-      return console.log("/?error=비밀번호가 틀렸습니다.");
+      return ctx.redirect("/?error=비밀번호가 틀렸습니다.");
     }
     const io = ctx.io;
     const { rooms } = io.of("/chat").adapter;
-    console.log(rooms);
 
-    console.log(rooms, rooms.get(roomId));
-    if (room.max <= rooms.get(roomId).size) {
+    const userCount = rooms.has(roomId) ? rooms.get(roomId).size : 0;
+    //맨처음 접속시 0명으로 나타남
+    if (room.max <= userCount) {
+      //ctx.status = 302;
+      ctx.redirect("/error?error=허용 인원이 초과하였습니다.");
       return console.log("/?error=허용 인원이 초과하였습니다.");
     }
-
     ctx.body = room;
   } catch (error) {
     console.error(error);
@@ -73,9 +74,10 @@ export const enterRoom = async (ctx, next) => {
 
 export const removeRoom = async (ctx, next) => {
   try {
-    await removeRoomService(ctx.params.id);
-    ctx.body = ctx.params.id;
-    ctx.send("ok");
+    const roomId = ctx.params.roomId;
+    await removeRoomService(roomId);
+    ctx.body = roomId;
+    //ctx.send("ok");
   } catch (error) {
     console.error(error);
     next(error);
@@ -84,13 +86,14 @@ export const removeRoom = async (ctx, next) => {
 
 export const sendChat = async (ctx, next) => {
   try {
+    const roomId = ctx.params.roomId;
     const chat = await Chat.create({
-      room: ctx.params.id,
+      room: roomId,
       User: ctx.state.user,
       chat: ctx.body.chat,
     });
-    ctx.io.of("/chat").to(ctx.params.id).emit("chat", chat);
-    ctx.send("ok");
+    ctx.io.of("/chat").to(roomId).emit("chat", chat);
+    //ctx.send("ok");
   } catch (error) {
     console.error(error);
     next(error);
@@ -105,7 +108,7 @@ export const sendGif = async (req, res, next) => {
       gif: req.file.filename,
     });
     req.app.get("io").of("/chat").to(req.params.id).emit("chat", chat);
-    res.send("ok");
+    //res.send("ok");
   } catch (error) {
     console.error(error);
     next(error);

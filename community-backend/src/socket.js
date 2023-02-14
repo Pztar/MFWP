@@ -1,5 +1,29 @@
 import SocketIO from "socket.io";
 import { removeRoom } from "../src/api/socketServices";
+import Room from "./schemas/room";
+import Socket from "./schemas/socket";
+
+const socketIdToUser = async (socketId, User) => {
+  try {
+    let socket = await Socket.findOne({ id: socketId });
+    if (!socket) {
+      socket = Socket.create({
+        id: socketId,
+        Owner: User,
+      });
+      return socket;
+    } else {
+      socket = Socket.findOneAndUpdate(
+        { id: socketId },
+        { $set: { Owner: User } },
+        { new: true }
+      );
+      return socket;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export default (server, app) => {
   const io = SocketIO(
@@ -28,41 +52,64 @@ export default (server, app) => {
   chat.on("connection", (socket) => {
     console.log("chat 네임스페이스에 접속");
 
-    socket.on("join", (data) => {
-      socket.join(data);
-      socket.to(data).emit("join", {
+    socket.on("join", async (data) => {
+      socketIdToUser(socket.id, data.User);
+      const roomDB = await Room.findOneAndUpdate(
+        { _id: data.roomId },
+        {
+          $push: { Sockets: socket.id },
+        },
+        { new: true }
+      );
+      socket.join(data.roomId);
+      socket.to(data.roomId).emit("join", {
         user: "system",
-        chat: `${"수정해야하는 내용"}님이 입장하셨습니다.`,
+        chat: `${data.User.nick}님이 입장하셨습니다.`,
       });
     });
 
     socket.on("disconnecting", async (reason) => {
       console.log("chat 네임스페이스 접속 해제 중");
       const { rooms } = socket;
+      /*for (let [key, value] of rooms) {
+        if (value !== socket.id) {
+          console.log(key, value);
+        }
+      }*/ //key value에 한글자씩만 저장되는 이상한 오류가 남
+      const socketToUser = await Socket.findOne({ id: socket.id });
+      let roomId = "";
       rooms.forEach((value, key, map) => {
         if (value !== socket.id) {
-          const currentRoom = chat.adapter.rooms;
-          const roomId = key;
-          const userCount = currentRoom.has(roomId)
-            ? currentRoom.get(roomId).size
-            : 0;
-          if (userCount === 1) {
-            // 유저가 1명이면 방 삭제(disconnecting 상태엔 나가는 중인 사람까지 카운트됨)
-            removeRoom(roomId); // 컨트롤러 대신 서비스를 사용
-            room.emit("removeRoom", roomId);
-            console.log("방 제거 요청 성공");
-          } else {
-            socket.to(roomId).emit("exit", {
-              user: "system",
-              chat: `${"socket.request.session.color"}님이 퇴장하셨습니다.`,
-            });
-          }
+          roomId = key;
         }
       });
+      const roomDB = await Room.findOneAndUpdate(
+        { _id: roomId },
+        {
+          $pull: { Sockets: socket.id },
+        },
+        { new: true }
+      );
+      //const currentRoom = chat.adapter.rooms;
+      const userCount = roomDB.Sockets.length;
+
+      if (userCount === 0) {
+        await removeRoom(roomId); // 컨트롤러 대신 서비스를 사용
+        room.emit("removeRoom", roomId);
+        console.log("방 제거 요청 성공");
+      } else {
+        console.log("확인", socketToUser.Owner.nick);
+        socket.to(roomId).emit("exit", {
+          user: "system",
+          chat: `${socketToUser.Owner.nick}님이 퇴장하셨습니다.`,
+        });
+      }
     });
 
     socket.on("disconnect", async () => {
       console.log("chat 네임스페이스 접속 해제");
+      console.log(socket.id, "연결종료시 소켓");
+      await Socket.deleteOne({ id: socket.id });
     });
   });
 

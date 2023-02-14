@@ -9,25 +9,17 @@ const OwnerSchema = new Schema({
   },
 });
 
-const RoomSchema = new Schema({
-  title: {
+const SocketSchema = new Schema({
+  id: {
     type: String,
     required: true,
   },
-  max: {
-    type: Number,
-    required: true,
-    default: 10,
-    min: 2,
-  },
   Owner: OwnerSchema,
-  password: String,
-  Sockets: [String],
   createdAt: {
     type: Date,
     default: Date.now,
   },
 });
-const Room = mongoose.model("Room", RoomSchema);
+const Socket = mongoose.model("Socket", SocketSchema);
 
-export default Room;
+export default Socket;

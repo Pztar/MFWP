@@ -30,21 +30,14 @@ const ChatRoomListContainer = () => {
     });
     socket.on("newRoom", (data) => {
       // 새 방 이벤트 시 새 방 생성
-      console.log("newRoom", data);
       dispatch(concatRooms({ newRoom: data }));
     });
     socket.on("removeRoom", (data) => {
       // 방 제거 이벤트 시 id가 일치하는 방 제거
       dispatch(removeRoom({ roomId: data }));
     });
-    socket.on("test", ({ value, key, map }) => {
-      // 방 제거 이벤트 시 id가 일치하는 방 제거
-      console.log("테스트", value, key, map);
-    });
     return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("pong");
+      socket.disconnect(); //언마운트시 room 네임스페이스 접속 해제
     };
   }, [dispatch, search]);
 

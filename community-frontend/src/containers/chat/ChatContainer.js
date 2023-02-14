@@ -22,6 +22,7 @@ const ChatContainer = () => {
   );
 
   useEffect(() => {
+    const User = user;
     const { roomId } = params;
     const { password } = qs.parse(search, {
       ignoreQueryPrefix: true,
@@ -32,12 +33,14 @@ const ChatContainer = () => {
       // 네임스페이스
       path: "/socket.io",
     });
-    socket.emit("join", roomId);
+    socket.emit("join", { roomId, User });
     socket.on("join", function (data) {
       //다른사람 입장시
+      console.log("입장", data, 1, data.user, 2, data.chat);
     });
     socket.on("exit", function (data) {
       // 누군가 퇴장
+      console.log("퇴장", data, 1, data.user, 2, data.chat);
     });
     socket.on("chat", function (data) {
       // 누군가 채팅

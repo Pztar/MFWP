@@ -48,13 +48,18 @@ export const createRoom = async (ctx, next) => {
 export const enterRoom = async (ctx, next) => {
   try {
     const roomId = ctx.params.roomId;
-    const room = await Room.findOne({ _id: roomId });
+    const [room, chats] = await Promise.all([
+      Room.findOne({ _id: roomId }),
+      Chat.find({ Room: roomId }).limit(100),
+    ]);
     if (!room) {
       return ctx.redirect("존재하지 않는 방입니다.");
     }
     if (room.password && room.password !== ctx.query.password) {
       return ctx.redirect("/?error=비밀번호가 틀렸습니다.");
     }
+    const roomAndChats = { room, chats };
+
     const io = ctx.io;
     const { rooms } = io.of("/chat").adapter;
 
@@ -66,7 +71,7 @@ export const enterRoom = async (ctx, next) => {
       ctx.redirect("/error/?error=허용 인원이 초과");
       return console.log("/?error=허용 인원이 초과하였습니다.");
     }
-    ctx.body = room;
+    ctx.body = roomAndChats;
   } catch (error) {
     console.error(error);
     return next(error);

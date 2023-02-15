@@ -112,7 +112,6 @@ const RegistProduct = ({
           accept="image/*"
           onChange={onChangeFile}
           ref={inputImg}
-          required
         />
       </div>
       <div className="input-group">

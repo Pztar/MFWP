@@ -24,7 +24,7 @@ const CreateRoomButtonWrapper = styled.div`
   margin-bottom: 5px;
 `;
 
-const ChatItemBlock = styled.tr`
+const ChatItemBlock = styled.div`
   border: solid 1px black;
   width: 100%;
   td {
@@ -43,15 +43,13 @@ const ChatItem = ({ chatlog }) => {
   return (
     <>
       <ChatItemBlock>
-        <td></td>
-        <td></td>
-        <td>{User.nick}</td>
+        <div>{User.nick}</div>
       </ChatItemBlock>
     </>
   );
 };
 
-const Chat = ({ chats, loading, error, createRoomButton }) => {
+const Chat = ({ room, chats, user, onlines, error, loading }) => {
   if (error) {
     return <ChatBlock>에러가 발생했습니다.</ChatBlock>;
   }
@@ -59,26 +57,20 @@ const Chat = ({ chats, loading, error, createRoomButton }) => {
   return (
     <>
       <ChatBlock>
-        <CreateRoomButtonWrapper>
-          {<Button>채팅방 만들기</Button>}
-        </CreateRoomButtonWrapper>
-        <table>
-          <thead>
-            <tr>
-              <th>방 제목</th>
-              <th>종류</th>
-              <th>허용 인원</th>
-              <th>방장</th>
-            </tr>
-          </thead>
-          {!loading && chats && (
-            <tbody>
-              {chats.map((chat) => (
-                <ChatItem chat={chat} key={chat._id} />
-              ))}
-            </tbody>
-          )}
-        </table>
+        {!loading && room && (
+          <div>
+            <span>{room.title}</span>
+            <span>{room.max}</span>
+            <span>{room.Owner.nick}</span>
+          </div>
+        )}
+        {!loading && chats && (
+          <div>
+            {chats.map((chatlog) => (
+              <ChatItem chatlog={chatlog} key={chatlog._id} />
+            ))}
+          </div>
+        )}
       </ChatBlock>
     </>
   );

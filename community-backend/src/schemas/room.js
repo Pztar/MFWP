@@ -22,7 +22,7 @@ const RoomSchema = new Schema({
   },
   Owner: OwnerSchema,
   password: String,
-  Sockets: [String],
+  Onlines: [{ socketId: String, User: Object }],
   createdAt: {
     type: Date,
     default: Date.now,

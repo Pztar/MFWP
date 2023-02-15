@@ -1,29 +1,6 @@
 import SocketIO from "socket.io";
 import { removeRoom } from "../src/api/socketServices";
 import Room from "./schemas/room";
-import Socket from "./schemas/socket";
-
-const socketIdToUser = async (socketId, User) => {
-  try {
-    let socket = await Socket.findOne({ id: socketId });
-    if (!socket) {
-      socket = Socket.create({
-        id: socketId,
-        Owner: User,
-      });
-      return socket;
-    } else {
-      socket = Socket.findOneAndUpdate(
-        { id: socketId },
-        { $set: { Owner: User } },
-        { new: true }
-      );
-      return socket;
-    }
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 export default (server, app) => {
   const io = SocketIO(
@@ -53,11 +30,10 @@ export default (server, app) => {
     console.log("chat 네임스페이스에 접속");
 
     socket.on("join", async (data) => {
-      socketIdToUser(socket.id, data.User);
       const roomDB = await Room.findOneAndUpdate(
         { _id: data.roomId },
         {
-          $push: { Sockets: socket.id },
+          $push: { Onlines: { socketId: socket.id, User: data.User } },
         },
         { new: true }
       );
@@ -65,6 +41,7 @@ export default (server, app) => {
       socket.to(data.roomId).emit("join", {
         user: "system",
         chat: `${data.User.nick}님이 입장하셨습니다.`,
+        Onlines: roomDB.Onlines,
       });
     });
 
@@ -76,7 +53,7 @@ export default (server, app) => {
           console.log(key, value);
         }
       }*/ //key value에 한글자씩만 저장되는 이상한 오류가 남
-      const socketToUser = await Socket.findOne({ id: socket.id });
+      //const socketToUser = await Socket.findOne({ id: socket.id });
       let roomId = "";
       rooms.forEach((value, key, map) => {
         if (value !== socket.id) {
@@ -86,22 +63,25 @@ export default (server, app) => {
       const roomDB = await Room.findOneAndUpdate(
         { _id: roomId },
         {
-          $pull: { Sockets: socket.id },
-        },
-        { new: true }
+          $pull: { Onlines: { socketId: socket.id } },
+        }
+        //{ new: true } //true이면 수정 후 객체를 반환
       );
-      //const currentRoom = chat.adapter.rooms;
-      const userCount = roomDB.Sockets.length;
+      const userCount = roomDB.Onlines.length;
 
-      if (userCount === 0) {
+      if (userCount === 1) {
+        //수정되기 전 객체를 반환 했으므로 1명
         await removeRoom(roomId); // 컨트롤러 대신 서비스를 사용
         room.emit("removeRoom", roomId);
         console.log("방 제거 요청 성공");
       } else {
-        console.log("확인", socketToUser.Owner.nick);
+        const disconnectingUser = roomDB.Onlines.find(
+          (item) => item.socketId === socket.id
+        );
         socket.to(roomId).emit("exit", {
           user: "system",
-          chat: `${socketToUser.Owner.nick}님이 퇴장하셨습니다.`,
+          chat: `${disconnectingUser.User.nick}님이 퇴장하셨습니다.`,
+          Onlines: roomDB.Onlines.filter((item) => item !== disconnectingUser),
         });
       }
     });
@@ -109,7 +89,6 @@ export default (server, app) => {
     socket.on("disconnect", async () => {
       console.log("chat 네임스페이스 접속 해제");
       console.log(socket.id, "연결종료시 소켓");
-      await Socket.deleteOne({ id: socket.id });
     });
   });
 

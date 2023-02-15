@@ -24,12 +24,11 @@ export const removeRoom = ({ roomId }) => {
   return client.delete(`/api/room/${roomId}`);
 };
 
-export const sendChat = ({ roomId, room, user, chat }) => {
+export const sendChat = ({ roomId, imgUrl, chatTxt }) => {
   return client.post(`/api/room/${roomId}/chat`, {
-    room,
-    user,
-    chat,
+    imgUrl,
+    chatTxt,
   });
 };
 
-export const sendGif = ({ roomId }) => client.post(`/api/room/${roomId}`);
+//export const sendGif = ({ roomId }) => client.post(`/api/room/${roomId}`);

@@ -5,7 +5,7 @@ import { useLocation, useParams } from "react-router-dom";
 import { listRooms } from "../../modules/rooms";
 import io from "socket.io-client";
 import Chat from "../../components/chat/Chat";
-import * as roomsAPI from "../../lib/api/rooms";
+import { enterRoom } from "../../lib/api/rooms";
 
 const ChatContainer = () => {
   const [room, setRoom] = useState({});
@@ -48,7 +48,7 @@ const ChatContainer = () => {
       // 누군가 채팅
     });
 
-    roomsAPI.enterRoom({ roomId, inputPassword }).then(
+    enterRoom({ roomId, inputPassword }).then(
       (result) => {
         setRoom(result.data.room);
         setChats(result.data.chats);

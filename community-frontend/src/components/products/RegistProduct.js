@@ -49,8 +49,8 @@ const RegistProduct = ({
 }) => {
   const dispatch = useDispatch();
   const inputImg = useRef(null);
-  const input = inputImg.current;
   const onChangeFile = async () => {
+    const input = inputImg.current;
     const file = input.files[0];
     // multer에 맞는 형식으로 데이터 만들어준다.
     const formData = new FormData();

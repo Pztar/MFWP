@@ -1,11 +1,11 @@
 import ChatContainer from "../containers/chat/ChatContainer";
-import SendChatButtonContainer from "../containers/chat/SendChatButtonContainer";
+import SendChatBoxContainer from "../containers/chat/SendChatBoxContainer";
 
 const ChatPage = () => {
   return (
     <>
       <ChatContainer />
-      <SendChatButtonContainer />
+      <SendChatBoxContainer />
     </>
   );
 };

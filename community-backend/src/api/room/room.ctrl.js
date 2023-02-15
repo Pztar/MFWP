@@ -82,7 +82,7 @@ export const removeRoom = async (ctx, next) => {
   try {
     const roomId = ctx.params.roomId;
     await removeRoomService(roomId);
-    ctx.body = roomId;
+    ctx.request.body = roomId;
     //ctx.send("ok");
   } catch (error) {
     console.error(error);
@@ -93,30 +93,32 @@ export const removeRoom = async (ctx, next) => {
 export const sendChat = async (ctx, next) => {
   try {
     const roomId = ctx.params.roomId;
+    //console.log("수신테스트", ctx.request.body);
     const chat = await Chat.create({
-      room: roomId,
+      Room: roomId,
       User: ctx.state.user,
-      chat: ctx.body.chat,
+      chat: ctx.request.body.chatTxt,
+      img: ctx.request.body.imgUrl,
     });
     ctx.io.of("/chat").to(roomId).emit("chat", chat);
-    //ctx.send("ok");
+    ctx.body = chat;
   } catch (error) {
     console.error(error);
     next(error);
   }
 };
 
-export const sendGif = async (req, res, next) => {
-  try {
-    const chat = await Chat.create({
-      room: req.params.id,
-      user: req.session.color,
-      gif: req.file.filename,
-    });
-    req.app.get("io").of("/chat").to(req.params.id).emit("chat", chat);
-    //res.send("ok");
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-};
+// export const sendGif = async (req, res, next) => {
+//   try {
+//     const chat = await Chat.create({
+//       room: req.params.id,
+//       user: req.session.color,
+//       gif: req.file.filename,
+//     });
+//     req.app.get("io").of("/chat").to(req.params.id).emit("chat", chat);
+//     //res.send("ok");
+//   } catch (error) {
+//     console.error(error);
+//     next(error);
+//   }
+// };

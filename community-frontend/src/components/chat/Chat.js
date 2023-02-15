@@ -5,47 +5,64 @@ import Responsive from "../common/Responsive";
 import { useState } from "react";
 
 const ChatBlock = styled(Responsive)`
-  margin-top: 3rem;
+  margin-top: 1rem;
 
-  table {
-    width: 100%;
+  .myChat {
+    justify-content: end;
   }
 
-  th {
-    border: solid 1px black;
-    padding: 3px 1px 3px 1px;
+  .othersChat {
+    justify-content: start;
   }
 `;
 
-const CreateRoomButtonWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 3rem;
-  margin-bottom: 5px;
+const Spacer = styled.div`
+  height: 6rem;
 `;
 
 const ChatItemBlock = styled.div`
-  border: solid 1px black;
-  width: 100%;
-  td {
-    height: 30px;
-    border: solid 1px black;
-    border-collapse: collapse;
-    text-align: center;
-    vertical-align: middle;
+  display: flex;
+  width: auto;
+
+  .myChat {
+    background-color: ${palette.gray[5]};
+  }
+
+  .othersChat {
+    background-color: ${palette.gray[3]};
   }
 `;
 
-const ChatItem = ({ chatlog }) => {
-  const { _id, Room, User, chat, gif, createdAt } = chatlog;
+const ChatBubble = styled.div`
+  display: inline-block;
+  margin-top: 0.5rem;
+  border-radius: 10px;
+  padding: 0.5rem;
+
+  .chatNick {
+    font-weight: bold;
+  }
+  img {
+    padding: 0.5rem 0.25rem 0.2rem; //top right&left bottom
+  }
+`;
+
+const ChatItem = ({ chatlog, user }) => {
+  const { _id, Room, User, chat, img, createdAt } = chatlog;
   const roomId = _id;
 
   return (
-    <>
-      <ChatItemBlock>
-        <div>{User.nick}</div>
-      </ChatItemBlock>
-    </>
+    <ChatItemBlock
+      className={user.nick === User.nick ? "myChat" : "othersChat"}
+    >
+      <ChatBubble className={user.nick === User.nick ? "myChat" : "othersChat"}>
+        <span>
+          <div className="chatNick">{User.nick}</div>
+          {img && <img src={img} alt="chatImg" />}
+          {chat && <div>{chat}</div>}
+        </span>
+      </ChatBubble>
+    </ChatItemBlock>
   );
 };
 
@@ -55,24 +72,23 @@ const Chat = ({ room, chats, user, onlines, error, loading }) => {
   }
 
   return (
-    <>
-      <ChatBlock>
-        {!loading && room && (
-          <div>
-            <span>{room.title}</span>
-            <span>{room.max}</span>
-            <span>{room.Owner.nick}</span>
-          </div>
-        )}
-        {!loading && chats && (
-          <div>
-            {chats.map((chatlog) => (
-              <ChatItem chatlog={chatlog} key={chatlog._id} />
-            ))}
-          </div>
-        )}
-      </ChatBlock>
-    </>
+    <ChatBlock>
+      {!loading && room && (
+        <div>
+          <span>{room.title}</span>
+          <span>{room.max}</span>
+          <span>{room.Owner.nick}</span>
+        </div>
+      )}
+      {!loading && chats && (
+        <div>
+          {chats.map((chatlog) => (
+            <ChatItem chatlog={chatlog} key={chatlog._id} user={user} />
+          ))}
+        </div>
+      )}
+      <Spacer />
+    </ChatBlock>
   );
 };
 

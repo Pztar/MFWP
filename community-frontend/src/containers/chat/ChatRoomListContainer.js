@@ -46,7 +46,7 @@ const ChatRoomListContainer = () => {
       loading={loading}
       error={error}
       rooms={rooms}
-      createRoomButton={user}
+      loggedIn={user}
     />
   );
 };

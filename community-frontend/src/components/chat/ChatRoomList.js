@@ -91,7 +91,7 @@ const RoomItemBlock = styled.tr`
   }
 `;
 
-const RoomItem = ({ room }) => {
+const RoomItem = ({ room, loggedIn }) => {
   const { _id, title, max, Owner, password, createdAt } = room;
   const roomId = _id;
   const [showPrompt, setShowPrompt] = useState(false);
@@ -110,22 +110,26 @@ const RoomItem = ({ room }) => {
     <>
       <RoomItemBlock>
         <td>
-          {password ? (
-            <Link
-              onClick={(e) => {
-                onOpenPrompt(e, roomId); //이벤트 핸들러에 event 객체 외의 파라미터를 넘겨주는 방법
-              }}
-            >
-              {title}
-            </Link>
+          {loggedIn ? (
+            password ? (
+              <Link
+                onClick={(e) => {
+                  onOpenPrompt(e, roomId); //이벤트 핸들러에 event 객체 외의 파라미터를 넘겨주는 방법
+                }}
+              >
+                {title}
+              </Link>
+            ) : (
+              <Link
+                to={`/chat/${roomId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {title}
+              </Link>
+            )
           ) : (
-            <Link
-              to={`/chat/${roomId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {title}
-            </Link>
+            <div>{title}</div>
           )}
         </td>
         <td>{password ? "비밀방" : "공개방"}</td>
@@ -145,7 +149,7 @@ const RoomItem = ({ room }) => {
   );
 };
 
-const ChatRoomList = ({ rooms, loading, error, createRoomButton }) => {
+const ChatRoomList = ({ rooms, loading, error, loggedIn }) => {
   if (error) {
     return <RoomLitstBlock>에러가 발생했습니다.</RoomLitstBlock>;
   }
@@ -154,10 +158,12 @@ const ChatRoomList = ({ rooms, loading, error, createRoomButton }) => {
     <>
       <RoomLitstBlock>
         <CreateRoomButtonWrapper>
-          {createRoomButton && (
+          {loggedIn ? (
             <Button cyan to="/chat/createRoom" target="_blank">
               채팅방 만들기
             </Button>
+          ) : (
+            <div>로그인해야 입장 가능합니다</div>
           )}
         </CreateRoomButtonWrapper>
         <table>
@@ -172,7 +178,7 @@ const ChatRoomList = ({ rooms, loading, error, createRoomButton }) => {
           {!loading && rooms && (
             <tbody>
               {rooms.map((room) => (
-                <RoomItem room={room} key={room._id} />
+                <RoomItem room={room} key={room._id} loggedIn={loggedIn} />
               ))}
             </tbody>
           )}

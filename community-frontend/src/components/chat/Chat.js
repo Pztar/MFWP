@@ -138,8 +138,8 @@ const Chat = ({
         <Wrapper>
           {!loading && room && (
             <div>
-              <span>방 제목: {room.title} </span>
-              <span>최대인원: {room.max} </span>
+              <span>방 제목: {room.title} / </span>
+              <span>최대인원: {room.max} / </span>
               <span>방장: {room.Owner.nick}</span>
             </div>
           )}

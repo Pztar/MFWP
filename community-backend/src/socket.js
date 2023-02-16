@@ -1,5 +1,6 @@
 import SocketIO from "socket.io";
 import { removeRoom } from "../src/api/socketServices";
+import Chat from "./schemas/chat";
 import Room from "./schemas/room";
 
 export default (server, app) => {
@@ -37,10 +38,18 @@ export default (server, app) => {
         },
         { new: true }
       );
+
       socket.join(data.roomId);
-      socket.to(data.roomId).emit("join", {
-        user: "system",
+
+      const chat = await Chat.create({
+        Room: data.roomId,
+        User: { id: 0, nick: "system" },
         chat: `${data.User.nick}님이 입장하셨습니다.`,
+        img: "",
+      });
+
+      socket.to(data.roomId).emit("join", {
+        chat: chat,
         Onlines: roomDB.Onlines,
       });
     });
@@ -78,9 +87,16 @@ export default (server, app) => {
         const disconnectingUser = roomDB.Onlines.find(
           (item) => item.socketId === socket.id
         );
-        socket.to(roomId).emit("exit", {
-          user: "system",
+
+        const chat = await Chat.create({
+          Room: roomId,
+          User: { id: 0, nick: "system" },
           chat: `${disconnectingUser.User.nick}님이 퇴장하셨습니다.`,
+          img: "",
+        });
+
+        socket.to(roomId).emit("exit", {
+          chat: chat,
           Onlines: roomDB.Onlines.filter((item) => item !== disconnectingUser),
         });
       }

@@ -1,32 +1,55 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import qs from "qs";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router-dom";
-import { listRooms } from "../../modules/rooms";
 import io from "socket.io-client";
 import Chat from "../../components/chat/Chat";
-import { enterRoom } from "../../lib/api/rooms";
+import { concatChats, enterRoom, listOnlines } from "../../modules/chats";
 
 const ChatContainer = () => {
-  const [room, setRoom] = useState({});
-  const [chats, setChats] = useState([]);
-  const [onlines, setOnlines] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const scollToRef = useRef();
+  const scollToTopRef = useRef();
+  const scollToBottomRef = useRef();
   const params = useParams();
   const { search } = useLocation();
-  const { user } = useSelector(({ user }) => ({
-    user: user.user,
-  }));
+  const dispatch = useDispatch();
+  const { room, chats, onlines, loading, error, user } = useSelector(
+    ({ chats, loading, user }) => ({
+      room: chats.room,
+      chats: chats.chats,
+      onlines: chats.onlines,
+      error: chats.error,
+      loading: loading["chats/ENTER_ROOM"],
+      user: user.user,
+    })
+  );
+  const [autoScroll, setAutoScroll] = useState(true);
+
+  const User = user;
+  const { roomId } = params;
+  const { password } = qs.parse(search, {
+    ignoreQueryPrefix: true,
+  });
+  const inputPassword = password;
 
   useEffect(() => {
-    const User = user;
-    const { roomId } = params;
-    const { password } = qs.parse(search, {
-      ignoreQueryPrefix: true,
-    });
-    const inputPassword = password;
+    dispatch(enterRoom({ roomId, inputPassword }));
+  }, [dispatch, roomId, inputPassword, user]);
 
+  const onToggleAutoScroll = () => {
+    setAutoScroll(!autoScroll);
+  };
+  useEffect(() => {
+    if (autoScroll) {
+      scollToRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest",
+      });
+    }
+  }, [loading, chats]);
+
+  useEffect(() => {
     const socket = io.connect("http://localhost:4000/chat", {
       // 네임스페이스
       path: "/socket.io",
@@ -34,43 +57,43 @@ const ChatContainer = () => {
     socket.emit("join", { roomId, User });
     socket.on("join", function (data) {
       //다른사람 입장시
-      console.log("입장", data, 1, data.user, 2, data.chat, 3, data.Onlines);
-      setOnlines(data.Onlines);
-      console.log(onlines);
+      const newChat = data.chat;
+      dispatch(concatChats({ newChat }));
+      const onlines = data.Onlines;
+      dispatch(listOnlines({ onlines }));
     });
     socket.on("exit", function (data) {
       // 누군가 퇴장
-      console.log("퇴장", data, 1, data.user, 2, data.chat, 3, data.Onlines);
-      setOnlines(data.Onlines);
-      console.log(onlines);
+      const newChat = data.chat;
+      dispatch(concatChats({ newChat }));
+      const onlines = data.Onlines;
+      dispatch(listOnlines({ onlines }));
     });
     socket.on("chat", function (data) {
       // 누군가 채팅
+      const newChat = data.chat;
+      dispatch(concatChats({ newChat }));
     });
 
-    enterRoom({ roomId, inputPassword }).then(
-      (result) => {
-        setRoom(result.data.room);
-        setChats(result.data.chats);
-        console.log(result.data, "eeeee");
-        setLoading(false);
-      },
-      (e) => {
-        setError(true);
-        console.log("에러발생");
-      }
-    );
-  }, [params, search]);
+    return () => {
+      socket.disconnect(); //언마운트시 chat 네임스페이스 접속 해제
+    };
+  }, []);
 
   return (
-    <Chat
-      room={room}
-      chats={chats}
-      user={user}
-      onlines={onlines}
-      loading={loading}
-      error={error}
-    />
+    <>
+      <div ref={scollToRef}>
+        <Chat
+          room={room}
+          chats={chats}
+          user={user}
+          onlines={onlines}
+          loading={loading}
+          error={error}
+          onToggleAutoScroll={onToggleAutoScroll}
+        />
+      </div>
+    </>
   );
 };
 

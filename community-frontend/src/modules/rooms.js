@@ -32,7 +32,7 @@ export function* roomsSaga() {
 }
 
 const initialState = {
-  rooms: [],
+  rooms: null,
   error: null,
   lastPage: 1,
 };

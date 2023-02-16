@@ -14,7 +14,6 @@ const SendChatBoxContainer = () => {
   };
 
   const onSend = (e) => {
-    console.log("전송테스트", imgUrl, chatTxt);
     sendChat({ roomId, imgUrl, chatTxt }).then(
       (result) => {
         setImgUrl("");

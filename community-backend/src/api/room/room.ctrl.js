@@ -48,9 +48,9 @@ export const createRoom = async (ctx, next) => {
 export const enterRoom = async (ctx, next) => {
   try {
     const roomId = ctx.params.roomId;
-    const [room, chats] = await Promise.all([
+    const [room, reversedChats] = await Promise.all([
       Room.findOne({ _id: roomId }),
-      Chat.find({ Room: roomId }).limit(100),
+      Chat.find({ Room: roomId }).sort({ _id: -1 }).limit(100),
     ]);
     if (!room) {
       return ctx.redirect("존재하지 않는 방입니다.");
@@ -58,6 +58,7 @@ export const enterRoom = async (ctx, next) => {
     if (room.password && room.password !== ctx.query.password) {
       return ctx.redirect("/?error=비밀번호가 틀렸습니다.");
     }
+    const chats = reversedChats.reverse();
     const roomAndChats = { room, chats };
 
     const io = ctx.io;
@@ -100,7 +101,7 @@ export const sendChat = async (ctx, next) => {
       chat: ctx.request.body.chatTxt,
       img: ctx.request.body.imgUrl,
     });
-    ctx.io.of("/chat").to(roomId).emit("chat", chat);
+    ctx.io.of("/chat").to(roomId).emit("chat", { chat });
     ctx.body = chat;
   } catch (error) {
     console.error(error);

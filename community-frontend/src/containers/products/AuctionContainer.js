@@ -1,12 +1,13 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { readProduct, unloadProduct } from "../../modules/product";
-import Auction from "../../components/auction/Auction";
+import Auction from "../../components/products/Auction";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import useScript from "../../useScript";
 import io from "socket.io-client";
 
 const AuctionContainer = () => {
+  const scollToRef = useRef();
   const dispatch = useDispatch();
   const { productId } = useParams();
   const { product, auctions, error, loading, user } = useSelector(
@@ -31,6 +32,20 @@ const AuctionContainer = () => {
   const [messages, setMessages] = useState(auctions);
   const [listening, setListening] = useState(false);
   const [serverTime, setServerTime] = useState(null);
+  const [autoScroll, setAutoScroll] = useState(true);
+
+  const onToggleAutoScroll = () => {
+    setAutoScroll(!autoScroll);
+  };
+  useEffect(() => {
+    if (autoScroll) {
+      scollToRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest",
+      });
+    }
+  }, [loading, auctions]);
 
   useEffect(() => {
     const es = new EventSource("/sse");
@@ -86,7 +101,7 @@ const AuctionContainer = () => {
   );
 
   useEffect(() => {
-    const socket = io.connect("http://localhost:4000/chat", {
+    const socket = io.connect("http://localhost:4000/auction", {
       // 네임스페이스
       path: "/socket.io",
     });
@@ -98,14 +113,18 @@ const AuctionContainer = () => {
   }, [handleReceiveMessage]);
 
   return (
-    <Auction
-      loading={loading}
-      error={error}
-      product={product}
-      messages={messages}
-      sendButton={user}
-      serverTime={serverTime}
-    />
+    <div ref={scollToRef}>
+      <Auction
+        loading={loading}
+        error={error}
+        product={product}
+        messages={messages}
+        sendButton={user}
+        serverTime={serverTime}
+        onToggleAutoScroll={onToggleAutoScroll}
+        ref={scollToRef}
+      />
+    </div>
   );
 };
 

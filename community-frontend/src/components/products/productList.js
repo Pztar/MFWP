@@ -82,10 +82,8 @@ const ProductItem = ({ product, serverTime, logedIn }) => {
       </td>
       <td>{name}</td>
       <td>{category}</td>
-      <td className="tdImg">
-        {img ? <img src={`${img}`} alt="productImg" /> : "null"}
-      </td>
-      <td className="tdLink">
+      <td>{img ? <img src={`${img}`} alt="productImg" /> : "null"}</td>
+      <td>
         {explanation ? (
           <a
             href={`http://${explanation}`}
@@ -99,10 +97,12 @@ const ProductItem = ({ product, serverTime, logedIn }) => {
         )}
       </td>
       <td>{price}</td>
-      <td className="tdImg">{restTime}</td>
+      <td>{restTime}</td>
       <td>
         {logedIn ? (
-          <Link to={`/auction/${productId}`}>입장</Link>
+          <Link to={`/auction/${productId}`} target="_blank">
+            입장
+          </Link>
         ) : (
           "로그인 필요"
         )}

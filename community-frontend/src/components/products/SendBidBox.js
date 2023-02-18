@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Responsive from "../common/Responsive";
 import client from "../../lib/api/client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
 
@@ -77,60 +77,25 @@ const InputChatBlock = styled.div`
   }
 `;
 
-const SendChatBox = ({
-  imgUrl,
-  setImgUrl,
-  chatTxt,
-  onChangeChatTxt,
-  onSend,
-}) => {
-  const inputImg = useRef(null);
-
-  const onChangeFile = async () => {
-    const input = inputImg.current;
-    const file = input.files[0];
-    // multer에 맞는 형식으로 데이터 만들어준다.
-    const formData = new FormData();
-    formData.append("file", file); // formData는 키-밸류 구조
-    // 백엔드 multer라우터에 이미지를 보낸다.
-    try {
-      const result = await client.post(
-        "http://localhost:4000/api/file",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      const IMG_URL = result.data.url;
-      setImgUrl(IMG_URL);
-    } catch (error) {
-      console.log("실패", error);
-    }
-  };
-
+const SendBidBox = ({ bidTxt, chatTxt, onChangeChatTxt, onSend }) => {
   return (
     <FooterBlock>
       <Wrapper>
-        <InputImgBlock>
-          {imgUrl && <img alt="inputImg" src={imgUrl} />}
-        </InputImgBlock>
         <InputBoxBlock>
-          <input
-            type="file"
-            onChange={onChangeFile}
-            accept="image/*"
-            ref={inputImg}
-            className="inputImg"
-          />
           <InputChatBlock>
+            <input
+              type="number"
+              onChange={onChangeChatTxt}
+              value={bidTxt}
+              className="inputChatTxt"
+              placeholder="입찰가"
+            />
             <input
               type="text"
               onChange={onChangeChatTxt}
               value={chatTxt}
               className="inputChatTxt"
-              placeholder="전송할 내용을 입력하세요"
+              placeholder="메세지"
             />
             <Button onClick={onSend} className="sendButton">
               send
@@ -142,4 +107,4 @@ const SendChatBox = ({
   );
 };
 
-export default SendChatBox;
+export default SendBidBox;

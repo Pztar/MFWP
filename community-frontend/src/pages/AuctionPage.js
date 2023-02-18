@@ -1,11 +1,11 @@
-import AuctionContainer from "../containers/auction/AuctionContainer";
-import HeaderContainer from "../containers/common/HeaderContainer";
+import AuctionContainer from "../containers/products/AuctionContainer";
+import SendBidBoxContainer from "../containers/products/SendBidBoxContainer";
 
 const AuctionPage = () => {
   return (
     <>
-      <HeaderContainer />
       <AuctionContainer />
+      <SendBidBoxContainer />
     </>
   );
 };

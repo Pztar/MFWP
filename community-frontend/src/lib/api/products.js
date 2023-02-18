@@ -31,7 +31,7 @@ export const participateAuction = (productId) => {
   return client.get(`/api/auction/product/${productId}`);
 };
 
-export const bid = (productId, { bid, msg }) => {
+export const bid = ({ productId, bid, msg }) => {
   return client.post(`/api/auction/product/${productId}/bid`, { bid, msg });
 };
 

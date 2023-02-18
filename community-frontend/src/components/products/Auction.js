@@ -3,6 +3,37 @@ import { Link } from "react-router-dom";
 import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
 import Responsive from "../common/Responsive";
+import ToggleSwitch from "../common/ToggleSwitch";
+
+const HeaderBlock = styled.div`
+  position: fixed;
+  width: 100%;
+  background: ${palette.gray[0]};
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+`;
+
+const Wrapper = styled(Responsive)`
+  height: auto;
+  margin-top: 0.3rem;
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  table {
+    width: 100%;
+    margin: 0.3rem;
+  }
+`;
+
+const TopSpacer = styled.div`
+  height: 2rem;
+`;
+
+const ToggleSwitchBlock = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
 const AuctionBlock = styled(Responsive)`
   margin-top: 3rem;
@@ -126,7 +157,14 @@ const MessageItem = ({ message }) => {
   );
 };
 
-const Auction = ({ product, messages, loading, error, serverTime }) => {
+const Auction = ({
+  product,
+  messages,
+  loading,
+  error,
+  serverTime,
+  onToggleAutoScroll,
+}) => {
   const ServerTime = new Date(parseInt(serverTime, 10));
   const timeToLocale = ServerTime.toLocaleString("en-ZA", { hour12: true });
 
@@ -136,38 +174,58 @@ const Auction = ({ product, messages, loading, error, serverTime }) => {
   }
 
   return (
-    <AuctionBlock>
-      <span>서버시간: {timeToLocale}</span>
-      <table>
-        <thead>
-          <ProductItemBlock>
-            <th>판매자</th>
-            <th>상품명</th>
-            <th>카테고리</th>
-            <th className="tdImg">이미지</th>
-            <th className="tdLink">설명(링크)</th>
-            <th>시작 가격</th>
-            <th className="tdImg">잔여 시간</th>
-          </ProductItemBlock>
-        </thead>
-        <tbody>
-          {!loading && product && (
-            <ProductItem
-              product={product}
-              key={product.id}
-              serverTime={serverTime}
-            />
-          )}
-        </tbody>
-      </table>
-      {!loading && messages && (
-        <div>
-          {messages.map((message) => (
-            <MessageItem message={message} key={message.id} />
-          ))}
-        </div>
-      )}
-    </AuctionBlock>
+    <>
+      <HeaderBlock>
+        <Wrapper>
+          <div>
+            <span>서버시간: {timeToLocale}</span>
+            <ToggleSwitchBlock>
+              <div>autoScroll</div>
+              <ToggleSwitch
+                left="on"
+                right="off"
+                leftColor={null}
+                rightColor={null}
+                leftBgColor={null}
+                rightBgColor={null}
+                circleColor={null}
+                setChecked={onToggleAutoScroll}
+              />
+            </ToggleSwitchBlock>
+          </div>
+          <table>
+            <thead>
+              <ProductItemBlock>
+                <th>판매자</th>
+                <th>상품명</th>
+                <th>카테고리</th>
+                <th className="tdImg">이미지</th>
+                <th className="tdLink">설명(링크)</th>
+                <th>시작 가격</th>
+                <th className="tdImg">잔여 시간</th>
+              </ProductItemBlock>
+              {!loading && product && (
+                <ProductItem
+                  product={product}
+                  key={product.id}
+                  serverTime={serverTime}
+                />
+              )}
+            </thead>
+          </table>
+        </Wrapper>
+      </HeaderBlock>
+      <TopSpacer />
+      <AuctionBlock>
+        {!loading && messages && (
+          <div>
+            {messages.map((message) => (
+              <MessageItem message={message} key={message.id} />
+            ))}
+          </div>
+        )}
+      </AuctionBlock>
+    </>
   );
 };
 

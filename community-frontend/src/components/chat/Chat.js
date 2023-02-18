@@ -10,6 +10,14 @@ const HeaderBlock = styled.div`
   width: 100%;
   background: ${palette.gray[1]};
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+
+  div {
+    span + span {
+      ::before {
+        content: " / ";
+      }
+    }
+  }
 `;
 
 const Wrapper = styled(Responsive)`
@@ -138,8 +146,8 @@ const Chat = ({
         <Wrapper>
           {!loading && room && (
             <div>
-              <span>방 제목: {room.title} / </span>
-              <span>최대인원: {room.max} / </span>
+              <span>방 제목: {room.title}</span>
+              <span>최대인원: {room.max}</span>
               <span>방장: {room.Owner.nick}</span>
             </div>
           )}

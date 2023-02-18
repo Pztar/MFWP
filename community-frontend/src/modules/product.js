@@ -8,9 +8,11 @@ import { takeLatest } from "redux-saga/effects";
 const [READ_PRODUCT, READ_PRODUCT_SUCCESS, READ_PRODUCT_FIALURE] =
   createRequestActionTypes("product/READ_PRODUCT");
 const UNLOAD_PRODUCT = "product/UNLOAD_PRODUCT";
+const CONCAT_AUCTION = "product/CONCAT_AUCTION";
 
 export const readProduct = createAction(READ_PRODUCT, (productId) => productId);
 export const unloadProduct = createAction(UNLOAD_PRODUCT);
+export const concatAuction = createAction(CONCAT_AUCTION, (data) => data);
 
 const readProductSaga = createRequestSaga(
   READ_PRODUCT,
@@ -38,6 +40,10 @@ const product = handleActions(
       error,
     }),
     [UNLOAD_PRODUCT]: () => initialState,
+    [CONCAT_AUCTION]: (state, { payload: data }) => ({
+      ...state,
+      chats: [...state.auctions, data],
+    }),
   },
   initialState
 );

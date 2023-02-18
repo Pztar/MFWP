@@ -1,24 +1,29 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import SendBidBox from "../../components/products/SendBidBox";
-import { bid } from "../../lib/api/products";
+import { bid as sendBid } from "../../lib/api/products";
 
 const SendBidBoxContainer = () => {
   const params = useParams();
   const { productId } = params;
-  const [bidTxt, setbidTxt] = useState("");
-  const [msgTxt, setMsgTxt] = useState("");
+  const [bid, setbid] = useState("");
+  const [msg, setMsg] = useState("");
 
-  const onChangeChatTxt = (e) => {
-    setbidTxt(e.target.value);
-    setMsgTxt(e.target.value);
+  const onChangeField = (e) => {
+    if (e.target.name === "bid") {
+      setbid(e.target.value);
+    }
+    if (e.target.name === "msg") {
+      setMsg(e.target.value);
+    }
   };
 
   const onSend = (e) => {
-    bid({ productId, bidTxt, msgTxt }).then(
+    console.log("@@@", productId, bid, msg);
+    sendBid({ productId, bid, msg }).then(
       (result) => {
-        setbidTxt("");
-        setMsgTxt("");
+        setbid("");
+        setMsg("");
       },
       (e) => {
         console.log("에러발생");
@@ -28,9 +33,9 @@ const SendBidBoxContainer = () => {
 
   return (
     <SendBidBox
-      bidTxt={bidTxt}
-      msgTxt={msgTxt}
-      onChangeChatTxt={onChangeChatTxt}
+      bid={bid}
+      msg={msg}
+      onChangeField={onChangeField}
       onSend={onSend}
     />
   );

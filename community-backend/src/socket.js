@@ -100,6 +100,7 @@ export default (server, app) => {
           Onlines: roomDB.Onlines.filter((item) => item !== disconnectingUser),
         });
       }
+      socket.leave(roomId);
     });
 
     socket.on("disconnect", async () => {
@@ -110,16 +111,15 @@ export default (server, app) => {
 
   auction.on("connection", (socket) => {
     // 웹 소켓 연결 시
-    console.log("auction 네임스페이스 접속");
-    const req = socket.request;
-    const {
-      headers: { referer },
-    } = req;
-    const roomId = new URL(referer).pathname.split("/").at(-1);
-    socket.join(roomId);
-    socket.on("disconnect", () => {
-      console.log("auction 네임스페이스 접속 해제");
-      socket.leave(roomId);
+    console.log("auction 네임스페이스 접속", socket.id);
+    socket.on("join", async (data) => {
+      socket.join(data.productId);
+    });
+    socket.on("disconnecting", () => {
+      console.log("auction 네임스페이스 접속 해제", socket.id);
+      //socket.leave(productId);
+      //연결이 끊기면 자동으로 방에서 나가지므로 필수 코드는 아님
+      //현재 productId를 DB를 사용하지 않고 구할 수가 없음...
     });
   });
 };

@@ -8,8 +8,6 @@ import { concatChats, enterRoom, listOnlines } from "../../modules/chats";
 
 const ChatContainer = () => {
   const scollToRef = useRef();
-  const scollToTopRef = useRef();
-  const scollToBottomRef = useRef();
   const params = useParams();
   const { search } = useLocation();
   const dispatch = useDispatch();
@@ -25,7 +23,6 @@ const ChatContainer = () => {
   );
   const [autoScroll, setAutoScroll] = useState(true);
 
-  const User = user;
   const { roomId } = params;
   const { password } = qs.parse(search, {
     ignoreQueryPrefix: true,
@@ -54,7 +51,8 @@ const ChatContainer = () => {
       // 네임스페이스
       path: "/socket.io",
     });
-    socket.emit("join", { roomId, User });
+
+    socket.emit("join", { roomId, User: user });
     socket.on("join", function (data) {
       //다른사람 입장시
       const newChat = data.chat;

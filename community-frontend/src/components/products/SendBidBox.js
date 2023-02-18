@@ -77,7 +77,7 @@ const InputChatBlock = styled.div`
   }
 `;
 
-const SendBidBox = ({ bidTxt, chatTxt, onChangeChatTxt, onSend }) => {
+const SendBidBox = ({ bid, msg, onChangeField, onSend }) => {
   return (
     <FooterBlock>
       <Wrapper>
@@ -85,15 +85,17 @@ const SendBidBox = ({ bidTxt, chatTxt, onChangeChatTxt, onSend }) => {
           <InputChatBlock>
             <input
               type="number"
-              onChange={onChangeChatTxt}
-              value={bidTxt}
+              onChange={onChangeField}
+              name="bid"
+              value={bid}
               className="inputChatTxt"
               placeholder="입찰가"
             />
             <input
               type="text"
-              onChange={onChangeChatTxt}
-              value={chatTxt}
+              onChange={onChangeField}
+              name="msg"
+              value={msg}
               className="inputChatTxt"
               placeholder="메세지"
             />

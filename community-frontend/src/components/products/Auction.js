@@ -144,8 +144,8 @@ const ProductItem = ({ product, serverTime }) => {
   );
 };
 
-const MessageItem = ({ message }) => {
-  const { id, bid, msg, createdAt, User } = message;
+const MessageItem = ({ auction }) => {
+  const { id, bid, msg, createdAt, User } = auction;
 
   return (
     <MessageItemBlock>
@@ -159,7 +159,7 @@ const MessageItem = ({ message }) => {
 
 const Auction = ({
   product,
-  messages,
+  auctions,
   loading,
   error,
   serverTime,
@@ -217,10 +217,10 @@ const Auction = ({
       </HeaderBlock>
       <TopSpacer />
       <AuctionBlock>
-        {!loading && messages && (
+        {!loading && auctions && (
           <div>
-            {messages.map((message) => (
-              <MessageItem message={message} key={message.id} />
+            {auctions.map((auction) => (
+              <MessageItem auction={auction} key={auction.id} />
             ))}
           </div>
         )}

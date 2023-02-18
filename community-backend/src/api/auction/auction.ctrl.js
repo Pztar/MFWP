@@ -83,13 +83,13 @@ export const participateAuction = async (ctx, next) => {
         as: "Owner",
       },
     });
-    const auction = await db.Auction.findAll({
+    const auctions = await db.Auction.findAll({
       where: { ProductId: ctx.params.productId },
       include: { model: db.User, attributes: ["id", "nick"] },
       order: [["bid", "ASC"]],
     });
 
-    const productAuction = { product, auction };
+    const productAuction = { product, auctions };
     ctx.body = productAuction;
   } catch (error) {
     console.error(error);
@@ -100,41 +100,41 @@ export const participateAuction = async (ctx, next) => {
 export const bid = async (ctx, next) => {
   try {
     const { bid, msg } = ctx.request.body;
+    const productId = ctx.params.productId;
     const product = await db.Product.findOne({
-      where: { id: ctx.params.productId },
+      where: { id: productId },
       include: { model: db.Auction },
       order: [[{ model: db.Auction }, "bid", "DESC"]],
     });
     if (!product) {
-      return ctx.status(404).send("해당 상품은 존재하지 않습니다.");
+      return console.log("해당 상품은 존재하지 않습니다.");
     }
     if (product.price >= bid) {
-      return ctx.status(403).send("시작 가격보다 높게 입찰해야 합니다.");
+      return console.log("시작 가격보다 높게 입찰해야 합니다.");
     }
-    if (
-      new Date(product.terminatedAt).valueOf() + 24 * 60 * 60 * 1000 <
-      new Date()
-    ) {
-      return ctx.status(403).send("경매가 이미 종료되었습니다");
+    if (new Date(product.terminatedAt).valueOf() < new Date().valueOf()) {
+      return console.log("경매가 이미 종료되었습니다");
     }
-    if (product.Auctions[0].bid * 1.05 > bid) {
-      return ctx.status(403).send("이전 입찰가보다 5% 이상 높아야 합니다");
+    if (product.Auctions.length > 0) {
+      if (product.Auctions[0].bid * 1.01 >= bid) {
+        return console.log("이전 입찰가보다 1% 이상 높아야 합니다");
+      }
     }
     const result = await db.Auction.create({
       bid,
       msg,
       UserId: ctx.state.user.id,
-      ProductId: ctx.params.productId,
+      ProductId: productId,
     });
     // 실시간으로 입찰 내역 전송
-    ctx.io.to(ctx.params.productId).emit("bid", {
+    ctx.io.to(productId).emit("bid", {
       id: result.id,
       bid: result.bid,
       msg: result.msg,
       createdAt: result.createdAt,
       nick: ctx.state.user.nick,
     });
-    return ctx.send("ok");
+    ctx.body = product;
   } catch (error) {
     console.error(error);
     return next(error);

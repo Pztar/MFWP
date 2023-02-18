@@ -1,8 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { readProduct, unloadProduct } from "../../modules/product";
+import {
+  concatAuction,
+  readProduct,
+  unloadProduct,
+} from "../../modules/product";
 import Auction from "../../components/products/Auction";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useScript from "../../useScript";
 import io from "socket.io-client";
 
@@ -29,7 +33,6 @@ const AuctionContainer = () => {
 
   useScript("https://unpkg.com/event-source-polyfill/src/eventsource.min.js");
 
-  const [messages, setMessages] = useState(auctions);
   const [listening, setListening] = useState(false);
   const [serverTime, setServerTime] = useState(null);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -49,6 +52,7 @@ const AuctionContainer = () => {
 
   useEffect(() => {
     const es = new EventSource("/sse");
+
     if (!listening) {
       es.onopen = (event) => {
         console.log("sse connection opened");
@@ -63,7 +67,6 @@ const AuctionContainer = () => {
         }
         es.close();
       };
-
       setListening(true);
     }
 
@@ -73,44 +76,24 @@ const AuctionContainer = () => {
     };
   }, []);
 
-  const chatWindow = useRef(null);
-  // 새 메시지를 받으면 스크롤을 이동하는 함수
-  const moveScrollToReceiveMessage = useCallback(() => {
-    if (chatWindow.current) {
-      chatWindow.current.scrollTo({
-        top: chatWindow.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }
-  }, []);
-
-  // RECEIVE_MESSAGE 이벤트 콜백: messages state에 데이터를 추가합니다.
-  const handleReceiveMessage = useCallback(
-    (pongData) => {
-      const newMessage = {
-        id: pongData.id,
-        bid: pongData.bid,
-        msg: pongData.msg,
-        createdAt: pongData.createdAt,
-        User: { id: pongData.id, nick: pongData.nick },
-      };
-      setMessages((messages) => [...messages, newMessage]);
-      moveScrollToReceiveMessage();
-    },
-    [moveScrollToReceiveMessage]
-  );
-
   useEffect(() => {
     const socket = io.connect("http://localhost:4000/auction", {
       // 네임스페이스
       path: "/socket.io",
     });
-    socket.on("bid", handleReceiveMessage); // 이벤트 리스너 설치
+    socket.emit("join", { productId, User: user });
 
+    socket.on("bid", function (data) {
+      // 누군가 채팅
+      dispatch(concatAuction(data));
+    });
     return () => {
-      socket.off("bid", handleReceiveMessage); // 이벤트 리스너 해제
+      socket.disconnect(); //언마운트시 auction 네임스페이스 접속 해제
     };
-  }, [handleReceiveMessage]);
+  }, [listening]);
+
+  const chatWindow = useRef(null);
+  // 새 메시지를 받으면 스크롤을 이동하는 함수
 
   return (
     <div ref={scollToRef}>
@@ -118,7 +101,7 @@ const AuctionContainer = () => {
         loading={loading}
         error={error}
         product={product}
-        messages={messages}
+        auctions={auctions}
         sendButton={user}
         serverTime={serverTime}
         onToggleAutoScroll={onToggleAutoScroll}

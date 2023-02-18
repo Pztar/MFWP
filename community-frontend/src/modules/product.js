@@ -25,6 +25,7 @@ export function* productSaga() {
 const initialState = {
   product: null,
   auctions: null,
+  point: null,
   error: null,
 };
 
@@ -34,6 +35,7 @@ const product = handleActions(
       ...state,
       product: productAuction.product,
       auctions: productAuction.auctions,
+      point: productAuction.point,
     }),
     [READ_PRODUCT_FIALURE]: (state, { payload: error }) => ({
       ...state,

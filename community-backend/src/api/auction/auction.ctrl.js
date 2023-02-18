@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import db from "../../../models";
 import { scheduleJob } from "node-schedule";
+import { setSoldId } from "../../lib/checkAuction";
 
 export const listProducts = async (ctx, next) => {
   const page = parseInt(ctx.query.page || "1", 10);
@@ -46,19 +47,7 @@ export const createProduct = async (ctx, next) => {
       terminatedAt,
     });
     const job = scheduleJob(terminatedAt, async () => {
-      const success = await db.Auction.findOne({
-        where: { ProductId: product.id },
-        order: [["bid", "DESC"]],
-      });
-      await product.setSold(success.UserId);
-      await db.User.update(
-        {
-          point: db.sequelize.literal(`point - ${success.bid}`),
-        },
-        {
-          where: { id: success.UserId },
-        }
-      );
+      setSoldId(product);
     });
     job.on("error", (err) => {
       console.error("스케줄링 에러", err);
@@ -88,8 +77,11 @@ export const participateAuction = async (ctx, next) => {
       include: { model: db.User, attributes: ["id", "nick"] },
       order: [["bid", "ASC"]],
     });
+    const { point } = await db.User.findOne({
+      where: { id: ctx.state.user.id },
+    });
 
-    const productAuction = { product, auctions };
+    const productAuction = { product, auctions, point };
     ctx.body = productAuction;
   } catch (error) {
     console.error(error);
@@ -112,11 +104,14 @@ export const bid = async (ctx, next) => {
     if (!product) {
       return (ctx.body = "해당 상품은 존재하지 않습니다.");
     }
+    if (product.OwnerId === ctx.state.user.id) {
+      return (ctx.body = "판매자는 입찰할 수 없습니다");
+    }
     if (user.point < bid) {
       return (ctx.body = "포인트가 부족합니다.");
     }
-    if (product.price >= bid) {
-      return (ctx.body = "시작 가격보다 높게 입찰해야 합니다.");
+    if (product.price > bid) {
+      return (ctx.body = "시작 가격 이상 입찰해야 합니다.");
     }
     if (new Date(product.terminatedAt).valueOf() < new Date().valueOf()) {
       return (ctx.body = "경매가 이미 종료되었습니다");
@@ -143,7 +138,7 @@ export const bid = async (ctx, next) => {
         createdAt: result.createdAt,
         User: { id: ctx.state.user.id, nick: ctx.state.user.nick },
       });
-    ctx.body = "전송 성공";
+    ctx.body = null;
   } catch (error) {
     console.error(error);
     return next(error);

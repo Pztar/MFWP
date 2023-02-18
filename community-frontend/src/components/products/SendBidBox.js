@@ -19,12 +19,14 @@ const Wrapper = styled(Responsive)`
 const AlretBlock = styled.div`
   display: flex;
   justify-content: end;
-  padding: 1rem;
+  padding: 0.5rem 1rem 0.7rem;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.3);
   font-weight: bold;
   font-size: large;
   color: #e30000;
+  /* offset-x | offset-y | blur-radius | color */
+  text-shadow: 1px 1px 3px black;
 `;
 
 const InputBoxBlock = styled.div`

@@ -131,7 +131,7 @@ const ProductList = ({
       <RegistProductButtonWrapper>
         <span>서버시간: {timeToLocale}</span>
         {showRegistProductButton && (
-          <Button cyan to="/resistProduct">
+          <Button cyan to="/resistProduct" target="_blank">
             상품등록
           </Button>
         )}

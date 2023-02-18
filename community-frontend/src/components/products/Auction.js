@@ -193,6 +193,7 @@ const AuctionItem = ({ auction, user }) => {
 const Auction = ({
   product,
   auctions,
+  point,
   loading,
   error,
   user,
@@ -201,7 +202,8 @@ const Auction = ({
 }) => {
   const ServerTime = new Date(parseInt(serverTime, 10));
   const timeToLocale = ServerTime.toLocaleString("en-ZA", { hour12: true });
-
+  const pointToString = parseInt(point, 10).toLocaleString();
+  //point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   if (error) {
     console.log(error);
     return <AuctionBlock>에러가 발생했습니다.</AuctionBlock>;
@@ -213,6 +215,7 @@ const Auction = ({
         <Wrapper>
           <div>
             <span>서버시간: {timeToLocale}</span>
+            <span>보유포인트: {pointToString}</span>
             <ToggleSwitchBlock>
               <div>autoScroll</div>
               <ToggleSwitch

@@ -14,10 +14,11 @@ const AuctionContainer = () => {
   const scollToRef = useRef();
   const dispatch = useDispatch();
   const { productId } = useParams();
-  const { product, auctions, error, loading, user } = useSelector(
+  const { product, auctions, point, error, loading, user } = useSelector(
     ({ product, loading, user }) => ({
       product: product.product,
       auctions: product.auctions,
+      point: product.point,
       error: product.error,
       loading: loading["product/READ_PRODUCTS"],
       user: user.user,
@@ -99,6 +100,7 @@ const AuctionContainer = () => {
         error={error}
         product={product}
         auctions={auctions}
+        point={point}
         user={user}
         serverTime={serverTime}
         onToggleAutoScroll={onToggleAutoScroll}

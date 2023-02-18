@@ -46,9 +46,11 @@ const RegistProductButtonsContainer = () => {
       return;
     }
     */
-    dispatch(
-      registProduct({ name, category, img, explanation, price, terminatedAt })
-    );
+    if (name !== "") {
+      dispatch(
+        registProduct({ name, category, img, explanation, price, terminatedAt })
+      );
+    }
   };
 
   const onCancle = () => {

@@ -37,6 +37,8 @@ export const createProduct = async (ctx, next) => {
   try {
     const { name, category, img, explanation, price, terminatedAt } =
       ctx.request.body;
+    const now = new Date();
+
     const product = await db.Product.create({
       OwnerId: ctx.state.user.id,
       name,

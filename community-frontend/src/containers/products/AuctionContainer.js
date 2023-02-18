@@ -92,9 +92,6 @@ const AuctionContainer = () => {
     };
   }, [listening]);
 
-  const chatWindow = useRef(null);
-  // 새 메시지를 받으면 스크롤을 이동하는 함수
-
   return (
     <div ref={scollToRef}>
       <Auction
@@ -102,7 +99,7 @@ const AuctionContainer = () => {
         error={error}
         product={product}
         auctions={auctions}
-        sendButton={user}
+        user={user}
         serverTime={serverTime}
         onToggleAutoScroll={onToggleAutoScroll}
         ref={scollToRef}

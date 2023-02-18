@@ -2,16 +2,17 @@ import { scheduleJob } from "node-schedule";
 import { Op } from "Sequelize";
 import db from "../../models";
 
+const setSolder = () => {};
+
 export default async () => {
   console.log("checkAuction");
   try {
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1); // 어제 시간
+    const today = new Date();
     const targets = await db.Product.findAll({
-      // 24시간이 지난 낙찰자 없는 경매들
+      // 종료시간이 지난 낙찰자 없는 경매들
       where: {
         SoldId: null,
-        createdAt: { [Op.lte]: yesterday },
+        terminatedAt: { [Op.lte]: today },
       },
     });
     targets.forEach(async (product) => {
@@ -22,46 +23,53 @@ export default async () => {
           order: [["bid", "DESC"]],
           transaction: t,
         });
-        await product.setSold(success.UserId, { transaction: t });
-        await db.User.update(
-          {
+        const bidder = await db.User.findOne({
+          where: { id: success.UserId },
+          transaction: t,
+        });
+        if (bidder.point >= success.bid) {
+          await product.setSold(success.UserId, { transaction: t });
+          await bidder.update({
             point: db.sequelize.literal(`point - ${success.bid}`),
-          },
-          {
-            where: { id: success.UserId },
             transaction: t,
-          }
-        );
+          });
+        } else {
+          await success.destroy();
+        }
         await t.commit();
       } catch (error) {
         await t.rollback();
       }
     });
     const ongoing = await db.Product.findAll({
-      // 24시간이 지나지 않은 낙찰자 없는 경매들
+      // 종료시간이 지나지 않은 낙찰자 없는 경매들
       where: {
         SoldId: null,
-        createdAt: { [Op.gte]: yesterday },
+        terminatedAt: { [Op.gte]: today },
       },
     });
     ongoing.forEach((product) => {
-      const end = new Date(product.createdAt);
-      end.setDate(end.getDate() + 1); // 생성일 24시간 뒤가 낙찰 시간
+      const end = new Date(product.terminatedAt); //경매 종료일
+
       const job = scheduleJob(end, async () => {
         const t = await db.sequelize.transaction();
         const success = await db.Auction.findOne({
           where: { ProductId: product.id },
           order: [["bid", "DESC"]],
         });
-        await product.setSold(success.UserId);
-        await db.User.update(
-          {
+        const bidder = await db.User.findOne({
+          where: { id: success.UserId },
+          transaction: t,
+        });
+        if (bidder.point >= success.bid) {
+          await product.setSold(success.UserId, { transaction: t });
+          await bidder.update({
             point: db.sequelize.literal(`point - ${success.bid}`),
-          },
-          {
-            where: { id: success.UserId },
-          }
-        );
+            transaction: t,
+          });
+        } else {
+          await success.destroy();
+        }
       });
       job.on("error", (err) => {
         console.error("스케줄링 에러", err);

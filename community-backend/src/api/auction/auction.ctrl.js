@@ -106,18 +106,24 @@ export const bid = async (ctx, next) => {
       include: { model: db.Auction },
       order: [[{ model: db.Auction }, "bid", "DESC"]],
     });
+    const user = await db.User.findOne({
+      where: { id: ctx.state.user.id },
+    });
     if (!product) {
-      return console.log("해당 상품은 존재하지 않습니다.");
+      return (ctx.body = "해당 상품은 존재하지 않습니다.");
+    }
+    if (user.point < bid) {
+      return (ctx.body = "포인트가 부족합니다.");
     }
     if (product.price >= bid) {
-      return console.log("시작 가격보다 높게 입찰해야 합니다.");
+      return (ctx.body = "시작 가격보다 높게 입찰해야 합니다.");
     }
     if (new Date(product.terminatedAt).valueOf() < new Date().valueOf()) {
-      return console.log("경매가 이미 종료되었습니다");
+      return (ctx.body = "경매가 이미 종료되었습니다");
     }
     if (product.Auctions.length > 0) {
       if (product.Auctions[0].bid * 1.01 >= bid) {
-        return console.log("이전 입찰가보다 1% 이상 높아야 합니다");
+        return (ctx.body = "이전 입찰가보다 1% 이상 높아야 합니다");
       }
     }
     const result = await db.Auction.create({
@@ -127,14 +133,17 @@ export const bid = async (ctx, next) => {
       ProductId: productId,
     });
     // 실시간으로 입찰 내역 전송
-    ctx.io.to(productId).emit("bid", {
-      id: result.id,
-      bid: result.bid,
-      msg: result.msg,
-      createdAt: result.createdAt,
-      nick: ctx.state.user.nick,
-    });
-    ctx.body = product;
+    ctx.io
+      .of("/auction")
+      .to(productId)
+      .emit("bid", {
+        id: result.id,
+        bid: result.bid,
+        msg: result.msg,
+        createdAt: result.createdAt,
+        User: { id: ctx.state.user.id, nick: ctx.state.user.nick },
+      });
+    ctx.body = "전송 성공";
   } catch (error) {
     console.error(error);
     return next(error);

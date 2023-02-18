@@ -16,26 +16,15 @@ const Wrapper = styled(Responsive)`
   padding: 0;
 `;
 
-const InputImgBlock = styled.div`
+const AlretBlock = styled.div`
   display: flex;
   justify-content: end;
   padding: 1rem;
   width: 100%;
-
-  img {
-    height: 450px;
-
-    @media (max-height: 1440px) {
-      height: 350px;
-    }
-    @media (max-height: 1080px) {
-      height: 250px;
-    }
-    @media (max-height: 768px) {
-      height: 180px;
-    }
-    max-width: 60%;
-  }
+  background-color: rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+  font-size: large;
+  color: #e30000;
 `;
 
 const InputBoxBlock = styled.div`
@@ -77,10 +66,11 @@ const InputChatBlock = styled.div`
   }
 `;
 
-const SendBidBox = ({ bid, msg, onChangeField, onSend }) => {
+const SendBidBox = ({ bid, msg, onChangeField, onSend, alret }) => {
   return (
     <FooterBlock>
       <Wrapper>
+        {alret && <AlretBlock>{alret}</AlretBlock>}
         <InputBoxBlock>
           <InputChatBlock>
             <input

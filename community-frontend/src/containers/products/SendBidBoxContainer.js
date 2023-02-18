@@ -8,6 +8,7 @@ const SendBidBoxContainer = () => {
   const { productId } = params;
   const [bid, setbid] = useState("");
   const [msg, setMsg] = useState("");
+  const [alret, setAlret] = useState(null);
 
   const onChangeField = (e) => {
     if (e.target.name === "bid") {
@@ -19,11 +20,14 @@ const SendBidBoxContainer = () => {
   };
 
   const onSend = (e) => {
-    console.log("@@@", productId, bid, msg);
     sendBid({ productId, bid, msg }).then(
       (result) => {
+        setAlret(result.data);
         setbid("");
         setMsg("");
+        setTimeout(() => {
+          setAlret(null);
+        }, 5000);
       },
       (e) => {
         console.log("에러발생");
@@ -37,6 +41,7 @@ const SendBidBoxContainer = () => {
       msg={msg}
       onChangeField={onChangeField}
       onSend={onSend}
+      alret={alret}
     />
   );
 };

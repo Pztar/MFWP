@@ -42,7 +42,7 @@ const product = handleActions(
     [UNLOAD_PRODUCT]: () => initialState,
     [CONCAT_AUCTION]: (state, { payload: data }) => ({
       ...state,
-      chats: [...state.auctions, data],
+      auctions: [...state.auctions, data],
     }),
   },
   initialState

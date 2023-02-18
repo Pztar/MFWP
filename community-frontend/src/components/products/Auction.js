@@ -27,7 +27,10 @@ const Wrapper = styled(Responsive)`
 `;
 
 const TopSpacer = styled.div`
-  height: 2rem;
+  height: 6.5rem;
+`;
+const BottomSpacer = styled.div`
+  height: 3.5rem;
 `;
 
 const ToggleSwitchBlock = styled.div`
@@ -36,15 +39,16 @@ const ToggleSwitchBlock = styled.div`
 `;
 
 const AuctionBlock = styled(Responsive)`
-  margin-top: 3rem;
-
-  table {
-    width: 100%;
+  .system {
+    justify-content: center;
   }
 
-  th {
-    border: solid 1px black;
-    padding: 3px 1px 3px 1px;
+  .myChat {
+    justify-content: end;
+  }
+
+  .othersChat {
+    justify-content: start;
   }
 `;
 
@@ -57,27 +61,6 @@ const ProductItemBlock = styled.tr`
     border-collapse: collapse;
     text-align: center;
     vertical-align: middle;
-    img {
-      height: 100px;
-      padding: 0px;
-      vertical-align: top;
-    }
-  }
-`;
-const MessageItemBlock = styled.div`
-  border: solid 1px black;
-  width: 100%;
-  td {
-    height: 30px;
-    border: solid 1px black;
-    border-collapse: collapse;
-    text-align: center;
-    vertical-align: middle;
-    img {
-      height: 100px;
-      padding: 0px;
-      vertical-align: top;
-    }
   }
 `;
 
@@ -144,16 +127,66 @@ const ProductItem = ({ product, serverTime }) => {
   );
 };
 
-const MessageItem = ({ auction }) => {
+const AuctionItemBlock = styled.div`
+  display: flex;
+  width: auto;
+
+  .system {
+  }
+
+  .myChat {
+    background-color: ${palette.gray[5]};
+  }
+
+  .othersChat {
+    background-color: ${palette.gray[3]};
+  }
+`;
+
+const ChatBubble = styled.div`
+  display: inline-block;
+  margin-top: 0.5rem;
+  border-radius: 10px;
+  padding: 0.5rem;
+
+  .chatNick {
+    font-weight: bold;
+  }
+  img {
+    padding: 0.5rem 0.25rem 0.2rem; //top right&left bottom
+  }
+`;
+
+const AuctionItem = ({ auction, user }) => {
   const { id, bid, msg, createdAt, User } = auction;
 
   return (
-    <MessageItemBlock>
-      <div>{new Date(createdAt).toLocaleString("en-ZA", { hour12: true })}</div>
-      <span>{User.nick}님: </span>
-      <strong>{bid}원에 입찰하셨습니다.</strong>
-      {msg ? <span>{msg}</span> : <span />}
-    </MessageItemBlock>
+    <AuctionItemBlock
+      className={
+        User.id === 0
+          ? "system"
+          : user.nick === User.nick
+          ? "myChat"
+          : "othersChat"
+      }
+    >
+      <ChatBubble
+        className={
+          User.id === 0
+            ? "system"
+            : user.nick === User.nick
+            ? "myChat"
+            : "othersChat"
+        }
+      >
+        <div>
+          {new Date(createdAt).toLocaleString("en-ZA", { hour12: true })}
+        </div>
+        <span>{User.nick}님: </span>
+        <div>입찰가: {bid}</div>
+        {msg ?? <div>{msg}</div>}
+      </ChatBubble>
+    </AuctionItemBlock>
   );
 };
 
@@ -162,6 +195,7 @@ const Auction = ({
   auctions,
   loading,
   error,
+  user,
   serverTime,
   onToggleAutoScroll,
 }) => {
@@ -220,10 +254,11 @@ const Auction = ({
         {!loading && auctions && (
           <div>
             {auctions.map((auction) => (
-              <MessageItem auction={auction} key={auction.id} />
+              <AuctionItem auction={auction} user={user} key={auction.id} />
             ))}
           </div>
         )}
+        <BottomSpacer />
       </AuctionBlock>
     </>
   );

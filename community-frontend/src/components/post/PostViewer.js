@@ -20,7 +20,18 @@ const PostHead = styled.div`
   }
 `;
 
-const PostContent = styled.div`
+const PostContentItemBlock = styled.div`
+  display: flex;
+  width: 100%;
+`;
+const PostContentIndex = styled.span`
+  margin: 0.3rem;
+  padding: 0.1rem;
+  background-color: #e4e4e4;
+  border-radius: 3px;
+`;
+
+const PostContentItem = styled.span`
   font-size: 1.3125rem;
   color: ${palette.gray[8]};
   img {
@@ -35,6 +46,15 @@ const PostContent = styled.div`
     background: gray;
   }
 `;
+
+const PostContent = ({ item, index }) => {
+  return (
+    <PostContentItemBlock>
+      <PostContentIndex>{index}</PostContentIndex>
+      <PostContentItem dangerouslySetInnerHTML={{ __html: item }} />
+    </PostContentItemBlock>
+  );
+};
 
 const PostViewer = ({ post, error, loading, actionButtons }) => {
   if (error) {
@@ -65,6 +85,11 @@ const PostViewer = ({ post, error, loading, actionButtons }) => {
   } = post;
   const postId = id;
   const likeCount = likes - unlikes;
+  const contents = content.match(
+    /(<iframe.*?<\/iframe>)|(<h\d.*?<\/h\d>)|(<p.*?<\/p>)|(<ul.*?<\/ul>)|(<ol.*?<\/ol>)|(<dl.*?<\/dl>)|(<table.*?<\/table>)|(<blockquote.*?<\/blockquote>)|(<pre.*?<\/pre>)|(<img.*?<\/img>)|(<a.*?<\/a>)|(<b.*?<\/b>)|(<i.*?<\/i>)|(<u.*?<\/u>)|(<s.*?<\/s>)|(<sub.*?<\/sub>)|(<sup.*?<\/sup>)/g
+  );
+  //<태그>로 시작하고 </태그>로 끝나는 최소단위의 문자열로 나눔 //사실 pre 태그 까지만 해도 될지도...?
+  console.log("히히", contents);
 
   return (
     <PostViewerBlock>
@@ -83,7 +108,9 @@ const PostViewer = ({ post, error, loading, actionButtons }) => {
         <Tags Hashtags={Hashtags} />
       </PostHead>
       {actionButtons}
-      <PostContent dangerouslySetInnerHTML={{ __html: content }} />
+      {contents.map((item, index, arr) => (
+        <PostContent item={item} index={index} />
+      ))}
     </PostViewerBlock>
   );
 };

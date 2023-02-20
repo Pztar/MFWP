@@ -36,7 +36,7 @@ const QuillWrapper = styled.div`
     left: 0px;
   }
   iframe {
-    width: 95%;
+    width: 90%;
     aspect-ratio: auto 16 / 9;
     background: gray;
   }

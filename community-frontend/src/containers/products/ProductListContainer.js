@@ -20,13 +20,12 @@ const ProductListContainer = () => {
   );
 
   useEffect(() => {
-    const { productId } = params;
-    const { page, category } = qs.parse(search, {
+    const { page, category, userId } = qs.parse(search, {
       ignoreQueryPrefix: true,
     });
 
-    dispatch(listProducts({ productId, page, category }));
-  }, [dispatch, search, params]);
+    dispatch(listProducts({ page, category, userId }));
+  }, [dispatch, search]);
 
   useScript("https://unpkg.com/event-source-polyfill/src/eventsource.min.js");
 

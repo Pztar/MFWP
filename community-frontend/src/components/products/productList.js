@@ -3,17 +3,27 @@ import { Link } from "react-router-dom";
 import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
 import Responsive from "../common/Responsive";
+import { useEffect, useState } from "react";
 
 const ProductLitstBlock = styled(Responsive)`
   margin-top: 3rem;
 
   table {
     width: 100%;
-  }
 
-  th {
-    border: solid 1px black;
-    padding: 3px 1px 3px 1px;
+    th {
+      width: auto;
+      border: solid 1px black;
+      padding: 3px 1px 3px 1px;
+    }
+    /* 
+    table-layout: fixed;
+    white-space: nowrap;
+    .hideOverflow {
+      overflow: inherit;
+      overflow-wrap: normal;
+      text-overflow: ellipsis;
+    } */
   }
 `;
 
@@ -41,7 +51,7 @@ const ProductItemBlock = styled.tr`
   }
 `;
 
-const ProductItem = ({ product, serverTime, logedIn }) => {
+const ProductItem = ({ product, serverTime, logedIn, setSoldList }) => {
   const {
     id,
     name,
@@ -53,9 +63,9 @@ const ProductItem = ({ product, serverTime, logedIn }) => {
     createdAt,
     OwnerId,
     Owner,
+    Sold,
   } = product;
   const productId = id;
-  const OwnerNick = Owner.nick;
   const end = new Date(terminatedAt); // 경매 종료 시간
   let restTime = "00d00:00:00";
   if (serverTime >= end) {
@@ -69,6 +79,11 @@ const ProductItem = ({ product, serverTime, logedIn }) => {
     const days = ("0" + Math.floor(t / (1000 * 60 * 60 * 24))).slice(-2);
     restTime = days + "d" + hours + ":" + minutes + ":" + seconds;
   }
+  if (Sold) {
+    setSoldList(true);
+  } else {
+    setSoldList(false);
+  }
   return (
     <ProductItemBlock>
       <td>
@@ -77,13 +92,13 @@ const ProductItem = ({ product, serverTime, logedIn }) => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {OwnerNick}
+          {Owner.nick}
         </Link>
       </td>
       <td>{name}</td>
       <td>{category}</td>
       <td>{img ? <img src={`${img}`} alt="productImg" /> : "null"}</td>
-      <td>
+      <td className="hideOverflow">
         {explanation ? (
           <a
             href={`http://${explanation}`}
@@ -107,6 +122,7 @@ const ProductItem = ({ product, serverTime, logedIn }) => {
           "로그인 필요"
         )}
       </td>
+      {Sold && <td>{Sold.nick}</td>}
     </ProductItemBlock>
   );
 };
@@ -118,6 +134,7 @@ const ProductList = ({
   showRegistProductButton,
   serverTime,
 }) => {
+  const [soldList, setSoldList] = useState(false);
   const ServerTime = new Date(parseInt(serverTime, 10));
   const timeToLocale = ServerTime.toLocaleString("en-ZA", { hour12: true });
 
@@ -130,6 +147,15 @@ const ProductList = ({
     <ProductLitstBlock>
       <RegistProductButtonWrapper>
         <span>서버시간: {timeToLocale}</span>
+        {!soldList ? (
+          <Button cyan to="/auction?userId=0">
+            낙찰된 경매 이동
+          </Button>
+        ) : (
+          <Button cyan to="/auction">
+            진행중인 경매 이동
+          </Button>
+        )}
         {showRegistProductButton && (
           <Button cyan to="/resistProduct" target="_blank">
             상품등록
@@ -143,11 +169,12 @@ const ProductList = ({
               <th>판매자</th>
               <th>상품명</th>
               <th>카테고리</th>
-              <th className="tdImg">이미지</th>
-              <th className="tdLink">설명(링크)</th>
+              <th>이미지</th>
+              <th>설명(링크)</th>
               <th>시작 가격</th>
-              <th className="tdImg">잔여 시간</th>
+              <th>잔여 시간</th>
               <th>입장</th>
+              {soldList && <th className="hideOverflow">구매자</th>}
             </ProductItemBlock>
           </thead>
           <tbody>
@@ -157,6 +184,7 @@ const ProductList = ({
                 key={product.id}
                 serverTime={serverTime}
                 logedIn={showRegistProductButton}
+                setSoldList={setSoldList}
               />
             ))}
           </tbody>

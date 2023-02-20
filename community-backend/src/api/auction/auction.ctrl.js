@@ -5,26 +5,75 @@ import { setSoldId } from "../../lib/checkAuction";
 
 export const listProducts = async (ctx, next) => {
   const page = parseInt(ctx.query.page || "1", 10);
-  const category = ctx.query.category;
+  const { category, userId } = ctx.query;
+
   if (page < 1) {
     ctx.status = 400;
     return;
   }
   try {
-    const now = new Date();
-    const { count, rows } = await db.Product.findAndCountAll({
-      where: { SoldId: null, terminatedAt: { [Op.gte]: now } },
-      include: {
-        model: db.User,
-        attributes: ["id", "nick"],
-        as: "Owner",
-      },
-      limit: 20,
-      offset: (page - 1) * 20,
-      order: [["createdAt", "DESC"]],
-    });
-    const products = rows;
-    const productsCount = count;
+    let products = null;
+    let productsCount = null;
+    if (userId) {
+      if (userId == 0) {
+        const { count, rows } = await db.Product.findAndCountAll({
+          where: { SoldId: { [Op.gte]: 0 } },
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nick"],
+              as: "Owner",
+            },
+            {
+              model: db.User,
+              attributes: ["id", "nick"],
+              as: "Sold",
+            },
+          ],
+          limit: 20,
+          offset: (page - 1) * 20,
+          order: [["createdAt", "DESC"]],
+        });
+        products = rows;
+        productsCount = count;
+      } else {
+        const { count, rows } = await db.Product.findAndCountAll({
+          where: { SoldId: userId },
+          include: [
+            {
+              model: db.User,
+              attributes: ["id", "nick"],
+              as: "Owner",
+            },
+            {
+              model: db.User,
+              attributes: ["id", "nick"],
+              as: "Sold",
+            },
+          ],
+          limit: 20,
+          offset: (page - 1) * 20,
+          order: [["createdAt", "DESC"]],
+        });
+        products = rows;
+        productsCount = count;
+      }
+    } else {
+      const now = new Date();
+      const { count, rows } = await db.Product.findAndCountAll({
+        where: { SoldId: null, terminatedAt: { [Op.gte]: now } },
+        include: {
+          model: db.User,
+          attributes: ["id", "nick"],
+          as: "Owner",
+        },
+        limit: 20,
+        offset: (page - 1) * 20,
+        order: [["createdAt", "DESC"]],
+      });
+      products = rows;
+      productsCount = count;
+    }
     ctx.set("Last-Page", Math.ceil(productsCount / 20));
     ctx.body = products;
   } catch (error) {

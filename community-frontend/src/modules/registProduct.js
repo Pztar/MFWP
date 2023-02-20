@@ -67,7 +67,7 @@ const initialState = {
   img: "",
   explanation: "",
   price: 0,
-  terminatedAt: new Date(),
+  terminatedAt: null,
   product: null,
   productError: null,
 };

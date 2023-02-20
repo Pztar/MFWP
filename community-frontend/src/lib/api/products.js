@@ -1,10 +1,11 @@
 import qs from "qs";
 import client from "./client";
 
-export const listProducts = ({ page, category }) => {
+export const listProducts = ({ page, category, userId }) => {
   const queryString = qs.stringify({
     page,
     category,
+    userId,
   });
   return client.get(`/api/auction?${queryString}`);
 };

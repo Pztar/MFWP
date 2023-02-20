@@ -10,9 +10,10 @@ const [LIST_PRODUCTS, LIST_PRODUCTS_SUCCESS, LIST_PRODUCTS_FAILURE] =
 
 export const listProducts = createAction(
   LIST_PRODUCTS,
-  ({ category, page }) => ({
+  ({ category, page, userId }) => ({
     category,
     page,
+    userId,
   })
 );
 

@@ -46,6 +46,11 @@ const writeCommentSaga = createRequestSaga(
 );
 //const updateCommentSaga = createRequestSaga(UPDATE_COMMENT, postsAPI.updateComment);
 
+export function* commentSaga() {
+  yield takeLatest(WRITE_COMMENT, writeCommentSaga);
+  // yield takeLatest(UPDATE_COMMENT, updateCommentSaga);
+}
+
 const initialState = {
   ordinalNumber: "",
   content: "",

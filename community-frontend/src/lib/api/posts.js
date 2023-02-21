@@ -22,3 +22,6 @@ export const updatePost = ({ postId, title, content }) =>
   });
 
 export const removePost = (postId) => client.delete(`/api/posts/${postId}`);
+
+export const writeComment = ({ postId, ordinalNumber, content }) =>
+  client.post(`/api/posts/${postId}/comment`, { ordinalNumber, content });

@@ -105,29 +105,30 @@ const PostViewer = ({ post, error, loading, actionButtons }) => {
   }
 
   //<태그>로 시작하고 </태그>로 끝나는 최소단위의 문자열로 나눔 //사실 pre 태그 까지만 해도 될지도...?
-  console.log("히히", contents);
 
   return (
-    <PostViewerBlock>
-      <Helmet>
-        <title>{title} - REACTERS</title>
-      </Helmet>
-      <PostHead>
-        <h1>{title}</h1>
-        <SubInfo
-          user={User}
-          createdTime={new Date(createdAt)}
-          updatedTime={new Date(updatedAt)}
-          likeCount={likeCount}
-          hasMarginTop
-        />
-        <Tags Hashtags={Hashtags} />
-      </PostHead>
-      {actionButtons}
-      {contents.map((item, index, arr) => (
-        <PostContent item={item} index={index} />
-      ))}
-    </PostViewerBlock>
+    <>
+      <PostViewerBlock>
+        <Helmet>
+          <title>{title} - REACTERS</title>
+        </Helmet>
+        <PostHead>
+          <h1>{title}</h1>
+          <SubInfo
+            user={User}
+            createdTime={new Date(createdAt)}
+            updatedTime={new Date(updatedAt)}
+            likeCount={likeCount}
+            hasMarginTop
+          />
+          <Tags Hashtags={Hashtags} />
+        </PostHead>
+        {actionButtons}
+        {contents.map((item, index, arr) => (
+          <PostContent item={item} index={index} key={index} />
+        ))}
+      </PostViewerBlock>
+    </>
   );
 };
 

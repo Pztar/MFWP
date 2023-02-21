@@ -7,28 +7,7 @@ const { Post, User, Hashtag } = db;
 //const { ObjectId } = mongoose.Types;
 
 const sanitizeOption = {
-  allowedTags: [
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "h5",
-    "h6",
-    "b",
-    "i",
-    "u",
-    "s",
-    "pre",
-    "sub",
-    "sup",
-    "ul",
-    "ol",
-    "li",
-    "blockquote",
-    "a",
-    "img",
-    "iframe",
-  ],
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat(["iframe"]),
   allowedAttributes: {
     a: ["href", "name", "target"],
     img: ["src", "style", "width", "height", "align"],

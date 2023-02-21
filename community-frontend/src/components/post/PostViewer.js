@@ -29,11 +29,32 @@ const PostContentIndex = styled.span`
   padding: 0.1rem;
   background-color: #e4e4e4;
   border-radius: 3px;
+  width: auto;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 
 const PostContentItem = styled.span`
   font-size: 1.3125rem;
   color: ${palette.gray[8]};
+  width: 98%;
+  white-space: nowrap;
+
+  ul {
+    display: list-item;
+    padding-left: 2rem;
+    li {
+      list-style: initial;
+    }
+  }
+  ol {
+    display: list-item;
+    padding-left: 2rem;
+    li {
+      list-style-type: decimal;
+    }
+  }
   img {
     max-width: 100%;
     min-width: 3%;
@@ -85,9 +106,14 @@ const PostViewer = ({ post, error, loading, actionButtons }) => {
   } = post;
   const postId = id;
   const likeCount = likes - unlikes;
-  const contents = content.match(
-    /(<iframe.*?<\/iframe>)|(<h\d.*?<\/h\d>)|(<p.*?<\/p>)|(<ul.*?<\/ul>)|(<ol.*?<\/ol>)|(<dl.*?<\/dl>)|(<table.*?<\/table>)|(<blockquote.*?<\/blockquote>)|(<pre.*?<\/pre>)|(<img.*?<\/img>)|(<a.*?<\/a>)|(<b.*?<\/b>)|(<i.*?<\/i>)|(<u.*?<\/u>)|(<s.*?<\/s>)|(<sub.*?<\/sub>)|(<sup.*?<\/sup>)/g
-  );
+  const regExp =
+    /(<iframe.*?<\/iframe>)|(<h\d.*?<\/h\d>)|(<p.*?<\/p>)|(<ul.*?<\/ul>)|(<ol.*?<\/ol>)|(<dl.*?<\/dl>)|(<table.*?<\/table>)|(<blockquote.*?<\/blockquote>)|(<pre.*?<\/pre>)|(<img.*?<\/img>)|(<a.*?<\/a>)|(<b.*?<\/b>)|(<i.*?<\/i>)|(<u.*?<\/u>)|(<s.*?<\/s>)|(<sub.*?<\/sub>)|(<sup.*?<\/sup>)/g;
+  //일반적이지 못해서 비효율적이지만 효과는 가장 좋음...
+  let contents = content.match(regExp);
+  if (contents === null) {
+    contents = [content];
+  }
+
   //<태그>로 시작하고 </태그>로 끝나는 최소단위의 문자열로 나눔 //사실 pre 태그 까지만 해도 될지도...?
   console.log("히히", contents);
 

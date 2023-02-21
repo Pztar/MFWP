@@ -36,25 +36,15 @@ const PostContentIndex = styled.span`
 `;
 
 const PostContentItem = styled.span`
+  > * {
+    margin: 0.3rem auto 0.3rem;
+    padding: 0.3rem auto 0.3rem;
+  }
   font-size: 1.3125rem;
   color: ${palette.gray[8]};
   width: 98%;
   white-space: nowrap;
 
-  ul {
-    display: list-item;
-    padding-left: 2rem;
-    li {
-      list-style: initial;
-    }
-  }
-  ol {
-    display: list-item;
-    padding-left: 2rem;
-    li {
-      list-style-type: decimal;
-    }
-  }
   img {
     max-width: 100%;
     min-width: 3%;

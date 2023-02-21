@@ -18,7 +18,7 @@ import ChatPage from "./pages/ChatPage";
 const App = () => {
   return (
     <>
-      <Reset />
+      {/* <Reset /> */}
       <Helmet>
         <title>REACTERS</title>
       </Helmet>

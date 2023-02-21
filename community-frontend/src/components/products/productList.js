@@ -5,6 +5,10 @@ import Button from "../common/Button";
 import Responsive from "../common/Responsive";
 import { useEffect, useState } from "react";
 
+const Spacer = styled.div`
+  height: 1rem;
+`;
+
 const ProductLitstBlock = styled(Responsive)`
   margin-top: 3rem;
 
@@ -190,6 +194,7 @@ const ProductList = ({
           </tbody>
         </table>
       )}
+      <Spacer />
     </ProductLitstBlock>
   );
 };

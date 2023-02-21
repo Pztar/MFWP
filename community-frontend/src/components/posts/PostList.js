@@ -18,8 +18,8 @@ const WritePostButtonWrapper = styled.div`
 `;
 
 const PostItemBlock = styled.div`
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  margin: 0.3rem auto 0.3rem;
+  padding: 0.5rem;
   &:first-child {
     padding-top: 0;
   }

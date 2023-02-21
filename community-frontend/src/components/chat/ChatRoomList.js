@@ -5,6 +5,9 @@ import Button from "../common/Button";
 import Responsive from "../common/Responsive";
 import { useState } from "react";
 //import Tags from "../common/Tags";
+const Spacer = styled.div`
+  height: 1rem;
+`;
 
 const RoomLitstBlock = styled(Responsive)`
   margin-top: 3rem;
@@ -184,6 +187,7 @@ const ChatRoomList = ({ rooms, loading, error, loggedIn }) => {
           )}
         </table>
       </RoomLitstBlock>
+      <Spacer />
     </>
   );
 };

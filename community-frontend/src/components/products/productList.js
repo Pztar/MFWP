@@ -14,20 +14,19 @@ const ProductLitstBlock = styled(Responsive)`
 
   table {
     width: 100%;
+    border-collapse: collapse;
 
     th {
       width: auto;
       border: solid 1px black;
       padding: 3px 1px 3px 1px;
     }
-    /* 
-    table-layout: fixed;
-    white-space: nowrap;
-    .hideOverflow {
-      overflow: inherit;
-      overflow-wrap: normal;
-      text-overflow: ellipsis;
-    } */
+    td {
+      height: 30px;
+      border: solid 1px black;
+      text-align: center;
+      vertical-align: middle;
+    }
   }
 `;
 
@@ -41,18 +40,6 @@ const RegistProductButtonWrapper = styled.div`
 const ProductItemBlock = styled.tr`
   border: solid 1px black;
   width: 100%;
-  td {
-    height: 30px;
-    border: solid 1px black;
-    border-collapse: collapse;
-    text-align: center;
-    vertical-align: middle;
-    img {
-      height: 100px;
-      padding: 0px;
-      vertical-align: top;
-    }
-  }
 `;
 
 const ProductItem = ({ product, serverTime, logedIn, setSoldList }) => {

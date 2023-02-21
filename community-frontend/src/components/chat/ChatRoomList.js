@@ -14,11 +14,18 @@ const RoomLitstBlock = styled(Responsive)`
 
   table {
     width: 100%;
+    border-collapse: collapse; //태두리 간격
   }
 
   th {
     border: solid 1px black;
     padding: 3px 1px 3px 1px;
+  }
+  td {
+    height: 30px;
+    border: solid 1px black;
+    text-align: center;
+    vertical-align: middle;
   }
 `;
 
@@ -85,13 +92,6 @@ const CreateRoomButtonWrapper = styled.div`
 const RoomItemBlock = styled.tr`
   border: solid 1px black;
   width: 100%;
-  td {
-    height: 30px;
-    border: solid 1px black;
-    border-collapse: collapse;
-    text-align: center;
-    vertical-align: middle;
-  }
 `;
 
 const RoomItem = ({ room, loggedIn }) => {

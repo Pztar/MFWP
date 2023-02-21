@@ -10,6 +10,7 @@ const HeaderBlock = styled.div`
   width: 100%;
   background: ${palette.gray[0]};
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+  padding-bottom: 0.3rem;
 `;
 
 const Wrapper = styled(Responsive)`
@@ -22,7 +23,25 @@ const Wrapper = styled(Responsive)`
   }
   table {
     width: 100%;
-    margin: 0.3rem;
+    border-collapse: collapse;
+    margin-top: 0.3rem;
+
+    th {
+      width: auto;
+      border: solid 1px black;
+      padding: 3px 1px 3px 1px;
+    }
+    td {
+      height: 30px;
+      border: solid 1px black;
+      text-align: center;
+      vertical-align: middle;
+      img {
+        height: 100px;
+        padding: 0px;
+        vertical-align: top;
+      }
+    }
   }
 `;
 
@@ -55,13 +74,6 @@ const AuctionBlock = styled(Responsive)`
 const ProductItemBlock = styled.tr`
   border: solid 1px black;
   width: 100%;
-  td {
-    height: 30px;
-    border: solid 1px black;
-    border-collapse: collapse;
-    text-align: center;
-    vertical-align: middle;
-  }
 `;
 
 const ProductItem = ({ product, serverTime }) => {

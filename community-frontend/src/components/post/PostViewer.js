@@ -11,6 +11,7 @@ const PostViewerBlock = styled(Responsive)`
   .hide {
     max-height: 0;
     overflow: hidden;
+    margin: 0;
   }
 `;
 

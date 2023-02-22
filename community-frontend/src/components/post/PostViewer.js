@@ -4,9 +4,14 @@ import Responsive from "../common/Responsive";
 import SubInfo from "../common/SubInfo";
 import Tags from "../common/Tags";
 import { Helmet } from "react-helmet-async";
+import { useState } from "react";
 
 const PostViewerBlock = styled(Responsive)`
   margin-top: 4rem;
+  .hide {
+    max-height: 0;
+    overflow: hidden;
+  }
 `;
 
 const PostHead = styled.div`
@@ -20,7 +25,42 @@ const PostHead = styled.div`
   }
 `;
 
-const PostContentItemBlock = styled.div`
+const CommentItemBox = styled.div`
+  display: flex;
+  justify-content: end;
+  width: 100%;
+`;
+
+const CommentItemBlock = styled.div`
+  border: 1px black solid;
+  width: 100%;
+  padding: 0.3rem 0.5rem;
+`;
+const CommentSubinfo = styled(SubInfo)`
+  margin-top: 0;
+`;
+
+const CommentContent = styled.div`
+  width: 100%;
+`;
+
+const CommentItem = ({ comment }) => {
+  return (
+    <CommentItemBox>
+      <CommentItemBlock>
+        <CommentSubinfo
+          user={comment.User}
+          createdTime={new Date(comment.createdAt)}
+          updatedTime={new Date(comment.updatedAt)}
+          likeCount={comment.likeCount}
+        />
+        <CommentContent dangerouslySetInnerHTML={{ __html: comment.content }} />
+      </CommentItemBlock>
+    </CommentItemBox>
+  );
+};
+
+const PostContentItemBlock = styled.span`
   display: flex;
   width: 100%;
 `;
@@ -29,7 +69,7 @@ const PostContentIndex = styled.span`
   padding: 0.1rem;
   background-color: #e4e4e4;
   border-radius: 3px;
-  width: auto;
+  width: 5%;
   justify-content: center;
   align-items: center;
   text-align: center;
@@ -58,16 +98,40 @@ const PostContentItem = styled.span`
   }
 `;
 
-const PostContent = ({ item, index }) => {
+const PostContentFlagedComment = styled.div`
+  overflow: auto;
+  max-height: 30rem;
+  transition: all 0.2s ease-in-out;
+  //height:auto일 경우 적용 안됨 하지만 max-height값으로 적용 가능함
+  margin: 0 0 1rem 2rem;
+`;
+
+const PostContent = ({ item, index, comments }) => {
+  const [showFlagedComment, setShowFlagedComment] = useState(false);
   return (
-    <PostContentItemBlock>
-      <PostContentIndex>{index}</PostContentIndex>
-      <PostContentItem dangerouslySetInnerHTML={{ __html: item }} />
-    </PostContentItemBlock>
+    <>
+      <PostContentItemBlock>
+        <PostContentIndex
+          onClick={(e) => {
+            setShowFlagedComment(!showFlagedComment);
+          }}
+        >
+          <div>{index}</div>
+          <div>{comments && "[" + comments.length + "]"}</div>
+        </PostContentIndex>
+        <PostContentItem dangerouslySetInnerHTML={{ __html: item }} />
+      </PostContentItemBlock>
+      <PostContentFlagedComment className={showFlagedComment ? "show" : "hide"}>
+        {comments &&
+          comments.map((comment) => {
+            return <CommentItem comment={comment} key={comment.id} />;
+          })}
+      </PostContentFlagedComment>
+    </>
   );
 };
 
-const PostViewer = ({ post, error, loading, actionButtons }) => {
+const PostViewer = ({ post, comments, error, loading, actionButtons }) => {
   if (error) {
     if (error.response && error.response.status === 404) {
       return <PostViewerBlock>존재하지 않는 포스트입니다.</PostViewerBlock>;
@@ -82,7 +146,6 @@ const PostViewer = ({ post, error, loading, actionButtons }) => {
   if (!post) {
     return <div>포스트 데이터가 없습니다</div>;
   }
-
   const {
     id,
     title,
@@ -96,15 +159,33 @@ const PostViewer = ({ post, error, loading, actionButtons }) => {
   } = post;
   const postId = id;
   const likeCount = likes - unlikes;
+
   const regExp =
     /(<iframe.*?<\/iframe>)|(<h\d.*?<\/h\d>)|(<p.*?<\/p>)|(<ul.*?<\/ul>)|(<ol.*?<\/ol>)|(<dl.*?<\/dl>)|(<table.*?<\/table>)|(<blockquote.*?<\/blockquote>)|(<pre.*?<\/pre>)|(<img.*?<\/img>)|(<a.*?<\/a>)|(<b.*?<\/b>)|(<i.*?<\/i>)|(<u.*?<\/u>)|(<s.*?<\/s>)|(<sub.*?<\/sub>)|(<sup.*?<\/sup>)/g;
   //일반적이지 못해서 비효율적이지만 효과는 가장 좋음...
+  //<태그>로 시작하고 </태그>로 끝나는 최소단위의 문자열로 나눔 //사실 pre 태그 까지만 해도 될지도...?
+
   let contents = content.match(regExp);
   if (contents === null) {
     contents = [content];
   }
 
-  //<태그>로 시작하고 </태그>로 끝나는 최소단위의 문자열로 나눔 //사실 pre 태그 까지만 해도 될지도...?
+  const comments2dArr = new Array(contents.length);
+
+  for (let i = 0; i < comments.length; i++) {
+    const comment = comments[i];
+    if (comment.ordinalNumber > -1 && comment.ordinalNumber < contents.length) {
+      if (Array.isArray(comments2dArr[comment.ordinalNumber])) {
+        comments2dArr[comment.ordinalNumber].push(comment);
+
+        comments2dArr[comment.ordinalNumber].length =
+          comments2dArr[comment.ordinalNumber].length + 1;
+      } else {
+        comments2dArr[comment.ordinalNumber] = [comment];
+        comments2dArr[comment.ordinalNumber].length = 1;
+      }
+    }
+  }
 
   return (
     <>
@@ -125,7 +206,15 @@ const PostViewer = ({ post, error, loading, actionButtons }) => {
         </PostHead>
         {actionButtons}
         {contents.map((item, index, arr) => (
-          <PostContent item={item} index={index} key={index} />
+          <PostContent
+            item={item}
+            index={index}
+            comments={comments2dArr[index]}
+            key={index}
+          />
+        ))}
+        {comments.map((comment) => (
+          <CommentItem comment={comment} key={comment.id} />
         ))}
       </PostViewerBlock>
     </>

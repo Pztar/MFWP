@@ -3,7 +3,7 @@ import db from "../../../models";
 import sanitizeHtml from "sanitize-html";
 import sanitizeOption from "./sanitizeOption";
 
-const { Post, User, Hashtag } = db;
+const { Post, User, Hashtag, Comment } = db;
 
 //const { ObjectId } = mongoose.Types;
 
@@ -153,7 +153,18 @@ export const list = async (ctx, next) => {
 };
 
 export const read = async (ctx) => {
-  ctx.body = ctx.state.post;
+  const post = ctx.state.post;
+  const comments = await Comment.findAll({
+    where: { postId: post.id },
+    include: [
+      {
+        model: User,
+        attributes: ["id", "nick"],
+      },
+    ],
+  });
+  const postAndComments = { post, comments };
+  ctx.body = postAndComments;
 };
 
 export const remove = async (ctx) => {

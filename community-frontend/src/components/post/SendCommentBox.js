@@ -8,10 +8,16 @@ import Button from "../common/Button";
 
 const CommentViewerBlock = styled.div`
   width: 100%;
+  .hide {
+    height: 0;
+    //display: none 으로 설정시 언마운트 되어 transition 효과가 적용되지 않음
+    //이 경우 React Transition Group 모듈 설치 필요
+  }
 `;
 
 const Spacer = styled.div`
   height: 20rem;
+  transition: all 0.2s ease-in-out;
 `;
 
 const FooterBlock = styled.div`
@@ -23,9 +29,6 @@ const FooterBlock = styled.div`
 const Wrapper = styled(Responsive)`
   padding: 0;
   width: 100%;
-  .hide {
-    display: none;
-  }
 `;
 
 const SetRightBlock = styled.div`
@@ -49,6 +52,7 @@ const InputBlock = styled.div`
   background-color: white;
   width: 100%;
   height: 14.5rem;
+  transition: all 0.2s ease-in-out;
   .ql-toolbar {
     padding: 0.2rem;
   }
@@ -108,6 +112,7 @@ const SendCommentBox = ({
             <SendCommentBlock>
               <input
                 type="number"
+                min="-1"
                 placeholder="본문 문단 번호"
                 name="ordinalNumber"
                 value={ordinalNumber}

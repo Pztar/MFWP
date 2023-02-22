@@ -19,14 +19,16 @@ export function* postSaga() {
 
 const initialState = {
   post: null,
+  comments: null,
   error: null,
 };
 
 const post = handleActions(
   {
-    [READ_POST_SUCCESS]: (state, { payload: post }) => ({
+    [READ_POST_SUCCESS]: (state, { payload: postAndComments }) => ({
       ...state,
-      post,
+      post: postAndComments.post,
+      comments: postAndComments.comments,
     }),
     [READ_POST_FIALURE]: (state, { payload: error }) => ({
       ...state,

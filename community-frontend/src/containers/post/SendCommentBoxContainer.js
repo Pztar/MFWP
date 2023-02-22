@@ -15,7 +15,7 @@ const SendCommentBoxContainer = () => {
   const navigate = useNavigate();
   const { ordinalNumber, content, comment, commentError, originalCommentId } =
     useSelector(({ comment }) => ({
-      ordinalNumber: comment.title,
+      ordinalNumber: comment.ordinalNumber,
       content: comment.content,
       comment: comment.comment,
       commentError: comment.commentError,

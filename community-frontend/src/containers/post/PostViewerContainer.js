@@ -11,9 +11,10 @@ const PostViewerContainer = () => {
   const { postId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { post, error, loading, user } = useSelector(
-    ({ post, loading, user, comment }) => ({
+  const { post, comments, error, loading, user } = useSelector(
+    ({ post, loading, user }) => ({
       post: post.post,
+      comments: post.comments,
       error: post.error,
       loading: loading["post/READ_POST"],
       user: user.user,
@@ -22,6 +23,7 @@ const PostViewerContainer = () => {
 
   useEffect(() => {
     dispatch(readPost(postId));
+
     return () => {
       dispatch(unloadPost());
     };
@@ -46,6 +48,7 @@ const PostViewerContainer = () => {
   return (
     <PostViewer
       post={post}
+      comments={comments}
       loading={loading}
       error={error}
       actionButtons={

@@ -7,7 +7,7 @@ export default class Comment extends Sequelize.Model {
         ordinalNumber: {
           type: Sequelize.SMALLINT,
           allowNull: false,
-          defaultValue: 0,
+          defaultValue: -1,
         },
         content: {
           type: Sequelize.STRING(1000),

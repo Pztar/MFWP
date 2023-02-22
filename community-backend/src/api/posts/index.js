@@ -1,6 +1,7 @@
 import Router from "koa-router";
 import checkLoggedIn from "../../lib/checkLoggedIn";
-import * as postsCtrl from "./Posts.ctrl";
+import * as postsCtrl from "./posts.ctrl";
+import * as commentsCtrl from "./comments.ctrl";
 
 const posts = new Router();
 
@@ -22,5 +23,7 @@ posts.patch(
   postsCtrl.unassociateHashtag,
   postsCtrl.update
 );
+
+posts.post("/:postId/comment", checkLoggedIn, commentsCtrl.write);
 
 export default posts;

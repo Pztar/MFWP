@@ -1,28 +1,11 @@
 import Joi from "joi";
-import sanitizeHtml from "sanitize-html";
 import db from "../../../models";
+import sanitizeHtml from "sanitize-html";
+import sanitizeOption from "./sanitizeOption";
 
 const { Post, User, Hashtag } = db;
 
 //const { ObjectId } = mongoose.Types;
-
-const sanitizeOption = {
-  allowedTags: sanitizeHtml.defaults.allowedTags.concat(["iframe"]),
-  allowedAttributes: {
-    a: ["href", "name", "target"],
-    img: ["src", "style", "width", "height", "align"],
-    iframe: [
-      "src",
-      "class",
-      "frameborder",
-      "allowfullscreen",
-      "width",
-      "height",
-    ],
-    li: ["class"],
-  },
-  allowedSchemes: ["data", "http", "https"],
-};
 
 export const getPostById = async (ctx, next) => {
   const { postId } = ctx.params;

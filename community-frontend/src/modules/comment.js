@@ -20,10 +20,7 @@ export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
 }));
 export const writeComment = createAction(
   WRITE_COMMENT,
-  ({ ordinalNumber, content }) => ({
-    ordinalNumber,
-    content,
-  })
+  ({ postId, ordinalNumber, content }) => ({ postId, ordinalNumber, content })
 );
 
 export const setOriginalCommenet = createAction(
@@ -33,9 +30,9 @@ export const setOriginalCommenet = createAction(
 
 export const updateComment = createAction(
   UPDATE_COMMENT,
-  ({ commentId, title, content }) => ({
+  ({ commentId, ordinalNumber, content }) => ({
     commentId,
-    title,
+    ordinalNumber,
     content,
   })
 );

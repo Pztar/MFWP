@@ -12,7 +12,7 @@ const PostViewerContainer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { post, error, loading, user } = useSelector(
-    ({ post, loading, user }) => ({
+    ({ post, loading, user, comment }) => ({
       post: post.post,
       error: post.error,
       loading: loading["post/READ_POST"],

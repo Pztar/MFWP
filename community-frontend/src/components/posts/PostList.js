@@ -66,7 +66,7 @@ const PostItem = ({ post }) => {
         likeCount={likeCount}
       />
       <h2>
-        <Link to={`/${userId}/${postId}`}>{title}</Link>
+        <Link to={`/posts/${userId}/${postId}`}>{title}</Link>
       </h2>
       {/*<Tags tags={tags} /> */}
       {/*<p>{content}</p> */}
@@ -83,7 +83,7 @@ const PostList = ({ posts, loading, error, showWriteButton }) => {
     <PostLitstBlock>
       <WritePostButtonWrapper>
         {showWriteButton && (
-          <Button cyan to="/write">
+          <Button cyan to="/posts/write">
             새 글 작성하기
           </Button>
         )}

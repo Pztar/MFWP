@@ -33,7 +33,7 @@ const SubInfo = ({
     <SubInfoBlock hasMarginTop={hasMarginTop}>
       <span>
         <b>
-          <Link to={`/${userId}`}>{nick}</Link>
+          <Link to={`/posts/${userId}`}>{nick}</Link>
         </b>
       </span>
       <span>

@@ -31,8 +31,8 @@ const App = () => {
         <Route element={<RegisterPage />} path="/register" />
         <Route element={<PostListPage />} path={"/posts"} />
         <Route element={<PostListPage />} path={"/posts/:userId"} />
-        <Route element={<WritePage />} path="/write" />
-        <Route element={<PostPage />} path="/:userId/:postId" />
+        <Route element={<WritePage />} path="/posts/write" />
+        <Route element={<PostPage />} path="/posts/:userId/:postId" />
         <Route element={<ChatRoomListPage />} path="/chat" />
         <Route element={<CreateRoomPage />} path="/chat/createRoom" />
         <Route element={<ChatPage />} path="/chat/:roomId" />

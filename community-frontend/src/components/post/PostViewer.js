@@ -75,9 +75,11 @@ const CommentItem = ({ comment, showAllComment }) => {
         </CommentSubinfoBlock>
         <CommentContentBlock>
           {showAllComment && (
-            <OrdinalNumberBlock>
-              {comment.ordinalNumber === -1 ? "null" : comment.ordinalNumber}
-            </OrdinalNumberBlock>
+            <a href={"#" + comment.ordinalNumber}>
+              <OrdinalNumberBlock>
+                {comment.ordinalNumber === -1 ? "null" : comment.ordinalNumber}
+              </OrdinalNumberBlock>
+            </a>
           )}
           <CommentContent
             dangerouslySetInnerHTML={{ __html: comment.content }}
@@ -144,7 +146,7 @@ const PostContent = ({ item, index, comments }) => {
             setShowFlagedComment(!showFlagedComment);
           }}
         >
-          <div>{index}</div>
+          <div id={index}>{index}</div>
           <div>{comments && "[" + comments.length + "]"}</div>
         </PostContentIndex>
         <PostContentItem dangerouslySetInnerHTML={{ __html: item }} />

@@ -4,7 +4,7 @@ import Responsive from "../common/Responsive";
 import SubInfo from "../common/SubInfo";
 import Tags from "../common/Tags";
 import { Helmet } from "react-helmet-async";
-import { useRef, useState } from "react";
+import { forwardRef, useRef, useState } from "react";
 
 const PostViewerBlock = styled(Responsive)`
   margin-top: 4rem;
@@ -12,6 +12,11 @@ const PostViewerBlock = styled(Responsive)`
     max-height: 0;
     overflow: hidden;
     margin: 0;
+  }
+  .hoverClick {
+    &:hover {
+      cursor: zoom-in;
+    }
   }
 `;
 
@@ -61,34 +66,51 @@ const CommentContent = styled.div`
   }
 `;
 
-const CommentItem = ({ comment, showAllComment }) => {
-  return (
-    <CommentItemBox>
-      <CommentItemBlock>
-        <CommentSubinfoBlock>
-          <SubInfo
-            user={comment.User}
-            createdTime={new Date(comment.createdAt)}
-            updatedTime={new Date(comment.updatedAt)}
-            likeCount={comment.likeCount}
-          />
-        </CommentSubinfoBlock>
-        <CommentContentBlock>
-          {showAllComment && (
-            <a href={"#" + comment.ordinalNumber}>
-              <OrdinalNumberBlock>
+const CommentItem = forwardRef(
+  ({ comment, showAllComment }, postContentIndexRef) => {
+    return (
+      <CommentItemBox>
+        <CommentItemBlock>
+          <CommentSubinfoBlock>
+            <SubInfo
+              user={comment.User}
+              createdTime={new Date(comment.createdAt)}
+              updatedTime={new Date(comment.updatedAt)}
+              likeCount={comment.likeCount}
+            />
+          </CommentSubinfoBlock>
+          <CommentContentBlock>
+            {showAllComment && (
+              <OrdinalNumberBlock
+                onClick={(e) => {
+                  const element =
+                    postContentIndexRef.current[comment.ordinalNumber];
+                  //.scrollIntoView({behavior: "smooth",block: "start",inline: "nearest",});
+                  //편리한 방법이지만 헤더가 display:fixed일 경우 가려짐
+                  const yOffset = -90;
+                  const y =
+                    element.getBoundingClientRect().top +
+                    window.pageYOffset +
+                    yOffset;
+
+                  window.scrollTo({ top: y, behavior: "smooth" });
+                }}
+                className={
+                  comment.ordinalNumber >= 0 ? "hoverClick" : "ordinalNumIsNull"
+                }
+              >
                 {comment.ordinalNumber === -1 ? "null" : comment.ordinalNumber}
               </OrdinalNumberBlock>
-            </a>
-          )}
-          <CommentContent
-            dangerouslySetInnerHTML={{ __html: comment.content }}
-          />
-        </CommentContentBlock>
-      </CommentItemBlock>
-    </CommentItemBox>
-  );
-};
+            )}
+            <CommentContent
+              dangerouslySetInnerHTML={{ __html: comment.content }}
+            />
+          </CommentContentBlock>
+        </CommentItemBlock>
+      </CommentItemBox>
+    );
+  }
+);
 
 const PostContentItemBlock = styled.span`
   display: flex;
@@ -136,32 +158,42 @@ const PostContentFlagedComment = styled.div`
   margin: 0 0 1rem 2rem;
 `;
 
-const PostContent = ({ item, index, comments }) => {
-  const [showFlagedComment, setShowFlagedComment] = useState(false);
-  return (
-    <>
-      <PostContentItemBlock>
-        <PostContentIndex
-          onClick={(e) => {
-            setShowFlagedComment(!showFlagedComment);
-          }}
+const PostContent = forwardRef(
+  ({ item, index, comments }, postContentIndexRef) => {
+    const [showFlagedComment, setShowFlagedComment] = useState(false);
+    return (
+      <>
+        <PostContentItemBlock>
+          <PostContentIndex
+            onClick={(e) => {
+              setShowFlagedComment(!showFlagedComment);
+            }}
+          >
+            <div ref={(el) => (postContentIndexRef.current[index] = el)}>
+              {index}
+            </div>
+            <div className="hoverClick">
+              {comments && "[" + comments.length + "]"}
+            </div>
+          </PostContentIndex>
+          <PostContentItem dangerouslySetInnerHTML={{ __html: item }} />
+        </PostContentItemBlock>
+        <PostContentFlagedComment
+          className={showFlagedComment ? "show" : "hide"}
         >
-          <div id={index}>{index}</div>
-          <div>{comments && "[" + comments.length + "]"}</div>
-        </PostContentIndex>
-        <PostContentItem dangerouslySetInnerHTML={{ __html: item }} />
-      </PostContentItemBlock>
-      <PostContentFlagedComment className={showFlagedComment ? "show" : "hide"}>
-        {comments &&
-          comments.map((comment) => {
-            return <CommentItem comment={comment} key={comment.id} />;
-          })}
-      </PostContentFlagedComment>
-    </>
-  );
-};
+          {comments &&
+            comments.map((comment) => {
+              return <CommentItem comment={comment} key={comment.id} />;
+            })}
+        </PostContentFlagedComment>
+      </>
+    );
+  }
+);
 
 const PostViewer = ({ post, comments, error, loading, actionButtons }) => {
+  const postContentIndexRef = useRef([]);
+
   if (error) {
     if (error.response && error.response.status === 404) {
       return <PostViewerBlock>존재하지 않는 포스트입니다.</PostViewerBlock>;
@@ -238,6 +270,7 @@ const PostViewer = ({ post, comments, error, loading, actionButtons }) => {
             index={index}
             comments={comments2dArr[index]}
             key={index}
+            ref={postContentIndexRef}
           />
         ))}
         {comments.map((comment) => (
@@ -245,6 +278,7 @@ const PostViewer = ({ post, comments, error, loading, actionButtons }) => {
             comment={comment}
             key={comment.id}
             showAllComment="true"
+            ref={postContentIndexRef}
           />
         ))}
       </PostViewerBlock>

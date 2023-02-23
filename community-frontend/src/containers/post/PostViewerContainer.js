@@ -45,11 +45,6 @@ const PostViewerContainer = () => {
 
   const ownPost = (user && user.id) === (post && post.UserId);
 
-  const url = window.location.href;
-  useEffect(() => {
-    window.scrollBy(0, -90);
-  }, [url]);
-
   return (
     <PostViewer
       post={post}

@@ -35,6 +35,8 @@ const Wrapper = styled(Responsive)`
 const SetRightBlock = styled.div`
   display: flex;
   justify-content: end;
+  height: 0;
+  overflow: visible;
   width: 100%;
 `;
 
@@ -45,6 +47,8 @@ const WriteCommentButton = styled(Button)`
   width: 3.3rem;
   border-radius: 3rem;
   font-size: 0.9rem;
+  position: relative;
+  top: -5rem;
 `;
 
 const InputBlock = styled.div`

@@ -43,7 +43,7 @@ const SubInfo = ({
         <span>
           update:{updatedTime.toLocaleString("en-ZA", { hour12: true })}
         </span>
-        <span>likes:{likeCount}</span>
+        {likeCount && <span>likes:{likeCount}</span>}
       </span>
     </SubInfoBlock>
   );

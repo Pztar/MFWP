@@ -163,6 +163,45 @@ export const read = async (ctx) => {
       },
     ],
   });
+  /*
+  const commentInComment = (comments) => {
+    if (comments) {
+      comments.forEach((item, index, arr) => {
+        //item, index, this
+        arr[index].comments = Comment.findAll({
+          where: { parentCommentId: item.id },
+          include: [{ model: User, attributes: ["id", "nick"] }],
+        });
+        let comments = arr[index].comments;
+        comments = commentInComment(comments); //셀프 재귀 루프 함수
+        return comments;
+      });
+    }
+    return comments;
+  };
+  /*
+  comments.forEach((item, index, arr) => {
+    //item, index, this
+    arr[index].comments = Comment.findAll({
+      where: { parentComment: item.id },
+      include: [{ model: User, attributes: ["id", "nick"] }],
+    });
+    const comments = arr[index].comments;
+    if (comments) {
+      comments.forEach((item, index, arr) => {
+        arr[index].comments = Comment.findAll({
+          where: { parentComment: item.id },
+          include: [{ model: User, attributes: ["id", "nick"] }],
+        });
+        const comments = arr[index].comments;
+
+        if (comments) {
+          ...
+        } //셀프 재귀 루프 함수
+      });
+    }
+  });
+  */
   const postAndComments = { post, comments };
   ctx.body = postAndComments;
 };

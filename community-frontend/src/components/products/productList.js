@@ -56,6 +56,12 @@ const ProductItem = ({ product, serverTime, logedIn, setSoldList }) => {
     Owner,
     Sold,
   } = product;
+  const linkUrl = "";
+  if (/^https?:\/\//.test(explanation)) {
+    linkUrl = explanation;
+  } else {
+    linkUrl = "http://" + explanation;
+  }
   const productId = id;
   const end = new Date(terminatedAt); // 경매 종료 시간
   let restTime = "00d00:00:00";
@@ -91,11 +97,7 @@ const ProductItem = ({ product, serverTime, logedIn, setSoldList }) => {
       <td>{img ? <img src={`${img}`} alt="productImg" /> : "null"}</td>
       <td className="hideOverflow">
         {explanation ? (
-          <a
-            href={`http://${explanation}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={`${linkUrl}`} target="_blank" rel="noopener noreferrer">
             {explanation}
           </a>
         ) : (

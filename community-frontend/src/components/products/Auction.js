@@ -89,6 +89,13 @@ const ProductItem = ({ product, serverTime }) => {
     OwnerId,
     Owner,
   } = product;
+  const linkUrl = "";
+  if (/^https?:\/\//.test(explanation)) {
+    linkUrl = explanation;
+  } else {
+    linkUrl = "http://" + explanation;
+  }
+
   const productId = id;
   const OwnerNick = Owner.nick;
   const end = new Date(terminatedAt); // 경매 종료 시간
@@ -122,11 +129,7 @@ const ProductItem = ({ product, serverTime }) => {
       </td>
       <td className="tdLink">
         {explanation ? (
-          <a
-            href={`http://${explanation}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+          <a href={`${linkUrl}`} target="_blank" rel="noopener noreferrer">
             {explanation}
           </a>
         ) : (

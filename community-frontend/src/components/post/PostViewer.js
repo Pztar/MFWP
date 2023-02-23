@@ -4,7 +4,7 @@ import Responsive from "../common/Responsive";
 import SubInfo from "../common/SubInfo";
 import Tags from "../common/Tags";
 import { Helmet } from "react-helmet-async";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const PostViewerBlock = styled(Responsive)`
   margin-top: 4rem;
@@ -35,27 +35,54 @@ const CommentItemBox = styled.div`
 const CommentItemBlock = styled.div`
   border: 1px black solid;
   width: 100%;
-  padding: 0.3rem 0.5rem;
+  padding: 0;
 `;
-const CommentSubinfo = styled(SubInfo)`
-  margin-top: 0;
+const CommentSubinfoBlock = styled.div`
+  padding: 0.2rem 0.5rem 0.2rem;
+  border-bottom: 1px solid ${palette.gray[2]};
+`;
+const CommentContentBlock = styled.div`
+  display: flex;
 `;
 
+const OrdinalNumberBlock = styled.div`
+  width: 2rem;
+  font-size: 0.8rem;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: ${palette.gray[1]};
+`;
 const CommentContent = styled.div`
   width: 100%;
+  padding-left: 0.5rem;
+  p {
+    margin: 0.3rem auto;
+  }
 `;
 
-const CommentItem = ({ comment }) => {
+const CommentItem = ({ comment, showAllComment }) => {
   return (
     <CommentItemBox>
       <CommentItemBlock>
-        <CommentSubinfo
-          user={comment.User}
-          createdTime={new Date(comment.createdAt)}
-          updatedTime={new Date(comment.updatedAt)}
-          likeCount={comment.likeCount}
-        />
-        <CommentContent dangerouslySetInnerHTML={{ __html: comment.content }} />
+        <CommentSubinfoBlock>
+          <SubInfo
+            user={comment.User}
+            createdTime={new Date(comment.createdAt)}
+            updatedTime={new Date(comment.updatedAt)}
+            likeCount={comment.likeCount}
+          />
+        </CommentSubinfoBlock>
+        <CommentContentBlock>
+          {showAllComment && (
+            <OrdinalNumberBlock>
+              {comment.ordinalNumber === -1 ? "null" : comment.ordinalNumber}
+            </OrdinalNumberBlock>
+          )}
+          <CommentContent
+            dangerouslySetInnerHTML={{ __html: comment.content }}
+          />
+        </CommentContentBlock>
       </CommentItemBlock>
     </CommentItemBox>
   );
@@ -178,9 +205,6 @@ const PostViewer = ({ post, comments, error, loading, actionButtons }) => {
     if (comment.ordinalNumber > -1 && comment.ordinalNumber < contents.length) {
       if (Array.isArray(comments2dArr[comment.ordinalNumber])) {
         comments2dArr[comment.ordinalNumber].push(comment);
-
-        comments2dArr[comment.ordinalNumber].length =
-          comments2dArr[comment.ordinalNumber].length + 1;
       } else {
         comments2dArr[comment.ordinalNumber] = [comment];
         comments2dArr[comment.ordinalNumber].length = 1;
@@ -215,7 +239,11 @@ const PostViewer = ({ post, comments, error, loading, actionButtons }) => {
           />
         ))}
         {comments.map((comment) => (
-          <CommentItem comment={comment} key={comment.id} />
+          <CommentItem
+            comment={comment}
+            key={comment.id}
+            showAllComment="true"
+          />
         ))}
       </PostViewerBlock>
     </>

@@ -41,6 +41,11 @@ const SendCommentBoxContainer = () => {
     );
   };
 
+  const onChangeField = useCallback(
+    (payload) => dispatch(changeField(payload)),
+    [dispatch]
+  );
+
   const onPublish = () => {
     if (originalCommentId) {
       dispatch(
@@ -72,6 +77,7 @@ const SendCommentBoxContainer = () => {
     <SendCommentBox
       onChange={onChange}
       onChangeContent={onChangeContent}
+      onChangeField={onChangeField}
       ordinalNumber={ordinalNumber}
       content={content}
       onPublish={onPublish}

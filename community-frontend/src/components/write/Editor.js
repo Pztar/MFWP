@@ -1,13 +1,11 @@
 import { useRef, useEffect } from "react";
 import Quill from "quill";
 import "quill/dist/quill.bubble.css";
-import "react-quill/dist/quill.snow.css";
+import "quill/dist/quill.snow.css";
 import styled from "styled-components";
 import palette from "../../lib/styles/palette";
 import Responsive from "../common/Responsive";
 import client from "../../lib/api/client";
-import ImageResize from "quill-image-resize";
-Quill.register("modules/ImageResize", ImageResize);
 
 const EditorBlock = styled(Responsive)`
   padding-top: 5rem;

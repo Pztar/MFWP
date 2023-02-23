@@ -1,7 +1,7 @@
 import sanitizeHtml from "sanitize-html";
 
 const sanitizeOption = {
-  allowedTags: sanitizeHtml.defaults.allowedTags.concat(["iframe"]),
+  allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img", "iframe"]),
   allowedAttributes: {
     a: ["href", "name", "target"],
     img: ["src", "style", "width", "height", "align"],

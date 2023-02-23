@@ -14,6 +14,9 @@ import AuctionPage from "./pages/AuctionPage";
 import ChatRoomListPage from "./pages/ChatRoomListPage";
 import CreateRoomPage from "./pages/CreateRoomPage";
 import ChatPage from "./pages/ChatPage";
+import Quill from "quill";
+import ImageResize from "quill-image-resize";
+Quill.register("modules/ImageResize", ImageResize);
 
 const App = () => {
   return (

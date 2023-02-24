@@ -164,28 +164,14 @@ export const read = async (ctx) => {
       },
     ],
   });
-  // 2. 루트 댓글 추출하기
-  const rootComments = comments.filter((comment) => comment.parentId === null);
-
-  // 3. 대댓글 구조 배열 생성하기
-  /*
-  let parentComments = parentComments.map((parentComment) => {
-    let childComments = comments.filter(
-      (comment) => comment.parentId === parentComment.id
+  for (let i = comments.length; i > 0; i--) {
+    comments[i - 1].dataValues.children = comments.filter(
+      (comment) => comments[i - 1].id === comment.parentId
     );
-    if (childComments.length > 0) {
-      childComments = childComments.map((parentComment) => {
-        const childComments = comments.filter(
-          (comment) => comment.parentId === parentComment.id
-        );
-        //if(parentComment){...무한재귀}
-        parentComment.child = childComments;
-      });
-    }
-    parentComment.child = childComments;
-  });*/
-
-  const postAndComments = { post, comments };
+  }
+  const rootComments = comments.filter((comment) => comment.parentId === null);
+  console.log(rootComments);
+  const postAndComments = { post, comments: rootComments };
   ctx.body = postAndComments;
 };
 

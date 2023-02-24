@@ -229,7 +229,7 @@ const SendCommentBox = ({
                 onChange={onChange}
               />
               <SendCommentButton onClick={onPublish}>
-                댓글 등록
+                {parentId ? "답글 등록" : "댓글 등록"}
               </SendCommentButton>
             </SendCommentBlock>
           </InputBlock>

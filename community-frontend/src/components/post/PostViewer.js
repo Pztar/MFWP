@@ -46,7 +46,7 @@ const CommentSubinfoBlock = styled.div`
   padding: 0.2rem 0.5rem 0.2rem;
   border-bottom: 1px solid ${palette.gray[2]};
   > * {
-    color: ${palette.gray[7]};
+    color: ${palette.gray[8]};
   }
 
   &.recommenting {
@@ -81,6 +81,7 @@ const CommentContent = styled.div`
 
 const ChildCommentBlock = styled.div`
   padding-left: 1rem;
+  border-left: 1px dashed ${palette.gray[5]}; ;
 `;
 
 const CommentItem = forwardRef(

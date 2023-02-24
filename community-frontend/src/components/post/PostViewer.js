@@ -45,18 +45,31 @@ const CommentItemBlock = styled.div`
 const CommentSubinfoBlock = styled.div`
   padding: 0.2rem 0.5rem 0.2rem;
   border-bottom: 1px solid ${palette.gray[2]};
+  > * {
+    color: ${palette.gray[7]};
+  }
+
+  &.recommenting {
+    background-color: ${palette.gray[3]};
+  }
 `;
 const CommentContentBlock = styled.div`
   display: flex;
 `;
 
-const OrdinalNumberBlock = styled.div`
+const CommentInfoBlock = styled.div`
+  display: flex;
   width: 2rem;
   font-size: 0.8rem;
   justify-content: center;
   align-items: center;
   text-align: center;
   background-color: ${palette.gray[1]};
+  &.recommendButton {
+    &:hover {
+      cursor: pointer;
+    }
+  }
 `;
 const CommentContent = styled.div`
   width: 100%;
@@ -66,48 +79,85 @@ const CommentContent = styled.div`
   }
 `;
 
-const CommentItem = forwardRef(
-  ({ comment, showAllComment }, postContentIndexRef) => {
-    return (
-      <CommentItemBox>
-        <CommentItemBlock>
-          <CommentSubinfoBlock>
-            <SubInfo
-              user={comment.User}
-              createdTime={new Date(comment.createdAt)}
-              updatedTime={new Date(comment.updatedAt)}
-              likeCount={comment.likeCount}
-            />
-          </CommentSubinfoBlock>
-          <CommentContentBlock>
-            {showAllComment && (
-              <OrdinalNumberBlock
-                onClick={(e) => {
-                  const element =
-                    postContentIndexRef.current[comment.ordinalNumber];
-                  //.scrollIntoView({behavior: "smooth",block: "start",inline: "nearest",});
-                  //편리한 방법이지만 헤더가 display:fixed일 경우 가려짐
-                  const yOffset = -90;
-                  const y =
-                    element.getBoundingClientRect().top +
-                    window.pageYOffset +
-                    yOffset;
+const ChildCommentBlock = styled.div`
+  padding-left: 1rem;
+`;
 
-                  window.scrollTo({ top: y, behavior: "smooth" });
-                }}
-                className={
-                  comment.ordinalNumber >= 0 ? "hoverClick" : "ordinalNumIsNull"
+const CommentItem = forwardRef(
+  (
+    { comment, showAllComment, parentId, onSetParentId },
+    postContentIndexRef
+  ) => {
+    return (
+      <>
+        <CommentItemBox>
+          <CommentItemBlock>
+            <CommentSubinfoBlock
+              className={parentId === comment.id && "recommenting"}
+            >
+              <SubInfo
+                user={comment.User}
+                createdTime={new Date(comment.createdAt)}
+                updatedTime={new Date(comment.updatedAt)}
+                likeCount={comment.likeCount}
+              />
+            </CommentSubinfoBlock>
+            <CommentContentBlock>
+              {showAllComment && (
+                <CommentInfoBlock
+                  onClick={(e) => {
+                    const element =
+                      postContentIndexRef.current[comment.ordinalNumber];
+                    //.scrollIntoView({behavior: "smooth",block: "start",inline: "nearest",});
+                    //편리한 방법이지만 헤더가 display:fixed일 경우 가려짐
+                    const yOffset = -90;
+                    const y =
+                      element.getBoundingClientRect().top +
+                      window.pageYOffset +
+                      yOffset;
+
+                    window.scrollTo({ top: y, behavior: "smooth" });
+                  }}
+                  className={
+                    comment.ordinalNumber >= 0
+                      ? "hoverClick"
+                      : "ordinalNumIsNull"
+                  }
+                >
+                  {comment.ordinalNumber === -1
+                    ? "null"
+                    : comment.ordinalNumber}
+                </CommentInfoBlock>
+              )}
+              <CommentContent
+                dangerouslySetInnerHTML={{ __html: comment.content }}
+              />
+              <CommentInfoBlock
+                className="recommendButton"
+                onClick={(e) =>
+                  onSetParentId({ key: "parentId", value: comment.id })
                 }
               >
-                {comment.ordinalNumber === -1 ? "null" : comment.ordinalNumber}
-              </OrdinalNumberBlock>
-            )}
-            <CommentContent
-              dangerouslySetInnerHTML={{ __html: comment.content }}
-            />
-          </CommentContentBlock>
-        </CommentItemBlock>
-      </CommentItemBox>
+                답글
+              </CommentInfoBlock>
+            </CommentContentBlock>
+          </CommentItemBlock>
+        </CommentItemBox>
+        {comment.children ? (
+          <ChildCommentBlock>
+            {comment.children.map((comment) => (
+              <CommentItem
+                comment={comment}
+                key={comment.id}
+                showAllComment="true"
+                ref={postContentIndexRef}
+                parentId={parentId}
+                onSetParentId={onSetParentId}
+              />
+            ))}
+          </ChildCommentBlock>
+        ) : null}
+      </>
     );
   }
 );
@@ -159,7 +209,7 @@ const PostContentFlagedComment = styled.div`
 `;
 
 const PostContent = forwardRef(
-  ({ item, index, comments }, postContentIndexRef) => {
+  ({ item, index, comments, parentId, onSetParentId }, postContentIndexRef) => {
     const [showFlagedComment, setShowFlagedComment] = useState(false);
     return (
       <>
@@ -183,7 +233,14 @@ const PostContent = forwardRef(
         >
           {comments &&
             comments.map((comment) => {
-              return <CommentItem comment={comment} key={comment.id} />;
+              return (
+                <CommentItem
+                  comment={comment}
+                  key={comment.id}
+                  parentId={parentId}
+                  onSetParentId={onSetParentId}
+                />
+              );
             })}
         </PostContentFlagedComment>
       </>
@@ -191,7 +248,15 @@ const PostContent = forwardRef(
   }
 );
 
-const PostViewer = ({ post, comments, error, loading, actionButtons }) => {
+const PostViewer = ({
+  post,
+  comments,
+  parentId,
+  error,
+  loading,
+  actionButtons,
+  onSetParentId,
+}) => {
   const postContentIndexRef = useRef([]);
 
   if (error) {
@@ -271,6 +336,8 @@ const PostViewer = ({ post, comments, error, loading, actionButtons }) => {
             comments={comments2dArr[index]}
             key={index}
             ref={postContentIndexRef}
+            parentId={parentId}
+            onSetParentId={onSetParentId}
           />
         ))}
         {comments.map((comment) => (
@@ -279,6 +346,8 @@ const PostViewer = ({ post, comments, error, loading, actionButtons }) => {
             key={comment.id}
             showAllComment="true"
             ref={postContentIndexRef}
+            parentId={parentId}
+            onSetParentId={onSetParentId}
           />
         ))}
       </PostViewerBlock>

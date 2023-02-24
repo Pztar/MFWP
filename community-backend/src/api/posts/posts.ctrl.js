@@ -154,6 +154,7 @@ export const list = async (ctx, next) => {
 
 export const read = async (ctx) => {
   const post = ctx.state.post;
+  // 1. 해당 글의 모든 댓글 가져오기
   const comments = await Comment.findAll({
     where: { postId: post.id },
     include: [
@@ -163,45 +164,27 @@ export const read = async (ctx) => {
       },
     ],
   });
-  /*
-  const commentInComment = (comments) => {
-    if (comments) {
-      comments.forEach((item, index, arr) => {
-        //item, index, this
-        arr[index].comments = Comment.findAll({
-          where: { parentCommentId: item.id },
-          include: [{ model: User, attributes: ["id", "nick"] }],
-        });
-        let comments = arr[index].comments;
-        comments = commentInComment(comments); //셀프 재귀 루프 함수
-        return comments;
-      });
-    }
-    return comments;
-  };
-  /*
-  comments.forEach((item, index, arr) => {
-    //item, index, this
-    arr[index].comments = Comment.findAll({
-      where: { parentComment: item.id },
-      include: [{ model: User, attributes: ["id", "nick"] }],
-    });
-    const comments = arr[index].comments;
-    if (comments) {
-      comments.forEach((item, index, arr) => {
-        arr[index].comments = Comment.findAll({
-          where: { parentComment: item.id },
-          include: [{ model: User, attributes: ["id", "nick"] }],
-        });
-        const comments = arr[index].comments;
+  // 2. 루트 댓글 추출하기
+  const rootComments = comments.filter((comment) => comment.parentId === null);
 
-        if (comments) {
-          ...
-        } //셀프 재귀 루프 함수
+  // 3. 대댓글 구조 배열 생성하기
+  /*
+  let parentComments = parentComments.map((parentComment) => {
+    let childComments = comments.filter(
+      (comment) => comment.parentId === parentComment.id
+    );
+    if (childComments.length > 0) {
+      childComments = childComments.map((parentComment) => {
+        const childComments = comments.filter(
+          (comment) => comment.parentId === parentComment.id
+        );
+        //if(parentComment){...무한재귀}
+        parentComment.child = childComments;
       });
     }
-  });
-  */
+    parentComment.child = childComments;
+  });*/
+
   const postAndComments = { post, comments };
   ctx.body = postAndComments;
 };

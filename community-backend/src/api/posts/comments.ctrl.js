@@ -38,9 +38,11 @@ export const checkOwnComment = (ctx, next) => {
 };
 
 export const write = async (ctx, next) => {
+  console.log("@@@@@@@@@@@", ctx.request.body);
   const schema = Joi.object().keys({
-    ordinalNumber: Joi.allow(""),
+    ordinalNumber: Joi.allow(null),
     content: Joi.string().required(),
+    parentId: Joi.allow(null),
   });
 
   const result = schema.validate(ctx.request.body);
@@ -59,6 +61,7 @@ export const write = async (ctx, next) => {
     const comment = await Comment.create({
       ordinalNumber: ordinalNumber,
       content: sanitizeHtml(ctx.request.body.content, sanitizeOption),
+      parentId: ctx.request.body.parentId,
       UserId: ctx.state.user.id,
       PostId: ctx.params.postId,
     });

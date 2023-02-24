@@ -13,14 +13,21 @@ const SendCommentBoxContainer = () => {
   const dispatch = useDispatch();
   const { postId } = useParams();
   const navigate = useNavigate();
-  const { ordinalNumber, content, comment, commentError, originalCommentId } =
-    useSelector(({ comment }) => ({
-      ordinalNumber: comment.ordinalNumber,
-      content: comment.content,
-      comment: comment.comment,
-      commentError: comment.commentError,
-      originalCommentId: comment.originalCommentId,
-    }));
+  const {
+    ordinalNumber,
+    content,
+    parentId,
+    comment,
+    commentError,
+    originalCommentId,
+  } = useSelector(({ comment }) => ({
+    ordinalNumber: comment.ordinalNumber,
+    content: comment.content,
+    parentId: comment.parentId,
+    comment: comment.comment,
+    commentError: comment.commentError,
+    originalCommentId: comment.originalCommentId,
+  }));
 
   const onChange = (e) => {
     const { value, name } = e.target;
@@ -49,11 +56,16 @@ const SendCommentBoxContainer = () => {
   const onPublish = () => {
     if (originalCommentId) {
       dispatch(
-        updateComment({ ordinalNumber, content, commentId: originalCommentId })
+        updateComment({
+          ordinalNumber,
+          content,
+          parentId,
+          commentId: originalCommentId,
+        })
       );
       return;
     }
-    dispatch(writeComment({ postId, ordinalNumber, content }));
+    dispatch(writeComment({ postId, ordinalNumber, content, parentId }));
   };
 
   useEffect(() => {
@@ -65,7 +77,7 @@ const SendCommentBoxContainer = () => {
   useEffect(() => {
     if (comment) {
       const { PostId, UserId } = comment;
-      navigate(`/${UserId}/${PostId}`);
+      navigate(`/posts/${UserId}/${PostId}`);
       window.location.reload();
     }
     if (commentError) {
@@ -76,10 +88,9 @@ const SendCommentBoxContainer = () => {
   return (
     <SendCommentBox
       onChange={onChange}
-      onChangeContent={onChangeContent}
       onChangeField={onChangeField}
       ordinalNumber={ordinalNumber}
-      content={content}
+      parentId={parentId}
       onPublish={onPublish}
     />
   );

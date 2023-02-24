@@ -20,7 +20,12 @@ export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
 }));
 export const writeComment = createAction(
   WRITE_COMMENT,
-  ({ postId, ordinalNumber, content }) => ({ postId, ordinalNumber, content })
+  ({ postId, ordinalNumber, content, parentId }) => ({
+    postId,
+    ordinalNumber,
+    content,
+    parentId,
+  })
 );
 
 export const setOriginalCommenet = createAction(
@@ -30,10 +35,11 @@ export const setOriginalCommenet = createAction(
 
 export const updateComment = createAction(
   UPDATE_COMMENT,
-  ({ commentId, ordinalNumber, content }) => ({
+  ({ commentId, ordinalNumber, content, parentId }) => ({
     commentId,
     ordinalNumber,
     content,
+    parentId,
   })
 );
 
@@ -51,6 +57,7 @@ export function* commentSaga() {
 const initialState = {
   ordinalNumber: "",
   content: "",
+  parentId: null,
   comment: null,
   commentError: null,
 };

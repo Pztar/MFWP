@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import PostViewer from "../../components/post/PostViewer";
 import { removePost } from "../../lib/api/posts";
+import { changeField } from "../../modules/comment";
 import { readPost, unloadPost } from "../../modules/post";
 import { setOriginalPost } from "../../modules/write";
 import PostActionButtons from "./PostAcktionButtons";
@@ -11,10 +12,11 @@ const PostViewerContainer = () => {
   const { postId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { post, comments, error, loading, user } = useSelector(
-    ({ post, loading, user }) => ({
+  const { post, comments, parentId, error, loading, user } = useSelector(
+    ({ post, comment, loading, user }) => ({
       post: post.post,
       comments: post.comments,
+      parentId: comment.parentId,
       error: post.error,
       loading: loading["post/READ_POST"],
       user: user.user,
@@ -31,7 +33,7 @@ const PostViewerContainer = () => {
 
   const onEdit = () => {
     dispatch(setOriginalPost(post));
-    navigate("/write");
+    navigate("/posts/write");
   };
 
   const onRemove = async () => {
@@ -42,6 +44,11 @@ const PostViewerContainer = () => {
       console.log(e);
     }
   };
+
+  const onSetParentId = useCallback(
+    (payload) => dispatch(changeField(payload)),
+    [dispatch]
+  );
 
   const ownPost = (user && user.id) === (post && post.UserId);
 
@@ -54,6 +61,8 @@ const PostViewerContainer = () => {
       actionButtons={
         ownPost && <PostActionButtons onEdit={onEdit} onRemove={onRemove} />
       }
+      parentId={parentId}
+      onSetParentId={onSetParentId}
     />
   );
 };

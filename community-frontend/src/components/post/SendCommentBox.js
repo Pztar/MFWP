@@ -99,11 +99,18 @@ const SendCommentBox = ({
   onChange,
   onChangeField,
   ordinalNumber,
+  parentId,
   onPublish,
 }) => {
   const [showCommentEditor, setShowCommentEditor] = useState(false);
   const quillElement = useRef(null);
   const quillInstence = useRef(null);
+
+  useEffect(() => {
+    if (parentId) {
+      setShowCommentEditor(true);
+    }
+  }, [parentId]);
 
   useEffect(() => {
     quillInstence.current = new Quill(quillElement.current, {
@@ -196,9 +203,16 @@ const SendCommentBox = ({
               cyan="true"
               onClick={(e) => {
                 setShowCommentEditor(!showCommentEditor);
+                if (showCommentEditor) {
+                  onChangeField({ key: "parentId", value: null });
+                }
               }}
             >
-              댓글 쓰기
+              {showCommentEditor
+                ? parentId
+                  ? "답글 취소"
+                  : "닫기"
+                : "댓글 쓰기"}
             </WriteCommentButton>
           </SetRightBlock>
           <InputBlock className={showCommentEditor ? "show" : "hide"}>

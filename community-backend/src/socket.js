@@ -8,7 +8,7 @@ export default (server, app) => {
     server,
     {
       cors: {
-        origin: "http://localhost:3000",
+        origin: process.env.CORS_URL,
         credentials: true,
       },
     },

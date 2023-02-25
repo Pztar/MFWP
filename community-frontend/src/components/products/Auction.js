@@ -89,7 +89,7 @@ const ProductItem = ({ product, serverTime }) => {
     OwnerId,
     Owner,
   } = product;
-  const linkUrl = "";
+  let linkUrl = "";
   if (/^https?:\/\//.test(explanation)) {
     linkUrl = explanation;
   } else {

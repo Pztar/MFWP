@@ -47,7 +47,7 @@ const ChatContainer = () => {
   }, [loading, chats]);
 
   useEffect(() => {
-    const socket = io.connect("http://localhost:4000/chat", {
+    const socket = io.connect("pangtestserver.iptime.org/chat", {
       // 네임스페이스
       path: "/socket.io",
     });

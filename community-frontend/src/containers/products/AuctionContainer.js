@@ -78,7 +78,7 @@ const AuctionContainer = () => {
   }, []);
 
   useEffect(() => {
-    const socket = io.connect("http://localhost:4000/auction", {
+    const socket = io.connect("pangtestserver.iptime.org/auction", {
       // 네임스페이스
       path: "/socket.io",
     });

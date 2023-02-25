@@ -24,7 +24,7 @@ const ChatRoomListContainer = () => {
     });
     dispatch(listRooms({ page }));
 
-    const socket = io.connect("http://localhost:4000/room", {
+    const socket = io.connect("pangtestserver.iptime.org/room", {
       // 네임스페이스
       path: "/socket.io",
     });

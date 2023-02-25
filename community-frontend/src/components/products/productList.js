@@ -56,7 +56,7 @@ const ProductItem = ({ product, serverTime, logedIn, setSoldList }) => {
     Owner,
     Sold,
   } = product;
-  const linkUrl = "";
+  let linkUrl = "";
   if (/^https?:\/\//.test(explanation)) {
     linkUrl = explanation;
   } else {

@@ -20,6 +20,9 @@ import {
   csrfOption,
   setCsrfTokenInCookie,
 } from "./lib/koaCsrfMiddleware";
+import logger from "../logger";
+import helmet from "helmet";
+import hpp from "hpp";
 
 const { PORT, MONGO_URI, MONGODB_USER, MONGODB_PASS } = process.env;
 
@@ -54,6 +57,8 @@ const port = PORT || 4000;
 
 if (process.env.NODE_ENV === "production") {
   app.use(morgan("combined"));
+  app.use(helmet({ contentSecurityPolicy: false })); //서버의 각종 취약점 보완 패키지
+  app.use(hpp()); //서버의 각종 취약점 보완 패키지
 } else {
   app.use(morgan("dev"));
 }
@@ -71,6 +76,10 @@ app.use(async (ctx) => {
 */
 app.use(mount("/img", serve(path.join(__dirname, "../public/uploads"))));
 router.use("/api", api.routes());
+
+//winston 에러 로그 코드
+//logger.info("info 단계 이상인 에러가 발생했을때 기록하는 메세지")
+//logger.error("error 단계 이상인 에러가 발생했을때 기록하는 메세지")
 
 app.use(bodyParser());
 

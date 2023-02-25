@@ -249,6 +249,13 @@ const PostContent = forwardRef(
   }
 );
 
+const CommentsBlock = styled.div`
+  padding-top: 0.3rem;
+  margin-top: 1rem;
+  width: 100%;
+  border-top: 1px black inset;
+`;
+
 const PostViewer = ({
   post,
   comments,
@@ -341,16 +348,19 @@ const PostViewer = ({
             onSetParentId={onSetParentId}
           />
         ))}
-        {comments.map((comment) => (
-          <CommentItem
-            comment={comment}
-            key={comment.id}
-            showAllComment="true"
-            ref={postContentIndexRef}
-            parentId={parentId}
-            onSetParentId={onSetParentId}
-          />
-        ))}
+        <CommentsBlock>
+          {"<"}댓글{">"}
+          {comments.map((comment) => (
+            <CommentItem
+              comment={comment}
+              key={comment.id}
+              showAllComment="true"
+              ref={postContentIndexRef}
+              parentId={parentId}
+              onSetParentId={onSetParentId}
+            />
+          ))}
+        </CommentsBlock>
       </PostViewerBlock>
     </>
   );

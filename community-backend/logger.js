@@ -1,11 +1,11 @@
-import { createLogger, format, transport } from "winston";
+import { createLogger, format, transports } from "winston";
 
 const logger = createLogger({
   level: "info",
   format: format.json(),
   transports: [
-    new transport.File({ filename: "combined.log" }),
-    new transport.File({
+    new transports.File({ filename: "combined.log" }),
+    new transports.File({
       filename: "error.log",
       level: "error",
     }),
@@ -13,7 +13,7 @@ const logger = createLogger({
 });
 
 if (process.env.NODE_ENV !== "production") {
-  logger.add(new transport.Console({ format: format.simple() }));
+  logger.add(new transports.Console({ format: format.simple() }));
 }
 
 export default logger;

@@ -11,7 +11,9 @@ const SubInfoBlock = styled.div`
       margin-top: 1rem;
     `}
   color: ${palette.gray[6]};
-
+  span {
+    white-space: nowrap;
+  }
   span + span:before {
     color: ${palette.gray[4]};
     padding-left: 0.25rem;

@@ -64,7 +64,13 @@ const QuillWrapper = styled.div`
   height: 12.1rem;
   margin: 0;
   .ql-toolbar {
-    padding: 0.2rem;
+    padding: 0.1rem;
+    height: fit-content;
+    max-height: 2rem;
+    overflow: auto;
+    .ql-formats {
+      margin-right: 0.2rem;
+    }
   }
   .ql-container {
     height: 10rem;
@@ -131,7 +137,7 @@ const SendCommentBox = ({
             //[{ size: ["small", false, "large", "huge"] }], // custom dropdown
 
             [{ color: [] }, { background: [] }], // dropdown with defaults from theme
-            [{ font: [] }],
+            //[{ font: [] }],
             [{ align: [] }],
 
             ["clean"], // remove formatting button

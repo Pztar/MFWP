@@ -85,6 +85,7 @@ const ChatBubble = styled.div`
   margin-top: 0.5rem;
   border-radius: 10px;
   padding: 0.5rem;
+  max-width: 80%;
 
   .chatNick {
     font-weight: bold;

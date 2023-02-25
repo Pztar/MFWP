@@ -41,9 +41,11 @@ const CommentItemBlock = styled.div`
   border: 1px black solid;
   width: 100%;
   padding: 0;
+  overflow: auto;
 `;
 const CommentSubinfoBlock = styled.div`
   padding: 0.2rem 0.5rem 0.2rem;
+  min-width: 10rem;
   border-bottom: 1px solid ${palette.gray[2]};
   > * {
     color: ${palette.gray[8]};
@@ -74,8 +76,19 @@ const CommentInfoBlock = styled.div`
 const CommentContent = styled.div`
   width: 100%;
   padding-left: 0.5rem;
+  max-height: 20rem;
+  min-width: 16rem;
   p {
     margin: 0.3rem auto;
+  }
+  img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+  iframe {
+    max-width: 100%;
+    aspect-ratio: auto 16 / 9;
+    background: gray;
   }
 `;
 

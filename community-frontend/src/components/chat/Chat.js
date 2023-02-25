@@ -91,6 +91,7 @@ const ChatBubble = styled.div`
   }
   img {
     padding: 0.5rem 0.25rem 0.2rem; //top right&left bottom
+    max-width: 100%;
   }
 `;
 

@@ -17,7 +17,7 @@ const file = async (ctx, next) => {
   //console.log("저장된 파일의 이름", ctx.file.filename);
 
   // 파일이 저장된 경로를 클라이언트에게 반환해준다.
-  const IMG_URL = `http://localhost:4000/img/${ctx.file.filename}`;
+  const IMG_URL = `http://${process.env.CORS_URL}/img/${ctx.file.filename}`;
   console.log(IMG_URL);
   ctx.body = { url: IMG_URL };
 };

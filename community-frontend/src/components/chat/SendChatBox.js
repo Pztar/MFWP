@@ -94,15 +94,11 @@ const SendChatBox = ({
     formData.append("file", file); // formData는 키-밸류 구조
     // 백엔드 multer라우터에 이미지를 보낸다.
     try {
-      const result = await client.post(
-        "http://localhost:4000/api/file",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const result = await client.post("/api/file", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       const IMG_URL = result.data.url;
       setImgUrl(IMG_URL);
     } catch (error) {

@@ -14,15 +14,17 @@ const SendChatBoxContainer = () => {
   };
 
   const onSend = (e) => {
-    sendChat({ roomId, imgUrl, chatTxt }).then(
-      (result) => {
-        setImgUrl("");
-        setChatTxt("");
-      },
-      (e) => {
-        console.log("에러발생");
-      }
-    );
+    if (imgUrl || chatTxt) {
+      sendChat({ roomId, imgUrl, chatTxt }).then(
+        (result) => {
+          setImgUrl("");
+          setChatTxt("");
+        },
+        (e) => {
+          console.log("에러발생");
+        }
+      );
+    }
   };
 
   return (

@@ -170,7 +170,6 @@ export const read = async (ctx) => {
     );
   }
   const rootComments = comments.filter((comment) => comment.parentId === null);
-  console.log(rootComments);
   const postAndComments = { post, comments: rootComments };
   ctx.body = postAndComments;
 };

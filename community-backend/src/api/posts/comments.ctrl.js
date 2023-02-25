@@ -38,7 +38,6 @@ export const checkOwnComment = (ctx, next) => {
 };
 
 export const write = async (ctx, next) => {
-  console.log("@@@@@@@@@@@", ctx.request.body);
   const schema = Joi.object().keys({
     ordinalNumber: Joi.allow(null),
     content: Joi.string().required(),

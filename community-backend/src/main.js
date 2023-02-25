@@ -15,6 +15,11 @@ import sse from "./sse";
 import webSocket from "./socket";
 import checkAuction from "./lib/checkAuction";
 import send from "koa-send";
+import {
+  assertCSRF,
+  csrfOption,
+  setCsrfTokenInCookie,
+} from "./lib/koaCsrfMiddleware";
 
 const { PORT, MONGO_URI, MONGODB_USER, MONGODB_PASS } = process.env;
 
@@ -47,7 +52,11 @@ const router = new Router();
 checkAuction();
 const port = PORT || 4000;
 
-app.use(morgan("dev"));
+if (process.env.NODE_ENV === "production") {
+  app.use(morgan("combined"));
+} else {
+  app.use(morgan("dev"));
+}
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 // Test를 하기 위해서 세팅 "실제 서버에 배포할 때는 아이피를 설정 해야된다."
 
@@ -64,7 +73,13 @@ app.use(mount("/img", serve(path.join(__dirname, "../public/uploads"))));
 router.use("/api", api.routes());
 
 app.use(bodyParser());
+
+app.use(csrfOption);
+app.use(setCsrfTokenInCookie);
+app.use(assertCSRF);
+
 app.use(jwtMiddleware);
+
 app.use(router.routes()).use(router.allowedMethods());
 
 const server = app.listen(port, () => {

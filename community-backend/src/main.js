@@ -57,8 +57,9 @@ const port = PORT || 4000;
 
 if (process.env.NODE_ENV === "production") {
   app.use(morgan("combined"));
-  app.use(helmet({ contentSecurityPolicy: false })); //서버의 각종 취약점 보완 패키지
-  app.use(hpp()); //서버의 각종 취약점 보완 패키지
+  //app.use(helmet({ contentSecurityPolicy: false })); //서버의 각종 취약점 보완 패키지
+  //app.use(hpp()); //서버의 각종 취약점 보완 패키지
+  //둘다 오류 발생함 공식문서를 보고 보안 규칙 옵션 해제 필요
 } else {
   app.use(morgan("dev"));
 }

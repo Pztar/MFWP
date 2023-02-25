@@ -18,8 +18,12 @@ export const register = async (ctx) => {
   }
   const { email, nick, password } = ctx.request.body;
   try {
-    const exUser = await User.findOne({ where: { email } });
-    if (exUser) {
+    const exEmail = await User.findOne({ where: { email } });
+    if (exEmail) {
+      return (ctx.status = 409);
+    }
+    const exNick = await User.findOne({ where: { nick } });
+    if (exNick) {
       return (ctx.status = 409);
     }
     const hash = await bcrypt.hash(password, 12);

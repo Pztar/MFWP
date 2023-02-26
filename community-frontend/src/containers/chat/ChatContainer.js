@@ -47,7 +47,7 @@ const ChatContainer = () => {
   }, [loading, chats]);
 
   useEffect(() => {
-    const socket = io.connect("pangtestserver.iptime.org/chat", {
+    const socket = io.connect(`${process.env.REACT_APP_SERVER_URL}/chat`, {
       //pangtestserver.iptime.org로 접속해야함
       // 네임스페이스
       path: "/socket.io",

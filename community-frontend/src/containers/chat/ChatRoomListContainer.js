@@ -24,7 +24,7 @@ const ChatRoomListContainer = () => {
     });
     dispatch(listRooms({ page }));
 
-    const socket = io.connect("pangtestserver.iptime.org/room", {
+    const socket = io.connect(`${process.env.REACT_APP_SERVER_URL}/room`, {
       //pangtestserver.iptime.org로 접속해야함
       // 네임스페이스
       path: "/socket.io",

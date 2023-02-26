@@ -63,7 +63,12 @@ if (process.env.NODE_ENV === "production") {
 } else {
   app.use(morgan("dev"));
 }
-app.use(cors({ origin: process.env.CORS_URL, credentials: true }));
+app.use(
+  cors({
+    origin: ["http://localhost:3000", process.env.CORS_URL],
+    credentials: true,
+  })
+);
 // Test를 하기 위해서 세팅 "실제 서버에 배포할 때는 아이피를 설정 해야된다."
 
 /*

@@ -164,10 +164,12 @@ export const read = async (ctx) => {
       },
     ],
   });
+  const shadowReverseComment = new Array();
   for (let i = comments.length; i > 0; i--) {
-    comments[i - 1].dataValues.children = comments.filter(
-      (comment) => comments[i - 1].id === comment.parentId
-    );
+    comments[i - 1].dataValues.children = shadowReverseComment
+      .filter((comment) => comments[i - 1].id === comment.parentId)
+      .reverse();
+    shadowReverseComment.push(comments[i - 1]);
   }
   const rootComments = comments.filter((comment) => comment.parentId === null);
   const postAndComments = { post, comments: rootComments };

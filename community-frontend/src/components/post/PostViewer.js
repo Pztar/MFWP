@@ -77,8 +77,8 @@ const CommentInfoBlock = styled.div`
 const CommentContent = styled.div`
   width: 100%;
   padding-left: 0.5rem;
-  max-height: 20rem;
-  min-width: 16rem;
+  //max-height: 20rem;
+  min-width: 15.5rem;
   p {
     margin: 0.3rem auto;
   }

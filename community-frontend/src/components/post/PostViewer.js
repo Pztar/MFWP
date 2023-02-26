@@ -67,6 +67,7 @@ const CommentInfoBlock = styled.div`
   align-items: center;
   text-align: center;
   background-color: ${palette.gray[1]};
+  white-space: nowrap;
   &.recommendButton {
     &:hover {
       cursor: pointer;

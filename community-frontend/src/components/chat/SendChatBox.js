@@ -15,24 +15,47 @@ const FooterBlock = styled.div`
 const Wrapper = styled(Responsive)`
   padding: 0;
 `;
-
+const InputImgLabel = styled.label`
+  border: solid black 1px;
+  border-radius: 0.5rem;
+  margin: 0.5rem;
+  padding: 0.2rem;
+  &:hover {
+    cursor: pointer;
+  }
+`;
 const InputImgBlock = styled.div`
   display: flex;
-  justify-content: end;
-  padding: 1rem;
+  justify-content: space-between;
   width: 100%;
+  &.hasImg {
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  .cancleImg {
+    font-size: 1.5rem;
+    height: 2rem;
+    width: 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.25);
 
+    &:hover {
+      cursor: pointer;
+    }
+  }
   img {
-    height: 450px;
+    max-height: 450px;
 
     @media (max-height: 1440px) {
-      height: 350px;
+      max-height: 350px;
     }
     @media (max-height: 1080px) {
-      height: 250px;
+      max-height: 250px;
     }
     @media (max-height: 768px) {
-      height: 180px;
+      max-height: 180px;
     }
     max-width: 60%;
   }
@@ -42,6 +65,7 @@ const InputBoxBlock = styled.div`
   width: 100%;
   background: white;
   padding: 3px;
+  padding-top: 0.6rem;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
 
   input {
@@ -50,6 +74,9 @@ const InputBoxBlock = styled.div`
 
   .inputImg {
     padding-bottom: 0.5rem;
+    opacity: 0.5;
+    position: absolute;
+    bottom: -100rem;
   }
 
   .inputChatTxt {
@@ -68,6 +95,7 @@ const InputChatBlock = styled.div`
   display: flex;
   justify-content: space-between;
   justify-items: stretch;
+  margin-top: 0.7rem;
 
   .sendButton {
     white-space: nowrap;
@@ -101,6 +129,7 @@ const SendChatBox = ({
       });
       const IMG_URL = result.data.url;
       setImgUrl(IMG_URL);
+      inputImg.current.value = "";
     } catch (error) {
       console.log("실패", error);
     }
@@ -109,16 +138,30 @@ const SendChatBox = ({
   return (
     <FooterBlock>
       <Wrapper>
-        <InputImgBlock>
-          {imgUrl && <img alt="inputImg" src={imgUrl} />}
+        <InputImgBlock className={imgUrl ? "hasImg" : null}>
+          {imgUrl && (
+            <>
+              <div
+                className="cancleImg"
+                onClick={(e) => {
+                  setImgUrl("");
+                }}
+              >
+                X
+              </div>{" "}
+              <img alt="inputImg" src={imgUrl} />
+            </>
+          )}
         </InputImgBlock>
         <InputBoxBlock>
+          <InputImgLabel htmlFor="img">사진 선택</InputImgLabel>
           <input
             type="file"
             onChange={onChangeFile}
             accept="image/*"
             ref={inputImg}
             className="inputImg"
+            id="img"
           />
           <InputChatBlock>
             <input

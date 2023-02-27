@@ -16,6 +16,9 @@ const CheckBoxLabel = styled.label`
   background: #588dff;
   background: ${(props) => props.leftBgColor ?? palette.gray[6]};
   border-radius: 1rem;
+  &:hover {
+    cursor: pointer;
+  }
   /* 선택X 텍스트 */
   ::before {
     position: absolute;

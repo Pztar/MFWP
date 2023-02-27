@@ -94,11 +94,18 @@ const ChatBubble = styled.div`
     padding: 0.5rem 0.25rem 0.2rem; //top right&left bottom
     max-width: 100%;
   }
+  .timeStamp {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
 `;
 
 const ChatItem = ({ chatlog, user }) => {
   const { _id, Room, User, chat, img, createdAt } = chatlog;
   const roomId = _id;
+  const timeStamp = new Date(createdAt).toLocaleString("en-ZA", {
+    hour12: true,
+  });
 
   return (
     <ChatItemBlock
@@ -123,6 +130,7 @@ const ChatItem = ({ chatlog, user }) => {
           <div className="chatNick">{User.nick}</div>
           {img && <img src={img} alt="chatImg" />}
           {chat && <div>{chat}</div>}
+          <div className="timeStamp">{timeStamp}</div>
         </span>
       </ChatBubble>
     </ChatItemBlock>

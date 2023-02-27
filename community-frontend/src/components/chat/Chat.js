@@ -49,6 +49,7 @@ const ChatBlock = styled(Responsive)`
   margin-top: 1rem;
   .system {
     justify-content: center;
+    text-align: center;
   }
 
   .myChat {

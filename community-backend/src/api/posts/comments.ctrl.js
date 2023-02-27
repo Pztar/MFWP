@@ -57,16 +57,19 @@ export const write = async (ctx, next) => {
   }
 
   try {
-    const comment = await Comment.create({
-      ordinalNumber: ordinalNumber,
-      content: sanitizeHtml(ctx.request.body.content, sanitizeOption),
-      parentId: ctx.request.body.parentId,
-      UserId: ctx.state.user.id,
-      PostId: ctx.params.postId,
-    });
-    const post = await Post.findOne({
-      where: { id: ctx.params.postId },
-    });
+    const [comment, post] = await Promise.all([
+      Comment.create({
+        ordinalNumber: ordinalNumber,
+        content: sanitizeHtml(ctx.request.body.content, sanitizeOption),
+        parentId: ctx.request.body.parentId,
+        UserId: ctx.state.user.id,
+        PostId: ctx.params.postId,
+      }),
+      Post.findOne({
+        where: { id: ctx.params.postId },
+      }),
+    ]);
+
     if (!post) {
       ctx.status = 404;
       return;

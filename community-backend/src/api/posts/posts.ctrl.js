@@ -160,27 +160,32 @@ export const list = async (ctx, next) => {
 };
 
 export const read = async (ctx) => {
-  const post = ctx.state.post;
-  // 1. 해당 글의 모든 댓글 가져오기
-  const comments = await Comment.findAll({
-    where: { postId: post.id },
-    include: [
-      {
-        model: User,
-        attributes: ["id", "nick"],
-      },
-    ],
-  });
-  const shadowReverseComment = new Array();
-  for (let i = comments.length; i > 0; i--) {
-    comments[i - 1].dataValues.children = shadowReverseComment
-      .filter((comment) => comments[i - 1].id === comment.parentId)
-      .reverse();
-    shadowReverseComment.push(comments[i - 1]);
+  const post = ctx.state.post; //getPostById에서 이미 포스트 조회함 Promise.all으로 최적화 할까 했지만...굳이...?
+  try {
+    const comments = await Comment.findAll({
+      where: { postId: post.id },
+      include: [
+        {
+          model: User,
+          attributes: ["id", "nick"],
+        },
+      ],
+    });
+    const shadowReverseComment = new Array();
+    for (let i = comments.length; i > 0; i--) {
+      comments[i - 1].dataValues.children = shadowReverseComment
+        .filter((comment) => comments[i - 1].id === comment.parentId)
+        .reverse();
+      shadowReverseComment.push(comments[i - 1]);
+    }
+    const rootComments = comments.filter(
+      (comment) => comment.parentId === null
+    );
+    const postAndComments = { post, comments: rootComments };
+    ctx.body = postAndComments;
+  } catch (e) {
+    ctx.throw(500, e);
   }
-  const rootComments = comments.filter((comment) => comment.parentId === null);
-  const postAndComments = { post, comments: rootComments };
-  ctx.body = postAndComments;
 };
 
 export const remove = async (ctx) => {

@@ -72,7 +72,7 @@ export const write = async (ctx, next) => {
       return;
     } else {
       await post.update({
-        commentCounts: mySQL.sequelize.literal(`point + 1`),
+        commentCounts: post.commentCounts + 1,
       });
     }
     ctx.body = comment;

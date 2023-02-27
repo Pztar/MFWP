@@ -1,9 +1,9 @@
 import Joi from "joi";
-import db from "../../../models";
+import mySQL from "../../../models";
 import sanitizeHtml from "sanitize-html";
 import sanitizeOption from "./sanitizeOption";
 
-const { Post, User, Hashtag, Comment } = db;
+const { Post, User, Hashtag, Comment } = mySQL;
 
 //const { ObjectId } = mongoose.Types;
 
@@ -26,6 +26,13 @@ export const getPostById = async (ctx, next) => {
     if (!post) {
       ctx.status = 404;
       return;
+    } else {
+      await post.update(
+        {
+          views: post.views + 1,
+        },
+        { silent: true } //updatedAt을 갱신하지 않고 업데이트
+      );
     }
     ctx.state.post = post;
     return next();

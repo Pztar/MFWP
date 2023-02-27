@@ -53,6 +53,9 @@ export default class User extends Sequelize.Model {
   static associate(db) {
     db.User.hasMany(db.Post);
     db.User.hasMany(db.Comment);
+
+    db.User.hasMany(db.Auction);
+
     db.User.belongsToMany(db.User, {
       foreignKey: "followingId",
       as: "Followers",
@@ -64,6 +67,10 @@ export default class User extends Sequelize.Model {
       through: "Follow",
     });
 
-    db.User.hasMany(db.Auction);
+    db.User.belongsToMany(db.Post, { through: "LikePost" });
+    db.User.belongsToMany(db.Post, { through: "HatePost" });
+
+    db.User.belongsToMany(db.Comment, { through: "LikeComment" });
+    db.User.belongsToMany(db.Comment, { through: "HateComment" });
   }
 }

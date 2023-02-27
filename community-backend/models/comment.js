@@ -17,6 +17,22 @@ export default class Comment extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: true,
         },
+
+        likes: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
+        hates: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
+        reports: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
       },
       {
         sequelize,
@@ -34,7 +50,8 @@ export default class Comment extends Sequelize.Model {
   static associate(db) {
     db.Comment.belongsTo(db.User);
     db.Comment.belongsTo(db.Post);
-    db.Post.belongsToMany(db.User, { through: "LikeComment" });
-    db.Post.belongsToMany(db.User, { through: "HateComment" });
+
+    db.Comment.belongsToMany(db.User, { through: "LikeComment" });
+    db.Comment.belongsToMany(db.User, { through: "HateComment" });
   }
 }

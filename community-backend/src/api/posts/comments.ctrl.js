@@ -64,6 +64,17 @@ export const write = async (ctx, next) => {
       UserId: ctx.state.user.id,
       PostId: ctx.params.postId,
     });
+    const post = await Post.findOne({
+      where: { id: ctx.params.postId },
+    });
+    if (!post) {
+      ctx.status = 404;
+      return;
+    } else {
+      await post.update({
+        commentCounts: mySQL.sequelize.literal(`point + 1`),
+      });
+    }
     ctx.body = comment;
   } catch (error) {
     ctx.throw(500, error);

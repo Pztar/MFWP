@@ -12,6 +12,31 @@ export default class Post extends Sequelize.Model {
           type: Sequelize.STRING(5000),
           allowNull: false,
         },
+        views: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
+        commentCounts: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
+        likes: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
+        hates: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
+        reports: {
+          type: Sequelize.SMALLINT,
+          allowNull: false,
+          defaultValue: 0,
+        },
       },
       {
         sequelize,
@@ -30,6 +55,7 @@ export default class Post extends Sequelize.Model {
     db.Post.belongsTo(db.User);
     db.Post.hasMany(db.Comment);
     db.Post.belongsToMany(db.Hashtag, { through: "PostHashtag" });
+
     db.Post.belongsToMany(db.User, { through: "LikePost" });
     db.Post.belongsToMany(db.User, { through: "HatePost" });
   }

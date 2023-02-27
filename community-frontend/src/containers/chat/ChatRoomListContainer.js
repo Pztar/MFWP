@@ -28,6 +28,7 @@ const ChatRoomListContainer = () => {
       //pangtestserver.iptime.org로 접속해야함
       // 네임스페이스
       path: "/socket.io",
+      transports: ["websocket"],
     });
     socket.on("newRoom", (data) => {
       // 새 방 이벤트 시 새 방 생성

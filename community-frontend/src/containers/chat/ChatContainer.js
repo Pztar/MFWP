@@ -51,6 +51,7 @@ const ChatContainer = () => {
       //pangtestserver.iptime.org로 접속해야함
       // 네임스페이스
       path: "/socket.io",
+      transports: ["websocket"],
     });
 
     socket.emit("join", { roomId, User: user });

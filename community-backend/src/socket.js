@@ -4,16 +4,13 @@ import Chat from "./schemas/chat";
 import Room from "./schemas/room";
 
 export default (server, app) => {
-  const io = SocketIO(
-    server,
-    {
-      cors: {
-        origin: ["http://localhost:3000", process.env.CORS_URL],
-        credentials: true,
-      },
+  const io = SocketIO(server, {
+    cors: {
+      origin: ["http://localhost:3000", process.env.CORS_URL],
+      credentials: true,
     },
-    { path: "/socket.io" }
-  );
+    path: "/socket.io",
+  });
   app.context.io = io;
 
   const room = io.of("/room");

@@ -63,6 +63,7 @@ if (process.env.NODE_ENV === "production") {
 } else {
   app.use(morgan("dev"));
 }
+//app.proxy = true; // true 일때 proxy 헤더들을 신뢰함
 app.use(
   cors({
     origin: ["http://localhost:3000", process.env.CORS_URL],

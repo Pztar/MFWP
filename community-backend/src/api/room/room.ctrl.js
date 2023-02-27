@@ -65,7 +65,7 @@ export const enterRoom = async (ctx, next) => {
     const { rooms } = io.of("/chat").adapter;
 
     const userCount = rooms.has(roomId) ? rooms.get(roomId).size : 0;
-    console.log("접속자 수", userCount);
+    console.log("room.ctrl.js", "접속자 수", userCount);
     //맨처음 접속시 0명으로 나타나지만 시간이 흐르면 1명이됨;;부정확함
     if (room.max < userCount) {
       ctx.status = 404;

@@ -33,8 +33,11 @@ const ProductLitstBlock = styled(Responsive)`
 const RegistProductButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-top: 3rem;
+  margin-top: 0.2rem;
   margin-bottom: 5px;
+  button {
+    white-space: nowrap;
+  }
 `;
 
 const ProductItemBlock = styled.tr`
@@ -138,15 +141,19 @@ const ProductList = ({
 
   return (
     <ProductLitstBlock>
+      <span>서버시간: {timeToLocale}</span>
       <RegistProductButtonWrapper>
-        <span>서버시간: {timeToLocale}</span>
         {!soldList ? (
-          <Button cyan to="/auction?userId=0">
-            낙찰된 경매 이동
+          <Button
+            cyan
+            to="/auction?userId=0"
+            onClick={(e) => setSoldList(true)}
+          >
+            낙찰 목록
           </Button>
         ) : (
           <Button cyan to="/auction">
-            진행중인 경매 이동
+            진행 목록
           </Button>
         )}
         {showRegistProductButton && (

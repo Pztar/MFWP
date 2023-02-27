@@ -106,7 +106,6 @@ const AuctionContainer = () => {
         user={user}
         serverTime={serverTime}
         onToggleAutoScroll={onToggleAutoScroll}
-        ref={scollToRef}
       />
     </div>
   );

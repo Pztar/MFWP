@@ -30,6 +30,11 @@ export default class Product extends Sequelize.Model {
           allowNull: false,
           defaultValue: Sequelize.NOW,
         },
+        reports: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
       },
       {
         sequelize,

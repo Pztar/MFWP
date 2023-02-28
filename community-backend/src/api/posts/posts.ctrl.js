@@ -3,7 +3,7 @@ import mySQL from "../../../models";
 import sanitizeHtml from "sanitize-html";
 import sanitizeOption from "./sanitizeOption";
 
-const { Post, User, Hashtag, Comment } = mySQL;
+const { Post, User, Hashtag, Comment, Report } = mySQL;
 
 //const { ObjectId } = mongoose.Types;
 
@@ -26,13 +26,6 @@ export const getPostById = async (ctx, next) => {
     if (!post) {
       ctx.status = 404;
       return;
-    } else {
-      await post.update(
-        {
-          views: post.views + 1,
-        },
-        { silent: true } //updatedAt을 갱신하지 않고 업데이트
-      );
     }
     ctx.state.post = post;
     return next();
@@ -162,15 +155,24 @@ export const list = async (ctx, next) => {
 export const read = async (ctx) => {
   const post = ctx.state.post; //getPostById에서 이미 포스트 조회함 Promise.all으로 최적화 할까 했지만...굳이...?
   try {
-    const comments = await Comment.findAll({
-      where: { postId: post.id },
-      include: [
+    const viewsCount = post.views;
+    const [updatedPost, comments] = await Promise.all([
+      post.update(
         {
-          model: User,
-          attributes: ["id", "nick"],
+          views: mySQL.sequelize.literal(`views + 1`),
         },
-      ],
-    });
+        { silent: true } //updatedAt을 갱신하지 않고 업데이트
+      ),
+      Comment.findAll({
+        where: { postId: post.id },
+        include: [
+          {
+            model: User,
+            attributes: ["id", "nick"],
+          },
+        ],
+      }),
+    ]);
     const shadowReverseComment = new Array();
     for (let i = comments.length; i > 0; i--) {
       comments[i - 1].dataValues.children = shadowReverseComment
@@ -181,7 +183,8 @@ export const read = async (ctx) => {
     const rootComments = comments.filter(
       (comment) => comment.parentId === null
     );
-    const postAndComments = { post, comments: rootComments };
+    updatedPost.views = viewsCount + 1; //재할당 하지 않으면 {val(pin):"views + 1"}으로 나옴
+    const postAndComments = { post: updatedPost, comments: rootComments };
     ctx.body = postAndComments;
   } catch (e) {
     ctx.throw(500, e);
@@ -268,5 +271,126 @@ export const update = async (ctx) => {
     ctx.body = post;
   } catch (e) {
     ctx.throw(500, e);
+  }
+};
+
+export const likePost = async (ctx) => {
+  const { postId } = ctx.params;
+  try {
+    const [post, user] = await Promise.all([
+      Post.findOne({
+        where: {
+          id: postId,
+        },
+      }),
+      User.findByPk(ctx.state.user.id),
+    ]);
+
+    if (post.hasLikeUser(user)) {
+      await Promise.all([
+        post.removeLikeUser(user),
+        post.update(
+          {
+            likes: mySQL.sequelize.literal(`likes - 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        ),
+      ]);
+    } else {
+      await Promise.all([
+        post.addLikeUser(user),
+        post.update(
+          {
+            likes: mySQL.sequelize.literal(`likes + 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        ),
+      ]);
+    }
+    ctx.status = 204;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
+export const hatePost = async (ctx) => {
+  const { postId } = ctx.params;
+  try {
+    const [post, user] = await Promise.all([
+      Post.findOne({
+        where: {
+          id: postId,
+        },
+      }),
+      User.findByPk(ctx.state.user.id),
+    ]);
+
+    if (post.hasHateUser(user)) {
+      await Promise.all([
+        post.removeHateUser(user),
+        post.update(
+          {
+            hates: mySQL.sequelize.literal(`hates - 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        ),
+      ]);
+    } else {
+      await Promise.all([
+        post.addHateUser(user),
+        post.update(
+          {
+            hates: mySQL.sequelize.literal(`hates + 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        ),
+      ]);
+    }
+    ctx.status = 204;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
+export const reportPost = async (ctx) => {
+  const { postId } = ctx.params;
+  try {
+    const [post, report] = await Promise.all([
+      Post.findByPk(postId),
+      Report.findOne({
+        where: {
+          UserId: ctx.state.user.id, //신고한 사람
+          class: "post",
+          reportedClassId: postId,
+        },
+      }),
+    ]);
+
+    if (report) {
+      await report.update({
+        category: ctx.request.body.category,
+        content: ctx.request.body.content,
+      });
+    } else {
+      await Promise.all([
+        Report.create({
+          UserId: ctx.state.user.id, //신고한 사람
+          class: "post",
+          category: ctx.request.body.category,
+          content: ctx.request.body.content,
+          reportedClassId: postId,
+          reportedUserId: post.UserId, //신고당한사람
+        }),
+        post.update(
+          {
+            reports: mySQL.sequelize.literal(`reports + 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        ),
+      ]);
+    }
+    ctx.status = 204;
+  } catch (error) {
+    ctx.throw(500, error);
   }
 };

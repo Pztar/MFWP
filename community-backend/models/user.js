@@ -55,6 +55,7 @@ export default class User extends Sequelize.Model {
     db.User.hasMany(db.Comment);
 
     db.User.hasMany(db.Auction);
+    db.User.hasMany(db.Report);
 
     db.User.belongsToMany(db.User, {
       foreignKey: "followingId",

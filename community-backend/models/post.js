@@ -56,7 +56,7 @@ export default class Post extends Sequelize.Model {
     db.Post.hasMany(db.Comment);
     db.Post.belongsToMany(db.Hashtag, { through: "PostHashtag" });
 
-    db.Post.belongsToMany(db.User, { through: "LikePost" });
-    db.Post.belongsToMany(db.User, { through: "HatePost" });
+    db.Post.belongsToMany(db.User, { as: "LikeUser", through: "LikePost" });
+    db.Post.belongsToMany(db.User, { as: "HateUser", through: "HatePost" });
   }
 }

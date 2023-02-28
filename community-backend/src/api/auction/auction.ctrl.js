@@ -195,3 +195,46 @@ export const bid = async (ctx, next) => {
     return next(error);
   }
 };
+
+export const reportProduct = async (ctx) => {
+  const { productId } = ctx.params;
+  try {
+    const [product, report] = await Promise.all([
+      db.Product.findByPk(productId),
+      db.Report.findOne({
+        where: {
+          UserId: ctx.state.user.id, //신고한 사람
+          class: "product",
+          reportedClassId: productId,
+        },
+      }),
+    ]);
+
+    if (report) {
+      await report.update({
+        category: ctx.request.body.category,
+        content: ctx.request.body.content,
+      });
+    } else {
+      await Promise.all([
+        db.Report.create({
+          UserId: ctx.state.user.id, //신고한 사람
+          class: "product",
+          category: ctx.request.body.category,
+          content: ctx.request.body.content,
+          reportedClassId: productId,
+          reportedUserId: product.UserId, //신고당한사람
+        }),
+        product.update(
+          {
+            reports: db.sequelize.literal(`reports + 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        ),
+      ]);
+    }
+    ctx.status = 204;
+  } catch (error) {
+    ctx.throw(500, error);
+  }
+};

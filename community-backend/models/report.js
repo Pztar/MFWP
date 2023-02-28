@@ -20,6 +20,10 @@ export default class Report extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
+        reportedUserId: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+        },
       },
       {
         sequelize,
@@ -35,6 +39,6 @@ export default class Report extends Sequelize.Model {
   }
 
   static associate(db) {
-    db.Post.belongsTo(db.User);
+    db.Report.belongsTo(db.User);
   }
 }

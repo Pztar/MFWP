@@ -3,7 +3,7 @@ import mySQL from "../../../models";
 import sanitizeHtml from "sanitize-html";
 import sanitizeOption from "./sanitizeOption";
 
-const { Post, Comment } = mySQL;
+const { Post, Comment, User, Report } = mySQL;
 
 export const getCommentById = async (ctx, next) => {
   const { commentId } = ctx.params;
@@ -74,11 +74,135 @@ export const write = async (ctx, next) => {
       ctx.status = 404;
       return;
     } else {
-      await post.update({
-        commentCounts: post.commentCounts + 1,
-      });
+      await post.update(
+        {
+          commentCounts: mySQL.sequelize.literal(`commentCounts + 1`),
+        },
+        { silent: true } //updatedAt을 갱신하지 않고 업데이트
+      );
     }
     ctx.body = comment;
+  } catch (error) {
+    ctx.throw(500, error);
+  }
+};
+
+export const likeComment = async (ctx) => {
+  const { commentId } = ctx.params;
+  try {
+    const [comment, user] = await Promise.all([
+      Comment.findOne({
+        where: {
+          id: commentId,
+        },
+      }),
+      User.findByPk(ctx.state.user.id),
+    ]);
+
+    if (comment.hasLikeUser(user)) {
+      await Promise.all([
+        comment.removeLikeUser(user),
+        comment.update(
+          {
+            likes: mySQL.sequelize.literal(`likes - 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        ),
+      ]);
+    } else {
+      await Promise.all([
+        comment.addLikeUser(user),
+        comment.update(
+          {
+            likes: mySQL.sequelize.literal(`likes + 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        ),
+      ]);
+    }
+    ctx.status = 204;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
+export const hateComment = async (ctx) => {
+  const { commentId } = ctx.params;
+  try {
+    const [comment, user] = await Promise.all([
+      Comment.findOne({
+        where: {
+          id: commentId,
+        },
+      }),
+      User.findByPk(ctx.state.user.id),
+    ]);
+
+    if (comment.hasHateUser(user)) {
+      await Promise.all([
+        comment.removeHateUser(user),
+        comment.update(
+          {
+            hates: mySQL.sequelize.literal(`hates - 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        ),
+      ]);
+    } else {
+      await Promise.all([
+        comment.addHateUser(user),
+        comment.update(
+          {
+            hates: mySQL.sequelize.literal(`hates + 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        ),
+      ]);
+    }
+    ctx.status = 204;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
+export const reportComment = async (ctx) => {
+  const { commentId } = ctx.params;
+  try {
+    const [comment, report] = await Promise.all([
+      Comment.findByPk(commentId),
+      Report.findOne({
+        where: {
+          UserId: ctx.state.user.id, //신고한 사람
+          class: "comment",
+          reportedClassId: commentId,
+        },
+      }),
+    ]);
+
+    if (report) {
+      await report.update({
+        category: ctx.request.body.category,
+        content: ctx.request.body.content,
+      });
+    } else {
+      await Promise.all([
+        Report.create({
+          UserId: ctx.state.user.id, //신고한 사람
+          class: "comment",
+          category: ctx.request.body.category,
+          content: ctx.request.body.content,
+          reportedClassId: commentId,
+          reportedUserId: comment.UserId, //신고당한사람
+        }),
+        comment.update(
+          {
+            reports: mySQL.sequelize.literal(`reports + 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        ),
+      ]);
+    }
+    ctx.status = 204;
   } catch (error) {
     ctx.throw(500, error);
   }

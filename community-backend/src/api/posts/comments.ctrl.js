@@ -99,7 +99,7 @@ export const likeComment = async (ctx) => {
       User.findByPk(ctx.state.user.id),
     ]);
 
-    if (comment.hasLikeCommentUser(user)) {
+    if (await comment.hasLikeCommentUser(user)) {
       await Promise.all([
         comment.removeLikeCommentUser(user),
         comment.update(
@@ -120,7 +120,8 @@ export const likeComment = async (ctx) => {
         ),
       ]);
     }
-    ctx.status = 204;
+    const likeComments = await user.getLikeComments({ attributes: ["id"] });
+    ctx.body = likeComments;
   } catch (e) {
     ctx.throw(500, e);
   }
@@ -138,7 +139,7 @@ export const hateComment = async (ctx) => {
       User.findByPk(ctx.state.user.id),
     ]);
 
-    if (comment.hasHateCommentUser(user)) {
+    if (await comment.hasHateCommentUser(user)) {
       await Promise.all([
         comment.removeHateCommentUser(user),
         comment.update(
@@ -159,7 +160,8 @@ export const hateComment = async (ctx) => {
         ),
       ]);
     }
-    ctx.status = 204;
+    const hateComments = await user.getHateComments({ attributes: ["id"] });
+    ctx.body = hateComments;
   } catch (e) {
     ctx.throw(500, e);
   }

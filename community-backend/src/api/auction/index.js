@@ -23,4 +23,10 @@ auction.post("/product/:productId/bid", checkLoggedIn, auctionCtrl.bid);
 
 //auction.get("/list", checkLoggedIn, auctionCtrl.renderList);
 
+auction.post(
+  "/product/:productId/report",
+  checkLoggedIn,
+  auctionCtrl.reportProduct
+);
+
 export default auction;

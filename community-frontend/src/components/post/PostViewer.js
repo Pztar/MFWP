@@ -5,6 +5,7 @@ import SubInfo from "../common/SubInfo";
 import Tags from "../common/Tags";
 import { Helmet } from "react-helmet-async";
 import { forwardRef, useRef, useState } from "react";
+import Button from "../common/Button";
 
 const PostViewerBlock = styled(Responsive)`
   margin-top: 4rem;
@@ -263,6 +264,14 @@ const PostContent = forwardRef(
   }
 );
 
+const LikesBlock = styled.div`
+  display: flex;
+  justify-content: center;
+  Button + Button {
+    margin-left: 1rem;
+  }
+`;
+
 const CommentsBlock = styled.div`
   padding-top: 0.3rem;
   margin-top: 1rem;
@@ -278,6 +287,8 @@ const PostViewer = ({
   loading,
   actionButtons,
   onSetParentId,
+  onLikePost,
+  onHatePost,
 }) => {
   const postContentIndexRef = useRef([]);
 
@@ -362,6 +373,10 @@ const PostViewer = ({
             onSetParentId={onSetParentId}
           />
         ))}
+        <LikesBlock>
+          <Button onClick={onLikePost}>like</Button>
+          <Button onClick={onHatePost}>hate</Button>
+        </LikesBlock>
         <CommentsBlock>
           {"<"}댓글{">"}
           {comments.map((comment) => (

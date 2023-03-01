@@ -24,8 +24,26 @@ posts.patch(
   postsCtrl.update
 );
 
+posts.get("/:postId/likePost", checkLoggedIn, postsCtrl.likePost);
+posts.get("/:postId/hatePost", checkLoggedIn, postsCtrl.hatePost);
+posts.post("/:postId/report", checkLoggedIn, postsCtrl.reportPost);
+
 posts.post("/:postId/comment", checkLoggedIn, commentsCtrl.write);
-posts.get("/:postId/likePost", checkLoggedIn, commentsCtrl.write);
-posts.get("/:postId/hatePost", checkLoggedIn, commentsCtrl.write);
+
+posts.get(
+  "/comment/:commentId/likePost",
+  checkLoggedIn,
+  commentsCtrl.likeComment
+);
+posts.get(
+  "/comment/:commentId/hatePost",
+  checkLoggedIn,
+  commentsCtrl.hateComment
+);
+posts.post(
+  "/comment/:commentId/report",
+  checkLoggedIn,
+  commentsCtrl.reportComment
+);
 
 export default posts;

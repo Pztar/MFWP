@@ -286,7 +286,7 @@ export const likePost = async (ctx) => {
       User.findByPk(ctx.state.user.id),
     ]);
 
-    if (post.hasLikePostUser(user)) {
+    if (await post.hasLikePostUser(user)) {
       await Promise.all([
         post.removeLikePostUser(user),
         post.update(
@@ -305,9 +305,10 @@ export const likePost = async (ctx) => {
           },
           { silent: true } //updatedAt을 갱신하지 않고 업데이트
         ),
-      ]);
+      ]).then(console.log);
     }
-    ctx.status = 204;
+    const likePosts = await user.getLikePosts({ attributes: ["id"] });
+    ctx.body = likePosts;
   } catch (e) {
     ctx.throw(500, e);
   }
@@ -325,7 +326,7 @@ export const hatePost = async (ctx) => {
       User.findByPk(ctx.state.user.id),
     ]);
 
-    if (post.hasHatePostUser(user)) {
+    if (await post.hasHatePostUser(user)) {
       await Promise.all([
         post.removeHatePostUser(user),
         post.update(
@@ -346,7 +347,8 @@ export const hatePost = async (ctx) => {
         ),
       ]);
     }
-    ctx.status = 204;
+    const hatePosts = await user.getHatePosts({ attributes: ["id"] });
+    ctx.body = hatePosts;
   } catch (e) {
     ctx.throw(500, e);
   }

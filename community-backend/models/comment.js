@@ -52,12 +52,12 @@ export default class Comment extends Sequelize.Model {
     db.Comment.belongsTo(db.Post);
 
     db.Comment.belongsToMany(db.User, {
-      as: "LikeUser",
-      through: "LikeComment",
+      as: "LikeCommentUsers",
+      through: "UserLikeComment",
     });
     db.Comment.belongsToMany(db.User, {
-      as: "HateUser",
-      through: "HateComment",
+      as: "HateCommentUsers",
+      through: "UserHateComment",
     });
   }
 }

@@ -25,5 +25,7 @@ posts.patch(
 );
 
 posts.post("/:postId/comment", checkLoggedIn, commentsCtrl.write);
+posts.get("/:postId/likePost", checkLoggedIn, commentsCtrl.write);
+posts.get("/:postId/hatePost", checkLoggedIn, commentsCtrl.write);
 
 export default posts;

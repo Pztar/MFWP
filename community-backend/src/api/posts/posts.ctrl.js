@@ -286,9 +286,9 @@ export const likePost = async (ctx) => {
       User.findByPk(ctx.state.user.id),
     ]);
 
-    if (post.hasLikeUser(user)) {
+    if (post.hasLikePostUser(user)) {
       await Promise.all([
-        post.removeLikeUser(user),
+        post.removeLikePostUser(user),
         post.update(
           {
             likes: mySQL.sequelize.literal(`likes - 1`),
@@ -298,7 +298,7 @@ export const likePost = async (ctx) => {
       ]);
     } else {
       await Promise.all([
-        post.addLikeUser(user),
+        post.addLikePostUser(user),
         post.update(
           {
             likes: mySQL.sequelize.literal(`likes + 1`),
@@ -325,9 +325,9 @@ export const hatePost = async (ctx) => {
       User.findByPk(ctx.state.user.id),
     ]);
 
-    if (post.hasHateUser(user)) {
+    if (post.hasHatePostUser(user)) {
       await Promise.all([
-        post.removeHateUser(user),
+        post.removeHatePostUser(user),
         post.update(
           {
             hates: mySQL.sequelize.literal(`hates - 1`),
@@ -337,7 +337,7 @@ export const hatePost = async (ctx) => {
       ]);
     } else {
       await Promise.all([
-        post.addHateUser(user),
+        post.addHatePostUser(user),
         post.update(
           {
             hates: mySQL.sequelize.literal(`hates + 1`),

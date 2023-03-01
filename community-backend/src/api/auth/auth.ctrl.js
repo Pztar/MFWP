@@ -1,8 +1,9 @@
-import User from "../../../models/user";
+import mySQL from "../../../models";
 import bcrypt from "bcrypt";
 import { generateToken } from ".";
 import Joi from "joi";
 import jwtCookieConfig from "../../lib/jwtCookieConfig";
+const { User } = mySQL;
 
 export const register = async (ctx) => {
   const schema = Joi.object().keys({
@@ -51,7 +52,9 @@ export const login = async (ctx) => {
     return;
   }
   try {
-    const exUser = await User.findOne({ where: { email } });
+    const exUser = await User.findOne({
+      where: { email },
+    });
     if (!exUser) {
       ctx.status = 401;
       return;
@@ -61,7 +64,10 @@ export const login = async (ctx) => {
       ctx.status = 401;
       return;
     }
-    const user = { id: exUser.id, nick: exUser.nick };
+    const user = {
+      id: exUser.id,
+      nick: exUser.nick,
+    };
     ctx.body = user;
 
     const token = generateToken(exUser);
@@ -77,6 +83,17 @@ export const check = async (ctx) => {
     ctx.status = 401;
     return;
   }
+  const exUser = await User.findByPk(user.id);
+  //console.log("@", exUser);
+  //console.log(Object.getOwnPropertyNames(exUser.__proto__));
+  //인스턴트에 연결된 메서드 목록 확인 방법
+  [user.likePosts, user.hatePosts, user.likeComments, user.hateComments] =
+    await Promise.all([
+      exUser.getLikePosts(),
+      exUser.getHatePosts(),
+      exUser.getLikeComments(),
+      exUser.getHateComments(),
+    ]);
   ctx.body = user;
 };
 

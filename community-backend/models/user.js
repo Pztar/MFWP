@@ -68,10 +68,22 @@ export default class User extends Sequelize.Model {
       through: "Follow",
     });
 
-    db.User.belongsToMany(db.Post, { through: "LikePost" });
-    db.User.belongsToMany(db.Post, { through: "HatePost" });
+    db.User.belongsToMany(db.Post, {
+      as: "LikePosts",
+      through: "UserLikePost",
+    });
+    db.User.belongsToMany(db.Post, {
+      as: "HatePosts",
+      through: "UserHatePost",
+    });
 
-    db.User.belongsToMany(db.Comment, { through: "LikeComment" });
-    db.User.belongsToMany(db.Comment, { through: "HateComment" });
+    db.User.belongsToMany(db.Comment, {
+      as: "LikeComments",
+      through: "UserLikeComment",
+    });
+    db.User.belongsToMany(db.Comment, {
+      as: "HateComments",
+      through: "UserHateComment",
+    });
   }
 }

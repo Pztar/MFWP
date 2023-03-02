@@ -31,12 +31,12 @@ posts.post("/:postId/report", checkLoggedIn, postsCtrl.reportPost);
 posts.post("/:postId/comment", checkLoggedIn, commentsCtrl.write);
 
 posts.get(
-  "/comment/:commentId/likePost",
+  "/comment/:commentId/likeComment",
   checkLoggedIn,
   commentsCtrl.likeComment
 );
 posts.get(
-  "/comment/:commentId/hatePost",
+  "/comment/:commentId/hateComment",
   checkLoggedIn,
   commentsCtrl.hateComment
 );

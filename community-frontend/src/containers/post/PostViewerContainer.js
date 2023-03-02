@@ -62,13 +62,6 @@ const PostViewerContainer = () => {
   const onHatePost = () => {
     dispatch(hatePost({ postId }));
   };
-  /*
-  const onLikeComment = () => {
-    dispatch(likeComment({ commentId }));
-  };
-  const onHateComment = () => {
-    dispatch(hateComment({ commentId }));
-  };*/
 
   const ownPost = (user && user.id) === (post && post.UserId);
 
@@ -86,6 +79,8 @@ const PostViewerContainer = () => {
       onLikePost={onLikePost}
       onHatePost={onHatePost}
       user={user}
+      likeComment={likeComment}
+      hateComment={hateComment}
     />
   );
 };

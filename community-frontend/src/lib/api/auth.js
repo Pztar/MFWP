@@ -15,6 +15,6 @@ export const likePost = ({ postId }) =>
 export const hatePost = ({ postId }) =>
   client.get(`/api/posts/${postId}/hatePost`);
 export const likeComment = ({ commentId }) =>
-  client.get(`/api/posts/${commentId}/likePost`);
+  client.get(`/api/posts/comment/${commentId}/likeComment`);
 export const hateComment = ({ commentId }) =>
-  client.get(`/api/posts/${commentId}/hatePost`);
+  client.get(`/api/posts/comment/${commentId}/hateComment`);

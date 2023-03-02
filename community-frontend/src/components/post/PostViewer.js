@@ -5,6 +5,7 @@ import SubInfo from "../common/SubInfo";
 import Tags from "../common/Tags";
 import { Helmet } from "react-helmet-async";
 import { forwardRef, useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import Button from "../common/Button";
 
 const PostViewerBlock = styled(Responsive)`
@@ -60,21 +61,6 @@ const CommentContentBlock = styled.div`
   display: flex;
 `;
 
-const CommentInfoBlock = styled.div`
-  display: flex;
-  width: 2rem;
-  font-size: 0.8rem;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  background-color: ${palette.gray[1]};
-  white-space: nowrap;
-  &.recommendButton {
-    &:hover {
-      cursor: pointer;
-    }
-  }
-`;
 const CommentContent = styled.div`
   width: 100%;
   padding-left: 0.5rem;
@@ -99,11 +85,55 @@ const ChildCommentBlock = styled.div`
   border-left: 1px dashed ${palette.gray[5]}; ;
 `;
 
+const CommentInfoBlock = styled.div`
+  display: flex;
+  min-width: 2rem;
+  font-size: 0.8rem;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: ${palette.gray[2]};
+  white-space: nowrap;
+  padding: 0rem 0 0.2rem;
+  Button {
+    padding: 0.2rem;
+    font-size: 0.8rem;
+  }
+`;
+const LikesBlock = styled.div`
+  display: flex;
+  justify-content: center;
+  Button + Button {
+    margin-left: 1rem;
+  }
+  &.commentInLikes {
+    padding: 0.3rem;
+    background-color: ${palette.gray[2]};
+    Button {
+      padding: 0.2rem;
+      font-size: 0.8rem;
+    }
+    Button + Button {
+      margin-left: 0.3rem;
+    }
+  }
+`;
+
 const CommentItem = forwardRef(
   (
-    { comment, showAllComment, parentId, onSetParentId },
+    {
+      comment,
+      showAllComment,
+      parentId,
+      onSetParentId,
+      likeComment,
+      hateComment,
+      user,
+    },
     postContentIndexRef
   ) => {
+    const dispatch = useDispatch();
+    const commentId = comment.id;
     return (
       <>
         <CommentItemBox>
@@ -115,7 +145,8 @@ const CommentItem = forwardRef(
                 user={comment.User}
                 createdTime={new Date(comment.createdAt)}
                 updatedTime={new Date(comment.updatedAt)}
-                likeCount={comment.likeCount}
+                likeCount={comment.likes - comment.hates}
+                reports={comment.reports}
               />
             </CommentSubinfoBlock>
             <CommentContentBlock>
@@ -148,36 +179,49 @@ const CommentItem = forwardRef(
               <CommentContent
                 dangerouslySetInnerHTML={{ __html: comment.content }}
               />
-              {/* <LikesBlock>
-              <Button
-                onClick={onLikePost}
-                color={
-                  user.likePosts.find((likePost) => likePost.id === comment.id)
-                    ? `#db1414`
-                    : "#1a14db"
-                }
-              >
-                like
-              </Button>
-              <Button
-                onClick={onHatePost}
-                color={
-                  user.hatePosts.find((hatePost) => hatePost.id === comment.id)
-                    ? "#db1414"
-                    : "#1a14db"
-                }
-              >
-                hate
-              </Button>
-            </LikesBlock> */}
-              <CommentInfoBlock
-                className="recommendButton"
-                onClick={(e) =>
-                  onSetParentId({ key: "parentId", value: comment.id })
-                }
-              >
-                답글
-              </CommentInfoBlock>
+              <div>
+                {user && (
+                  <LikesBlock className="commentInLikes">
+                    <Button
+                      onClick={(e) => {
+                        dispatch(likeComment({ commentId }));
+                      }}
+                      color={
+                        user.likeComments.find(
+                          (likeComment) => likeComment.id === commentId
+                        )
+                          ? `#db1414`
+                          : ""
+                      }
+                    >
+                      like
+                    </Button>
+                    <Button
+                      onClick={(e) => {
+                        dispatch(hateComment({ commentId }));
+                      }}
+                      color={
+                        user.hateComments.find(
+                          (hateComment) => hateComment.id === commentId
+                        )
+                          ? "#1a14db"
+                          : ""
+                      }
+                    >
+                      hate
+                    </Button>
+                  </LikesBlock>
+                )}
+                <CommentInfoBlock>
+                  <Button
+                    onClick={(e) =>
+                      onSetParentId({ key: "parentId", value: comment.id })
+                    }
+                  >
+                    답글
+                  </Button>
+                </CommentInfoBlock>
+              </div>
             </CommentContentBlock>
           </CommentItemBlock>
         </CommentItemBox>
@@ -191,6 +235,9 @@ const CommentItem = forwardRef(
                 ref={postContentIndexRef}
                 parentId={parentId}
                 onSetParentId={onSetParentId}
+                likeComment={likeComment}
+                hateComment={hateComment}
+                user={user}
               />
             ))}
           </ChildCommentBlock>
@@ -247,7 +294,19 @@ const PostContentFlagedComment = styled.div`
 `;
 
 const PostContent = forwardRef(
-  ({ item, index, comments, parentId, onSetParentId }, postContentIndexRef) => {
+  (
+    {
+      item,
+      index,
+      comments,
+      parentId,
+      onSetParentId,
+      likeComment,
+      hateComment,
+      user,
+    },
+    postContentIndexRef
+  ) => {
     const [showFlagedComment, setShowFlagedComment] = useState(false);
     return (
       <>
@@ -277,6 +336,9 @@ const PostContent = forwardRef(
                   key={comment.id}
                   parentId={parentId}
                   onSetParentId={onSetParentId}
+                  likeComment={likeComment}
+                  hateComment={hateComment}
+                  user={user}
                 />
               );
             })}
@@ -285,14 +347,6 @@ const PostContent = forwardRef(
     );
   }
 );
-
-const LikesBlock = styled.div`
-  display: flex;
-  justify-content: center;
-  Button + Button {
-    margin-left: 1rem;
-  }
-`;
 
 const CommentsBlock = styled.div`
   padding-top: 0.3rem;
@@ -312,6 +366,8 @@ const PostViewer = ({
   onLikePost,
   onHatePost,
   user,
+  likeComment,
+  hateComment,
 }) => {
   const postContentIndexRef = useRef([]);
 
@@ -334,14 +390,15 @@ const PostViewer = ({
     title,
     content,
     likes,
-    unlikes,
+    hates,
+    reports,
     createdAt,
     updatedAt,
     User,
     Hashtags,
   } = post;
   const postId = id;
-  const likeCount = likes - unlikes;
+  const likeCount = likes - hates;
 
   const regExp =
     /(<iframe.*?<\/iframe>)|(<h\d.*?<\/h\d>)|(<p.*?<\/p>)|(<ul.*?<\/ul>)|(<ol.*?<\/ol>)|(<dl.*?<\/dl>)|(<table.*?<\/table>)|(<blockquote.*?<\/blockquote>)|(<pre.*?<\/pre>)|(<img.*?<\/img>)|(<a.*?<\/a>)|(<b.*?<\/b>)|(<i.*?<\/i>)|(<u.*?<\/u>)|(<s.*?<\/s>)|(<sub.*?<\/sub>)|(<sup.*?<\/sup>)/g;
@@ -380,6 +437,7 @@ const PostViewer = ({
             createdTime={new Date(createdAt)}
             updatedTime={new Date(updatedAt)}
             likeCount={likeCount}
+            reports={reports}
             hasMarginTop
           />
           <Tags Hashtags={Hashtags} />
@@ -394,30 +452,35 @@ const PostViewer = ({
             ref={postContentIndexRef}
             parentId={parentId}
             onSetParentId={onSetParentId}
+            likeComment={likeComment}
+            hateComment={hateComment}
+            user={user}
           />
         ))}
-        <LikesBlock>
-          <Button
-            onClick={onLikePost}
-            color={
-              user.likePosts.find((likePost) => likePost.id === postId)
-                ? `#db1414`
-                : "#1a14db"
-            }
-          >
-            like
-          </Button>
-          <Button
-            onClick={onHatePost}
-            color={
-              user.hatePosts.find((hatePost) => hatePost.id === postId)
-                ? "#db1414"
-                : "#1a14db"
-            }
-          >
-            hate
-          </Button>
-        </LikesBlock>
+        {user && (
+          <LikesBlock>
+            <Button
+              onClick={onLikePost}
+              color={
+                user.likePosts.find((likePost) => likePost.id === postId)
+                  ? `#db1414`
+                  : ""
+              }
+            >
+              like
+            </Button>
+            <Button
+              onClick={onHatePost}
+              color={
+                user.hatePosts.find((hatePost) => hatePost.id === postId)
+                  ? "#1a14db"
+                  : ""
+              }
+            >
+              hate
+            </Button>
+          </LikesBlock>
+        )}
         <CommentsBlock>
           {"<"}댓글{">"}
           {comments.map((comment) => (
@@ -428,6 +491,9 @@ const PostViewer = ({
               ref={postContentIndexRef}
               parentId={parentId}
               onSetParentId={onSetParentId}
+              likeComment={likeComment}
+              hateComment={hateComment}
+              user={user}
             />
           ))}
         </CommentsBlock>

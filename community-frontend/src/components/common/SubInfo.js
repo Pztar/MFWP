@@ -28,6 +28,7 @@ const SubInfo = ({
   updatedTime,
   hasMarginTop,
   likeCount,
+  reports,
 }) => {
   const { id, nick } = user;
   const userId = id;
@@ -41,14 +42,15 @@ const SubInfo = ({
       </span>
       <span>
         <span>
-          write:{createdTime.toLocaleString("en-ZA", { hour12: true })}
+          write: {createdTime.toLocaleString("en-ZA", { hour12: true })}
         </span>
         {isUpdated ? (
           <span>
-            update:{updatedTime.toLocaleString("en-ZA", { hour12: true })}
+            update: {updatedTime.toLocaleString("en-ZA", { hour12: true })}
           </span>
         ) : null}
-        {likeCount && <span>likes:{likeCount}</span>}
+        <span>likes: {likeCount}</span>
+        <span>reports: {reports}</span>
       </span>
     </SubInfoBlock>
   );

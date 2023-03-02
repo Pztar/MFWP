@@ -64,8 +64,6 @@ const CommentContentBlock = styled.div`
 const CommentContent = styled.div`
   width: 100%;
   padding-left: 0.5rem;
-  //max-height: 20rem;
-  min-width: 15.5rem;
   p {
     margin: 0.3rem auto;
   }
@@ -81,7 +79,7 @@ const CommentContent = styled.div`
 `;
 
 const ChildCommentBlock = styled.div`
-  padding-left: 1rem;
+  padding-left: 0.7rem;
   border-left: 1px dashed ${palette.gray[5]}; ;
 `;
 
@@ -94,8 +92,10 @@ const CommentInfoBlock = styled.div`
   text-align: center;
   background-color: ${palette.gray[2]};
   white-space: nowrap;
-  padding: 0rem 0 0.2rem;
+  padding: 0rem 0.3rem 0.2rem;
   Button {
+    margin: 0.2rem auto;
+    display: block;
     padding: 0.2rem;
     font-size: 0.8rem;
   }
@@ -105,17 +105,6 @@ const LikesBlock = styled.div`
   justify-content: center;
   Button + Button {
     margin-left: 1rem;
-  }
-  &.commentInLikes {
-    padding: 0.3rem;
-    background-color: ${palette.gray[2]};
-    Button {
-      padding: 0.2rem;
-      font-size: 0.8rem;
-    }
-    Button + Button {
-      margin-left: 0.3rem;
-    }
   }
 `;
 
@@ -179,40 +168,40 @@ const CommentItem = forwardRef(
               <CommentContent
                 dangerouslySetInnerHTML={{ __html: comment.content }}
               />
-              <div>
-                {user && (
-                  <LikesBlock className="commentInLikes">
-                    <Button
-                      onClick={(e) => {
-                        dispatch(likeComment({ commentId }));
-                      }}
-                      color={
-                        user.likeComments.find(
-                          (likeComment) => likeComment.id === commentId
-                        )
-                          ? `#db1414`
-                          : ""
-                      }
-                    >
-                      like
-                    </Button>
-                    <Button
-                      onClick={(e) => {
-                        dispatch(hateComment({ commentId }));
-                      }}
-                      color={
-                        user.hateComments.find(
-                          (hateComment) => hateComment.id === commentId
-                        )
-                          ? "#1a14db"
-                          : ""
-                      }
-                    >
-                      hate
-                    </Button>
-                  </LikesBlock>
-                )}
-                <CommentInfoBlock>
+              <CommentInfoBlock>
+                <div>
+                  {user && (
+                    <>
+                      <Button
+                        onClick={(e) => {
+                          dispatch(likeComment({ commentId }));
+                        }}
+                        color={
+                          user.likeComments.find(
+                            (likeComment) => likeComment.id === commentId
+                          )
+                            ? `#db1414`
+                            : ""
+                        }
+                      >
+                        like
+                      </Button>
+                      <Button
+                        onClick={(e) => {
+                          dispatch(hateComment({ commentId }));
+                        }}
+                        color={
+                          user.hateComments.find(
+                            (hateComment) => hateComment.id === commentId
+                          )
+                            ? "#1a14db"
+                            : ""
+                        }
+                      >
+                        hate
+                      </Button>
+                    </>
+                  )}
                   <Button
                     onClick={(e) =>
                       onSetParentId({ key: "parentId", value: comment.id })
@@ -220,8 +209,8 @@ const CommentItem = forwardRef(
                   >
                     답글
                   </Button>
-                </CommentInfoBlock>
-              </div>
+                </div>
+              </CommentInfoBlock>
             </CommentContentBlock>
           </CommentItemBlock>
         </CommentItemBox>

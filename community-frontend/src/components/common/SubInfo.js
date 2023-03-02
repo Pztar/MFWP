@@ -41,14 +41,15 @@ const SubInfo = ({
         </b>
       </span>
       <span>
-        <span>
-          write: {createdTime.toLocaleString("en-ZA", { hour12: true })}
-        </span>
         {isUpdated ? (
           <span>
-            update: {updatedTime.toLocaleString("en-ZA", { hour12: true })}
+            update: {updatedTime.toLocaleString("en-ZA", { hour12: false })}
           </span>
-        ) : null}
+        ) : (
+          <span>
+            write: {createdTime.toLocaleString("en-ZA", { hour12: false })}
+          </span>
+        )}
         <span>likes: {likeCount}</span>
         <span>reports: {reports}</span>
       </span>

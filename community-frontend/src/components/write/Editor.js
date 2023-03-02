@@ -8,8 +8,8 @@ import Responsive from "../common/Responsive";
 import client from "../../lib/api/client";
 
 const EditorBlock = styled(Responsive)`
-  padding-top: 5rem;
-  padding-bottom: 5rem;
+  padding-top: 3rem;
+  padding-bottom: 1rem;
 `;
 
 const TitleInput = styled.input`
@@ -143,6 +143,7 @@ const Editor = ({ title, content, onChangeField }) => {
       <QuillWrapper>
         <div ref={quillElement} />
       </QuillWrapper>
+      <div>{content.length}/5000</div>
     </EditorBlock>
   );
 };

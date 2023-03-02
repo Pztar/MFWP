@@ -107,6 +107,7 @@ const SendCommentBox = ({
   ordinalNumber,
   parentId,
   onPublish,
+  contentLength,
 }) => {
   const [showCommentEditor, setShowCommentEditor] = useState(false);
   const quillElement = useRef(null);
@@ -230,6 +231,7 @@ const SendCommentBox = ({
                 value={ordinalNumber}
                 onChange={onChange}
               />
+              <div>{contentLength}/1000</div>
               <SendCommentButton onClick={onPublish}>
                 {parentId ? "답글 등록" : "댓글 등록"}
               </SendCommentButton>

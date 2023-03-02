@@ -92,6 +92,7 @@ const SendCommentBoxContainer = () => {
       ordinalNumber={ordinalNumber}
       parentId={parentId}
       onPublish={onPublish}
+      contentLength={content.length}
     />
   );
 };

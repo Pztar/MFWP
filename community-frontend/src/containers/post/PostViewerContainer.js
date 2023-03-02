@@ -5,7 +5,12 @@ import PostViewer from "../../components/post/PostViewer";
 import { removePost } from "../../lib/api/posts";
 import { changeField } from "../../modules/comment";
 import { readPost, unloadPost } from "../../modules/post";
-import { hatePost, likeComment, likePost } from "../../modules/user";
+import {
+  hateComment,
+  hatePost,
+  likeComment,
+  likePost,
+} from "../../modules/user";
 import { setOriginalPost } from "../../modules/write";
 import PostActionButtons from "./PostAcktionButtons";
 
@@ -57,6 +62,13 @@ const PostViewerContainer = () => {
   const onHatePost = () => {
     dispatch(hatePost({ postId }));
   };
+  /*
+  const onLikeComment = () => {
+    dispatch(likeComment({ commentId }));
+  };
+  const onHateComment = () => {
+    dispatch(hateComment({ commentId }));
+  };*/
 
   const ownPost = (user && user.id) === (post && post.UserId);
 
@@ -73,6 +85,7 @@ const PostViewerContainer = () => {
       onSetParentId={onSetParentId}
       onLikePost={onLikePost}
       onHatePost={onHatePost}
+      user={user}
     />
   );
 };

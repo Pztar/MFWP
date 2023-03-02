@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import palette from "../../lib/styles/palette";
 import { Link } from "react-router-dom";
+import { hexColorMakeLighter } from "../../lib/styles/colorFunctions";
 
 const buttonStyle = css`
   border: none;
@@ -40,7 +41,7 @@ const buttonStyle = css`
     css`
       background: ${props.color};
       &:hover {
-        background: ${props.hoverColor || props.color};
+        background: ${hexColorMakeLighter(props.color, 0.25)};
       }
     `}
 

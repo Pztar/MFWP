@@ -148,6 +148,28 @@ const CommentItem = forwardRef(
               <CommentContent
                 dangerouslySetInnerHTML={{ __html: comment.content }}
               />
+              {/* <LikesBlock>
+              <Button
+                onClick={onLikePost}
+                color={
+                  user.likePosts.find((likePost) => likePost.id === comment.id)
+                    ? `#db1414`
+                    : "#1a14db"
+                }
+              >
+                like
+              </Button>
+              <Button
+                onClick={onHatePost}
+                color={
+                  user.hatePosts.find((hatePost) => hatePost.id === comment.id)
+                    ? "#db1414"
+                    : "#1a14db"
+                }
+              >
+                hate
+              </Button>
+            </LikesBlock> */}
               <CommentInfoBlock
                 className="recommendButton"
                 onClick={(e) =>
@@ -289,6 +311,7 @@ const PostViewer = ({
   onSetParentId,
   onLikePost,
   onHatePost,
+  user,
 }) => {
   const postContentIndexRef = useRef([]);
 
@@ -374,8 +397,26 @@ const PostViewer = ({
           />
         ))}
         <LikesBlock>
-          <Button onClick={onLikePost}>like</Button>
-          <Button onClick={onHatePost}>hate</Button>
+          <Button
+            onClick={onLikePost}
+            color={
+              user.likePosts.find((likePost) => likePost.id === postId)
+                ? `#db1414`
+                : "#1a14db"
+            }
+          >
+            like
+          </Button>
+          <Button
+            onClick={onHatePost}
+            color={
+              user.hatePosts.find((hatePost) => hatePost.id === postId)
+                ? "#db1414"
+                : "#1a14db"
+            }
+          >
+            hate
+          </Button>
         </LikesBlock>
         <CommentsBlock>
           {"<"}댓글{">"}

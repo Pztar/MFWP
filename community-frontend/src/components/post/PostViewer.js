@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet-async";
 import { forwardRef, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import Button from "../common/Button";
+import Report from "../common/Report";
 
 const PostViewerBlock = styled(Responsive)`
   margin-top: 4rem;
@@ -344,6 +345,25 @@ const CommentsBlock = styled.div`
   border-top: 1px black inset;
 `;
 
+const ReportButton = styled.button`
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  color: ${palette.gray[6]};
+  font-weight: bold;
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+  cursor: pointer;
+  &:hover {
+    background: ${palette.gray[1]};
+    color: #e30000;
+  }
+
+  & + & {
+    margin-left: 0.25rem;
+  }
+`;
+
 const PostViewer = ({
   post,
   comments,
@@ -359,6 +379,9 @@ const PostViewer = ({
   hateComment,
 }) => {
   const postContentIndexRef = useRef([]);
+  const [reportVisible, setReportVisible] = useState(false);
+
+  //const onCancle = setReportVisible(false);
 
   if (error) {
     if (error.response && error.response.status === 404) {
@@ -431,6 +454,19 @@ const PostViewer = ({
           />
           <Tags Hashtags={Hashtags} />
         </PostHead>
+        <ReportButton
+          onClick={(e) => {
+            setReportVisible(true);
+          }}
+        >
+          신고
+        </ReportButton>
+        <Report
+          reportVisible={reportVisible}
+          reportedClass="post"
+          reportedClassId={postId}
+          setReportVisible={setReportVisible}
+        />
         {actionButtons}
         {contents.map((item, index, arr) => (
           <PostContent

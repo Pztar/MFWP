@@ -175,7 +175,8 @@ export const reportComment = async (ctx) => {
       Report.findOne({
         where: {
           UserId: ctx.state.user.id, //신고한 사람
-          class: "comment",
+          reportedClass: "comment",
+          category: ctx.request.body.category,
           reportedClassId: commentId,
         },
       }),
@@ -183,14 +184,13 @@ export const reportComment = async (ctx) => {
 
     if (report) {
       await report.update({
-        category: ctx.request.body.category,
         content: ctx.request.body.content,
       });
     } else {
       await Promise.all([
         Report.create({
           UserId: ctx.state.user.id, //신고한 사람
-          class: "comment",
+          reportedClass: "comment",
           category: ctx.request.body.category,
           content: ctx.request.body.content,
           reportedClassId: commentId,

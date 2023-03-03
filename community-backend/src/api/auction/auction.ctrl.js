@@ -204,7 +204,8 @@ export const reportProduct = async (ctx) => {
       db.Report.findOne({
         where: {
           UserId: ctx.state.user.id, //신고한 사람
-          class: "product",
+          reportedClass: "product",
+          category: ctx.request.body.category,
           reportedClassId: productId,
         },
       }),
@@ -212,14 +213,13 @@ export const reportProduct = async (ctx) => {
 
     if (report) {
       await report.update({
-        category: ctx.request.body.category,
         content: ctx.request.body.content,
       });
     } else {
       await Promise.all([
         db.Report.create({
           UserId: ctx.state.user.id, //신고한 사람
-          class: "product",
+          reportedClass: "product",
           category: ctx.request.body.category,
           content: ctx.request.body.content,
           reportedClassId: productId,

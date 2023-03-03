@@ -4,7 +4,7 @@ export default class Report extends Sequelize.Model {
   static init(sequelize) {
     return super.init(
       {
-        class: {
+        reportedClass: {
           type: Sequelize.STRING(10),
           allowNull: false,
         },

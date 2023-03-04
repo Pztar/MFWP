@@ -21,7 +21,7 @@ const Tags = ({ Hashtags }) => {
       {Hashtags.map((hashtag) => (
         <Link
           className="hashtag"
-          to={`/?hashtag=${hashtag.title}`}
+          to={`/posts?hashtag=${hashtag.title}`}
           key={hashtag.title}
         >
           #{hashtag.title}

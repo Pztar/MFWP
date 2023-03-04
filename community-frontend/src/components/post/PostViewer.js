@@ -55,7 +55,7 @@ const CommentSubinfoBlock = styled.div`
   }
 
   &.recommenting {
-    background-color: ${palette.gray[3]};
+    background-color: ${palette.gray[5]};
   }
 `;
 const CommentContentBlock = styled.div`
@@ -91,14 +91,30 @@ const CommentInfoBlock = styled.div`
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-color: ${palette.gray[2]};
+  background-color: ${palette.gray[3]};
   white-space: nowrap;
   padding: 0rem 0.3rem 0.2rem;
+`;
+
+const CommentInfoButtonsBlock = styled.div`
+  display: flex;
+  font-size: 0.8rem;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  background-color: ${palette.gray[1]};
+  white-space: nowrap;
+  padding: 0rem 0.3rem 0rem;
+  width: 100%;
+
   Button {
-    margin: 0.2rem auto;
-    display: block;
+    margin: 0.05rem;
+    display: inline;
     padding: 0.2rem;
     font-size: 0.8rem;
+  }
+  Button + Button {
+    margin-left: 1rem;
   }
 `;
 const LikesBlock = styled.div`
@@ -123,6 +139,7 @@ const CommentItem = forwardRef(
     postContentIndexRef
   ) => {
     const dispatch = useDispatch();
+    const [reportVisible, setReportVisible] = useState(false);
     const commentId = comment.id;
     return (
       <>
@@ -166,13 +183,13 @@ const CommentItem = forwardRef(
                     : comment.ordinalNumber}
                 </CommentInfoBlock>
               )}
-              <CommentContent
-                dangerouslySetInnerHTML={{ __html: comment.content }}
-              />
-              <CommentInfoBlock>
-                <div>
-                  {user && (
-                    <>
+              <div style={{ width: "100%" }}>
+                <CommentContent
+                  dangerouslySetInnerHTML={{ __html: comment.content }}
+                />
+                {user && (
+                  <CommentInfoButtonsBlock>
+                    <span>
                       <Button
                         onClick={(e) => {
                           dispatch(likeComment({ commentId }));
@@ -201,17 +218,32 @@ const CommentItem = forwardRef(
                       >
                         hate
                       </Button>
-                    </>
-                  )}
-                  <Button
-                    onClick={(e) =>
-                      onSetParentId({ key: "parentId", value: comment.id })
-                    }
-                  >
-                    답글
-                  </Button>
-                </div>
-              </CommentInfoBlock>
+                    </span>
+                    <span>
+                      <Button
+                        onClick={(e) => {
+                          setReportVisible(true);
+                        }}
+                      >
+                        신고
+                      </Button>
+                      <Report
+                        reportVisible={reportVisible}
+                        reportedClass="comment"
+                        reportedClassId={commentId}
+                        setReportVisible={setReportVisible}
+                      />
+                      <Button
+                        onClick={(e) =>
+                          onSetParentId({ key: "parentId", value: comment.id })
+                        }
+                      >
+                        답글
+                      </Button>
+                    </span>
+                  </CommentInfoButtonsBlock>
+                )}
+              </div>
             </CommentContentBlock>
           </CommentItemBlock>
         </CommentItemBox>
@@ -454,19 +486,24 @@ const PostViewer = ({
           />
           <Tags Hashtags={Hashtags} />
         </PostHead>
-        <ReportButton
-          onClick={(e) => {
-            setReportVisible(true);
-          }}
-        >
-          신고
-        </ReportButton>
-        <Report
-          reportVisible={reportVisible}
-          reportedClass="post"
-          reportedClassId={postId}
-          setReportVisible={setReportVisible}
-        />
+        {user && (
+          <>
+            <ReportButton
+              onClick={(e) => {
+                setReportVisible(true);
+              }}
+            >
+              신고
+            </ReportButton>
+            <Report
+              reportVisible={reportVisible}
+              reportedClass="post"
+              reportedClassId={postId}
+              setReportVisible={setReportVisible}
+            />
+          </>
+        )}
+
         {actionButtons}
         {contents.map((item, index, arr) => (
           <PostContent

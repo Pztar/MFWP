@@ -55,7 +55,7 @@ export function* commentSaga() {
 }
 
 const initialState = {
-  ordinalNumber: "",
+  ordinalNumber: -1,
   content: "",
   parentId: null,
   comment: null,

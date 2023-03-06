@@ -97,7 +97,7 @@ const ProductItem = ({ product, serverTime, logedIn, setSoldList }) => {
       </td>
       <td>{name}</td>
       <td>{category}</td>
-      <td>{img ? <img src={`${img}`} alt="productImg" /> : "null"}</td>
+      <td>{img ? <img src={`${img}`} alt="productImg" /> : "-"}</td>
       <td className="hideOverflow">
         {explanation ? (
           <a href={`${linkUrl}`} target="_blank" rel="noopener noreferrer">

@@ -51,7 +51,7 @@ const PostViewerContainer = () => {
     }
   };
 
-  const onSetParentId = useCallback(
+  const onChangeField = useCallback(
     (payload) => dispatch(changeField(payload)),
     [dispatch]
   );
@@ -75,7 +75,7 @@ const PostViewerContainer = () => {
         ownPost && <PostActionButtons onEdit={onEdit} onRemove={onRemove} />
       }
       parentId={parentId}
-      onSetParentId={onSetParentId}
+      onChangeField={onChangeField}
       onLikePost={onLikePost}
       onHatePost={onHatePost}
       user={user}

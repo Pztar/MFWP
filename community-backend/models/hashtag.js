@@ -9,6 +9,11 @@ export default class Hashtag extends Sequelize.Model {
           allowNull: false,
           unique: true,
         },
+        tagedPostCount: {
+          type: Sequelize.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
       },
       {
         sequelize,

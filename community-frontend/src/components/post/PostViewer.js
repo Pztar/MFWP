@@ -86,7 +86,7 @@ const ChildCommentBlock = styled.div`
 
 const CommentInfoBlock = styled.div`
   display: flex;
-  min-width: 2rem;
+  min-width: 1rem;
   font-size: 0.8rem;
   justify-content: center;
   align-items: center;
@@ -131,7 +131,7 @@ const CommentItem = forwardRef(
       comment,
       showAllComment,
       parentId,
-      onSetParentId,
+      onChangeField,
       likeComment,
       hateComment,
       user,
@@ -178,9 +178,7 @@ const CommentItem = forwardRef(
                       : "ordinalNumIsNull"
                   }
                 >
-                  {comment.ordinalNumber === -1
-                    ? "null"
-                    : comment.ordinalNumber}
+                  {comment.ordinalNumber === -1 ? "" : comment.ordinalNumber}
                 </CommentInfoBlock>
               )}
               <div style={{ width: "100%" }}>
@@ -235,7 +233,7 @@ const CommentItem = forwardRef(
                       />
                       <Button
                         onClick={(e) =>
-                          onSetParentId({ key: "parentId", value: comment.id })
+                          onChangeField({ key: "parentId", value: comment.id })
                         }
                       >
                         답글
@@ -256,7 +254,7 @@ const CommentItem = forwardRef(
                 showAllComment="true"
                 ref={postContentIndexRef}
                 parentId={parentId}
-                onSetParentId={onSetParentId}
+                onChangeField={onChangeField}
                 likeComment={likeComment}
                 hateComment={hateComment}
                 user={user}
@@ -307,7 +305,7 @@ const PostContentItem = styled.span`
   }
 `;
 
-const PostContentFlagedComment = styled.div`
+const PostContentFlagedComments = styled.div`
   overflow: auto;
   max-height: 30rem;
   transition: all 0.2s ease-in-out;
@@ -322,7 +320,7 @@ const PostContent = forwardRef(
       index,
       comments,
       parentId,
-      onSetParentId,
+      onChangeField,
       likeComment,
       hateComment,
       user,
@@ -347,7 +345,7 @@ const PostContent = forwardRef(
           </PostContentIndex>
           <PostContentItem dangerouslySetInnerHTML={{ __html: item }} />
         </PostContentItemBlock>
-        <PostContentFlagedComment
+        <PostContentFlagedComments
           className={showFlagedComment ? "show" : "hide"}
         >
           {comments &&
@@ -357,14 +355,26 @@ const PostContent = forwardRef(
                   comment={comment}
                   key={comment.id}
                   parentId={parentId}
-                  onSetParentId={onSetParentId}
+                  onChangeField={onChangeField}
                   likeComment={likeComment}
                   hateComment={hateComment}
                   user={user}
                 />
               );
             })}
-        </PostContentFlagedComment>
+          <Button
+            onClick={(e) => {
+              onChangeField({ key: "ordinalNumber", value: index });
+            }}
+            style={{
+              "margin-top": "0.3rem",
+              "font-size": "0.9rem",
+              padding: "0.1rem 1rem",
+            }}
+          >
+            문단에 댓글 달기
+          </Button>
+        </PostContentFlagedComments>
       </>
     );
   }
@@ -403,7 +413,7 @@ const PostViewer = ({
   error,
   loading,
   actionButtons,
-  onSetParentId,
+  onChangeField,
   onLikePost,
   onHatePost,
   user,
@@ -513,7 +523,7 @@ const PostViewer = ({
             key={index}
             ref={postContentIndexRef}
             parentId={parentId}
-            onSetParentId={onSetParentId}
+            onChangeField={onChangeField}
             likeComment={likeComment}
             hateComment={hateComment}
             user={user}
@@ -552,7 +562,7 @@ const PostViewer = ({
               showAllComment="true"
               ref={postContentIndexRef}
               parentId={parentId}
-              onSetParentId={onSetParentId}
+              onChangeField={onChangeField}
               likeComment={likeComment}
               hateComment={hateComment}
               user={user}

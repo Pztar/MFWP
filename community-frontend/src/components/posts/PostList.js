@@ -48,7 +48,7 @@ const PostItem = ({ post }) => {
     title,
     content,
     likes,
-    unlikes,
+    hates,
     createdAt,
     updatedAt,
     UserId,
@@ -56,7 +56,7 @@ const PostItem = ({ post }) => {
   } = post;
   const postId = id;
   const userId = UserId;
-  const likeCount = likes - unlikes;
+  const likeCount = likes - hates;
   return (
     <PostItemBlock>
       <SubInfo

@@ -70,6 +70,16 @@ export const write = async (ctx, next) => {
           });
         })
       );
+      await Promise.all(
+        result.map((hashtag) => {
+          hashtag[0].update(
+            {
+              tagedPostCount: mySQL.sequelize.literal(`tagedPostCount + 1`),
+            }
+            //{ silent: true } //updatedAt을 갱신하지 않고 업데이트//updatedAt이 해당 태그가 마지막으로 태그된 시점을 나타냄
+          );
+        })
+      );
       await post.addHashtags(result.map((r) => r[0]));
     }
     ctx.body = post;
@@ -213,6 +223,17 @@ export const unassociateHashtag = async (ctx, next) => {
       ctx.status = 404;
       return;
     }
+    const hashtags = await post.getHashtags();
+    await Promise.all(
+      hashtags.map((hashtag) => {
+        hashtag.update(
+          {
+            tagedPostCount: mySQL.sequelize.literal(`tagedPostCount - 1`),
+          },
+          { silent: true } //updatedAt을 갱신하지 않고 업데이트
+        );
+      })
+    );
     await post.setHashtags([]); // Un-associate all previously associated hashtags
     return next();
   } catch (e) {
@@ -263,6 +284,16 @@ export const update = async (ctx) => {
           return Hashtag.findOrCreate({
             where: { title: tag.slice(1).toLowerCase() },
           });
+        })
+      );
+      await Promise.all(
+        result.map((hashtag) => {
+          hashtag[0].update(
+            {
+              tagedPostCount: mySQL.sequelize.literal(`tagedPostCount + 1`),
+            }
+            //{ silent: true } //updatedAt을 갱신하지 않고 업데이트//updatedAt이 해당 태그가 마지막으로 태그된 시점을 나타냄
+          );
         })
       );
       await post.addHashtags(result.map((r) => r[0]));

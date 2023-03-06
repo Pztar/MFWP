@@ -125,7 +125,7 @@ const ProductItem = ({ product, serverTime }) => {
       <td>{name}</td>
       <td>{category}</td>
       <td className="tdImg">
-        {img ? <img src={`${img}`} alt="productImg" /> : "null"}
+        {img ? <img src={`${img}`} alt="productImg" /> : "-"}
       </td>
       <td className="tdLink">
         {explanation ? (

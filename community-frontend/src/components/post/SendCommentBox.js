@@ -114,10 +114,10 @@ const SendCommentBox = ({
   const quillInstence = useRef(null);
 
   useEffect(() => {
-    if (parentId) {
+    if (parentId || ordinalNumber >= 0) {
       setShowCommentEditor(true);
     }
-  }, [parentId]);
+  }, [parentId, ordinalNumber]);
 
   useEffect(() => {
     quillInstence.current = new Quill(quillElement.current, {
@@ -208,6 +208,7 @@ const SendCommentBox = ({
                 setShowCommentEditor(!showCommentEditor);
                 if (showCommentEditor) {
                   onChangeField({ key: "parentId", value: null });
+                  onChangeField({ key: "ordinalNumber", value: -1 });
                 }
               }}
             >
@@ -228,7 +229,7 @@ const SendCommentBox = ({
                 min="-1"
                 placeholder="본문 문단 번호"
                 name="ordinalNumber"
-                value={ordinalNumber}
+                value={ordinalNumber > -1 ? ordinalNumber : ""}
                 onChange={onChange}
               />
               <div>{contentLength}/1000</div>

@@ -15,6 +15,7 @@ const PostViewerBlock = styled(Responsive)`
     max-height: 0;
     overflow: hidden;
     margin: 0;
+    padding: 0;
   }
   .hoverClick {
     &:hover {
@@ -253,7 +254,7 @@ const CommentItem = forwardRef(
               <CommentItem
                 comment={comment}
                 key={comment.id}
-                showAllComment="true"
+                showAllComment={comment.ordinalNumber > -1 && "true"}
                 ref={postContentIndexRef}
                 parentId={parentId}
                 onChangeField={onChangeField}
@@ -312,7 +313,9 @@ const PostContentFlagedComments = styled.div`
   max-height: 33rem;
   transition: all 0.2s ease-in-out;
   //height:auto일 경우 적용 안됨 하지만 max-height값으로 적용 가능함
-  margin: 0 0 1rem 2rem;
+  margin: 0 0 1rem 1rem;
+  box-shadow: inset 0px 0px 5px 0px black;
+  padding: 0.3rem 0.3rem 0.5rem 1rem;
 `;
 
 const PostContent = forwardRef(
@@ -407,7 +410,7 @@ const PostContent = forwardRef(
               //value를 string으로 입력해야 ordinalNumber이 0일때 오류가 나지 않음
             }}
             style={{
-              marginTop: "0.3rem",
+              margin: "0.3rem 0.5rem",
               fontSize: "0.9rem",
               padding: "0.1rem 1rem",
             }}
@@ -625,7 +628,7 @@ const PostViewer = ({
             <CommentItem
               comment={comment}
               key={comment.id}
-              showAllComment="true"
+              showAllComment={comment.ordinalNumber > -1 && "true"}
               ref={postContentIndexRef}
               parentId={parentId}
               onChangeField={onChangeField}

@@ -4,7 +4,7 @@ import Responsive from "../common/Responsive";
 import SubInfo from "../common/SubInfo";
 import Tags from "../common/Tags";
 import { Helmet } from "react-helmet-async";
-import { forwardRef, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import Button from "../common/Button";
 import Report from "../common/Report";
@@ -160,17 +160,19 @@ const CommentItem = forwardRef(
               {showAllComment && (
                 <CommentInfoBlock
                   onClick={(e) => {
-                    const element =
-                      postContentIndexRef.current[comment.ordinalNumber];
-                    //.scrollIntoView({behavior: "smooth",block: "start",inline: "nearest",});
-                    //편리한 방법이지만 헤더가 display:fixed일 경우 가려짐
-                    const yOffset = -90;
-                    const y =
-                      element.getBoundingClientRect().top +
-                      window.pageYOffset +
-                      yOffset;
+                    if (comment.ordinalNumber > -1) {
+                      const element =
+                        postContentIndexRef.current[comment.ordinalNumber];
+                      //.scrollIntoView({behavior: "smooth",block: "start",inline: "nearest",});
+                      //편리한 방법이지만 헤더가 display:fixed일 경우 가려짐
+                      const yOffset = -90;
+                      const y =
+                        element.getBoundingClientRect().top +
+                        window.pageYOffset +
+                        yOffset;
 
-                    window.scrollTo({ top: y, behavior: "smooth" });
+                      window.scrollTo({ top: y, behavior: "smooth" });
+                    }
                   }}
                   className={
                     comment.ordinalNumber >= 0
@@ -307,7 +309,7 @@ const PostContentItem = styled.span`
 
 const PostContentFlagedComments = styled.div`
   overflow: auto;
-  max-height: 30rem;
+  max-height: 33rem;
   transition: all 0.2s ease-in-out;
   //height:auto일 경우 적용 안됨 하지만 max-height값으로 적용 가능함
   margin: 0 0 1rem 2rem;
@@ -328,6 +330,20 @@ const PostContent = forwardRef(
     postContentIndexRef
   ) => {
     const [showFlagedComment, setShowFlagedComment] = useState(false);
+    const [commentPage, setCommentPage] = useState(1);
+    const [slicedComments, setSlicedComments] = useState([]);
+
+    const commentPerPage = 5;
+    useEffect(() => {
+      if (comments) {
+        setSlicedComments(
+          comments.slice(
+            commentPerPage * (commentPage - 1),
+            commentPerPage * commentPage
+          )
+        );
+      }
+    }, [comments, commentPage]);
     return (
       <>
         <PostContentItemBlock>
@@ -349,11 +365,12 @@ const PostContent = forwardRef(
           className={showFlagedComment ? "show" : "hide"}
         >
           {comments &&
-            comments.map((comment) => {
+            slicedComments.map((comment) => {
               return (
                 <CommentItem
                   comment={comment}
                   key={comment.id}
+                  ref={postContentIndexRef}
                   parentId={parentId}
                   onChangeField={onChangeField}
                   likeComment={likeComment}
@@ -362,13 +379,36 @@ const PostContent = forwardRef(
                 />
               );
             })}
+          <CommentPagenation>
+            {" "}
+            <Button
+              onClick={(e) => {
+                if (commentPage > 1) {
+                  setCommentPage(commentPage - 1);
+                }
+              }}
+            >
+              -1
+            </Button>
+            <span>{commentPage}</span>
+            <Button
+              onClick={(e) => {
+                if (comments[commentPage * commentPerPage]) {
+                  setCommentPage(commentPage + 1);
+                }
+              }}
+            >
+              +1
+            </Button>
+          </CommentPagenation>
           <Button
             onClick={(e) => {
-              onChangeField({ key: "ordinalNumber", value: index });
+              onChangeField({ key: "ordinalNumber", value: `${index}` });
+              //value를 string으로 입력해야 ordinalNumber이 0일때 오류가 나지 않음
             }}
             style={{
-              "margin-top": "0.3rem",
-              "font-size": "0.9rem",
+              marginTop: "0.3rem",
+              fontSize: "0.9rem",
               padding: "0.1rem 1rem",
             }}
           >
@@ -406,6 +446,18 @@ const ReportButton = styled.button`
   }
 `;
 
+const CommentPagenation = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  span {
+    margin: 0rem 2rem;
+  }
+  Button {
+    font-size: 0.9rem;
+  }
+`;
+
 const PostViewer = ({
   post,
   comments,
@@ -422,6 +474,20 @@ const PostViewer = ({
 }) => {
   const postContentIndexRef = useRef([]);
   const [reportVisible, setReportVisible] = useState(false);
+  const [commentPage, setCommentPage] = useState(1);
+  const [slicedComments, setSlicedComments] = useState([]);
+
+  const commentPerPage = 5;
+  useEffect(() => {
+    if (comments) {
+      setSlicedComments(
+        comments.slice(
+          commentPerPage * (commentPage - 1),
+          commentPerPage * commentPage
+        )
+      );
+    }
+  }, [comments, commentPage]);
 
   //const onCancle = setReportVisible(false);
 
@@ -554,8 +620,8 @@ const PostViewer = ({
           </LikesBlock>
         )}
         <CommentsBlock>
-          {"<"}댓글{">"}
-          {comments.map((comment) => (
+          {`<댓글 [${comments.length}]>`}
+          {slicedComments.map((comment) => (
             <CommentItem
               comment={comment}
               key={comment.id}
@@ -568,6 +634,28 @@ const PostViewer = ({
               user={user}
             />
           ))}
+          <CommentPagenation>
+            {" "}
+            <Button
+              onClick={(e) => {
+                if (commentPage > 1) {
+                  setCommentPage(commentPage - 1);
+                }
+              }}
+            >
+              -1
+            </Button>
+            <span>{commentPage}</span>
+            <Button
+              onClick={(e) => {
+                if (comments[commentPage * commentPerPage]) {
+                  setCommentPage(commentPage + 1);
+                }
+              }}
+            >
+              +1
+            </Button>
+          </CommentPagenation>
         </CommentsBlock>
       </PostViewerBlock>
     </>

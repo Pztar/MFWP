@@ -1,6 +1,7 @@
-import HeaderContainer from '../containers/common/HeaderContainer';
-import PaginationContainer from '../containers/posts/PaginationContainer';
-import PostListContainer from '../containers/posts/PostListContainer';
+import HeaderContainer from "../containers/common/HeaderContainer";
+import PaginationContainer from "../containers/posts/PaginationContainer";
+import PostListContainer from "../containers/posts/PostListContainer";
+import SearchOptionContainer from "../containers/posts/SearchOptionContainer";
 
 const PostListPage = () => {
   return (
@@ -8,6 +9,7 @@ const PostListPage = () => {
       <HeaderContainer />
       <PostListContainer />
       <PaginationContainer />
+      <SearchOptionContainer />
     </>
   );
 };

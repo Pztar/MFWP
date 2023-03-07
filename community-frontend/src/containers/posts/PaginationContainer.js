@@ -16,15 +16,15 @@ const PaginationContainer = () => {
   if (!posts || loading)
     return <Loading>포스트가 없거나 로딩 중 입니다.</Loading>;
 
-  const { hashtag, page = 1 } = qs.parse(search, {
+  const query = qs.parse(search, {
     ignoreQueryPrefix: true,
   });
 
   return (
     <Pagination
-      hashtag={hashtag}
+      query={query}
       userId={userId}
-      page={parseInt(page, 10)}
+      page={query.page ? parseInt(query.page, 10) : 1}
       lastPage={lastPage}
     />
   );

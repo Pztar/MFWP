@@ -15,12 +15,12 @@ const PaginationBlock = styled.div`
 
 const PageNumber = styled.div``;
 
-const buildLink = ({ userId, hashtag, page }) => {
-  const query = qs.stringify({ hashtag, page });
-  return userId ? `/${userId}?${query}` : `/?${query}`;
+const buildLink = ({ userId, query, page }) => {
+  const makeQuery = qs.stringify({ ...query, page });
+  return userId ? `/posts/${userId}?${makeQuery}` : `/posts/?${makeQuery}`;
 };
 
-const Pagination = ({ page, lastPage, userId, hashtag }) => {
+const Pagination = ({ page, lastPage, userId, query }) => {
   return (
     <>
       <PaginationBlock>
@@ -29,7 +29,11 @@ const Pagination = ({ page, lastPage, userId, hashtag }) => {
           to={
             page === 1
               ? undefined
-              : buildLink({ userId, hashtag, page: page - 1 })
+              : buildLink({
+                  userId,
+                  query,
+                  page: page - 1,
+                })
           }
         >
           이전
@@ -40,7 +44,11 @@ const Pagination = ({ page, lastPage, userId, hashtag }) => {
           to={
             page === lastPage
               ? undefined
-              : buildLink({ userId, hashtag, page: page + 1 })
+              : buildLink({
+                  userId,
+                  query,
+                  page: page + 1,
+                })
           }
         >
           다음

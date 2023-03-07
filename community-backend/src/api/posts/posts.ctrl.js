@@ -98,6 +98,7 @@ const removeHtmlAndShorten = (body) => {
 export const list = async (ctx, next) => {
   //쿼리는 문자열이므로 숫자로 변환
   const page = parseInt(ctx.query.page || "1", 10);
+  console.log(page);
   if (page < 1) {
     ctx.status = 400;
     return;

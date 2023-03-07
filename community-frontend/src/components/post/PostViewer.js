@@ -391,7 +391,7 @@ const PostContent = forwardRef(
                 }
               }}
             >
-              -1
+              이전
             </Button>
             <span>{commentPage}</span>
             <Button
@@ -401,7 +401,7 @@ const PostContent = forwardRef(
                 }
               }}
             >
-              +1
+              다음
             </Button>
           </CommentPagenation>
           <Button
@@ -646,7 +646,7 @@ const PostViewer = ({
                 }
               }}
             >
-              -1
+              이전
             </Button>
             <span>{commentPage}</span>
             <Button
@@ -656,7 +656,7 @@ const PostViewer = ({
                 }
               }}
             >
-              +1
+              다음
             </Button>
           </CommentPagenation>
         </CommentsBlock>

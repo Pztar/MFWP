@@ -105,18 +105,58 @@ export const list = async (ctx, next) => {
     return;
   }
   try {
-    const { hashtag, userId, selected, searchWord } = ctx.query;
+    const {
+      hashtag,
+      userId,
+      selected,
+      searchWord,
+      order = "createdAt",
+      dateRange,
+    } = ctx.query;
     let posts = [];
     let postCount = undefined;
 
+    let searchStartDate = 0;
+    switch (dateRange) {
+      case "all":
+        searchStartDate = 0;
+        break;
+      case "1day":
+        searchStartDate = new Date(Date.now() - 86400000);
+        break;
+      case "3days":
+        searchStartDate = new Date(Date.now() - 86400000 * 3);
+        break;
+      case "1week":
+        searchStartDate = new Date(Date.now() - 86400000 * 7);
+        break;
+      case "1month":
+        searchStartDate = new Date(Date.now() - 86400000 * 30);
+        break;
+
+      default:
+        searchStartDate = 0;
+        break;
+    }
+
     let searchColumn = selected;
     let searchKeyword = searchWord;
-    let searchOption = { [searchColumn]: { [Op.substring]: searchKeyword } };
+    let searchOption = {
+      [Op.and]: [
+        { createdAt: { [Op.gte]: searchStartDate } },
+        { [searchColumn]: { [Op.substring]: searchKeyword } },
+      ],
+    };
     if (selected === "title+content") {
       searchOption = {
-        [Op.or]: [
-          { title: { [Op.substring]: searchKeyword } },
-          { content: { [Op.substring]: searchKeyword } },
+        [Op.and]: [
+          { createdAt: { [Op.gte]: searchStartDate } },
+          {
+            [Op.or]: [
+              { title: { [Op.substring]: searchKeyword } },
+              { content: { [Op.substring]: searchKeyword } },
+            ],
+          },
         ],
       };
     } else if (selected === "userNick") {
@@ -132,6 +172,10 @@ export const list = async (ctx, next) => {
         ctx.body = [];
       }
     }
+    let orderOption = [
+      [order, "DESC"],
+      ["createdAt", "DESC"],
+    ];
 
     if (hashtag) {
       const findedHashtag = await Hashtag.findOne({
@@ -145,10 +189,14 @@ export const list = async (ctx, next) => {
               model: User,
               attributes: ["id", "nick"],
             },
+            {
+              model: Hashtag,
+              attributes: ["title"],
+            },
           ],
           limit: postPerPage,
           offset: (page - 1) * postPerPage,
-          order: [["createdAt", "DESC"]],
+          order: orderOption,
         });
         postCount = await findedHashtag.countPosts();
       }
@@ -164,10 +212,14 @@ export const list = async (ctx, next) => {
             model: User,
             attributes: ["id", "nick"],
           },
+          {
+            model: Hashtag,
+            attributes: ["title"],
+          },
         ],
         limit: postPerPage,
         offset: (page - 1) * postPerPage,
-        order: [["createdAt", "DESC"]],
+        order: orderOption,
       });
       posts = rows;
       postCount = count;
@@ -179,10 +231,14 @@ export const list = async (ctx, next) => {
             model: User,
             attributes: ["id", "nick"],
           },
+          {
+            model: Hashtag,
+            attributes: ["title"],
+          },
         ],
         limit: postPerPage,
         offset: (page - 1) * postPerPage,
-        order: [["createdAt", "DESC"]],
+        order: orderOption,
       });
       posts = rows;
       postCount = count;

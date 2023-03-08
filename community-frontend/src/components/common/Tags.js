@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import palette from "../../lib/styles/palette";
 
 const TagsBlock = styled.div`
-  margin-top: 0.5rem;
+  margin-top: 0.1rem;
   .hashtag {
     display: inline-block;
     color: ${palette.cyan[7]};
@@ -18,15 +18,16 @@ const TagsBlock = styled.div`
 const Tags = ({ Hashtags }) => {
   return (
     <TagsBlock>
-      {Hashtags.map((hashtag) => (
-        <Link
-          className="hashtag"
-          to={`/posts?hashtag=${hashtag.title}`}
-          key={hashtag.title}
-        >
-          #{hashtag.title}
-        </Link>
-      ))}
+      {Hashtags &&
+        Hashtags.map((hashtag) => (
+          <Link
+            className="hashtag"
+            to={`/posts?hashtag=${hashtag.title}`}
+            key={hashtag.title}
+          >
+            #{hashtag.title}
+          </Link>
+        ))}
     </TagsBlock>
   );
 };

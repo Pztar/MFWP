@@ -27,6 +27,7 @@ const SubInfo = ({
   createdTime,
   updatedTime,
   hasMarginTop,
+  views,
   likeCount,
   reports,
 }) => {
@@ -50,6 +51,7 @@ const SubInfo = ({
             write: {createdTime.toLocaleString("en-ZA", { hour12: false })}
           </span>
         )}
+        {views ? <span>views: {views}</span> : null}
         <span>likes: {likeCount}</span>
         <span>reports: {reports}</span>
       </span>

@@ -4,6 +4,7 @@ import palette from "../../lib/styles/palette";
 import Button from "../common/Button";
 import Responsive from "../common/Responsive";
 import SubInfo from "../common/SubInfo";
+import Tags from "../common/Tags";
 //import Tags from "../common/Tags";
 
 const PostLitstBlock = styled(Responsive)`
@@ -16,29 +17,33 @@ const WritePostButtonWrapper = styled.div`
   margin-top: 3rem;
   margin-bottom: 5px;
 `;
-
+const TitleBlock = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 0;
+  h2 {
+    display: inline;
+    font-size: 1.3rem;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding: 0;
+    &:hover {
+      color: ${palette[6]};
+    }
+  }
+  span {
+    font-size: 1rem;
+  }
+`;
 const PostItemBlock = styled.div`
-  margin: 0.3rem auto 0.3rem;
-  padding: 0.5rem;
+  margin: 0.1rem auto 0.1rem;
+  padding: 0.1rem 0.5rem;
   &:first-child {
     padding-top: 0;
   }
 
   & + & {
     border-top: 1px solid ${palette.gray[2]};
-  }
-
-  h2 {
-    font-size: 2rem;
-    margin-bottom: 0;
-    margin-top: 0;
-    &:hover {
-      color: ${palette[6]};
-    }
-  }
-
-  p {
-    margin-top: 2rem;
   }
 `;
 
@@ -47,12 +52,15 @@ const PostItem = ({ post }) => {
     id,
     title,
     content,
+    views,
     likes,
     hates,
+    commentCounts,
     createdAt,
     updatedAt,
     UserId,
     User,
+    Hashtags,
   } = post;
   const postId = id;
   const userId = UserId;
@@ -63,12 +71,16 @@ const PostItem = ({ post }) => {
         user={User}
         createdTime={new Date(createdAt)}
         updatedTime={new Date(updatedAt)}
+        views={views}
         likeCount={likeCount}
       />
-      <h2>
-        <Link to={`/posts/${userId}/${postId}`}>{title}</Link>
-      </h2>
-      {/*<Tags tags={tags} /> */}
+      <TitleBlock>
+        <h2>
+          <Link to={`/posts/${userId}/${postId}`}>{title}</Link>
+        </h2>
+        {commentCounts > 0 ? <span>{`[${commentCounts}]`}</span> : null}
+      </TitleBlock>
+      <Tags Hashtags={Hashtags} />
       {/*<p>{content}</p> */}
     </PostItemBlock>
   );

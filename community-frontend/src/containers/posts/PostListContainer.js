@@ -20,11 +20,11 @@ const PostListContainer = () => {
 
   useEffect(() => {
     const { userId } = params;
-    const { hashtag, page } = qs.parse(search, {
+    const query = qs.parse(search, {
       ignoreQueryPrefix: true,
     });
 
-    dispatch(listPosts({ page, userId, hashtag }));
+    dispatch(listPosts({ userId, query }));
   }, [dispatch, search, params]);
 
   return (

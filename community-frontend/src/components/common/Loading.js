@@ -8,6 +8,7 @@ const LoadingBlock = styled(Responsive)`
   align-items: center;
   justify-content: space-evenly;
   justify-items: stretch;
+  margin: 1rem;
 `;
 
 const Loading = ({ children }) => {

@@ -15,6 +15,7 @@ const PaginationContainer = () => {
 
   if (!posts || loading)
     return <Loading>포스트가 없거나 로딩 중 입니다.</Loading>;
+  if (lastPage === 0) return <Loading>검색된 포스트가 없습니다.</Loading>;
 
   const query = qs.parse(search, {
     ignoreQueryPrefix: true,
@@ -25,7 +26,7 @@ const PaginationContainer = () => {
       query={query}
       userId={userId}
       page={query.page ? parseInt(query.page, 10) : 1}
-      lastPage={lastPage}
+      lastPage={lastPage === 0 ? 1 : lastPage}
     />
   );
 };

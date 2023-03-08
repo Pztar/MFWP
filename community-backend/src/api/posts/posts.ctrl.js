@@ -2,6 +2,7 @@ import Joi from "joi";
 import mySQL from "../../../models";
 import sanitizeHtml from "sanitize-html";
 import sanitizeOption from "./sanitizeOption";
+import { Op } from "sequelize";
 
 const { Post, User, Hashtag, Comment, Report } = mySQL;
 
@@ -98,64 +99,95 @@ const removeHtmlAndShorten = (body) => {
 export const list = async (ctx, next) => {
   //쿼리는 문자열이므로 숫자로 변환
   const page = parseInt(ctx.query.page || "1", 10);
-  console.log(page);
+  const postPerPage = 10;
   if (page < 1) {
     ctx.status = 400;
     return;
   }
   try {
-    const { hashtag, userId } = ctx.query;
+    const { hashtag, userId, selected, searchWord } = ctx.query;
     let posts = [];
     let postCount = undefined;
+
+    let searchColumn = selected;
+    let searchKeyword = searchWord;
+    let searchOption = { [searchColumn]: { [Op.substring]: searchKeyword } };
+    if (selected === "title+content") {
+      searchOption = {
+        [Op.or]: [
+          { title: { [Op.substring]: searchKeyword } },
+          { content: { [Op.substring]: searchKeyword } },
+        ],
+      };
+    } else if (selected === "userNick") {
+      const findedUsers = await User.findAll({
+        where: { nick: { [Op.substring]: searchKeyword } },
+      });
+      if (findedUsers.length > 0) {
+        searchOption = {
+          UserId: { [Op.or]: findedUsers.map((user) => user.id) },
+        };
+      } else {
+        ctx.set("Last-Page", Math.ceil(0 / postPerPage));
+        ctx.body = [];
+      }
+    }
+
     if (hashtag) {
       const findedHashtag = await Hashtag.findOne({
         where: { title: hashtag },
       });
       if (findedHashtag) {
         posts = await findedHashtag.getPosts({
+          where: selected ? searchOption : {},
           include: [
             {
               model: User,
               attributes: ["id", "nick"],
             },
           ],
-          limit: 10,
-          offset: (page - 1) * 10,
+          limit: postPerPage,
+          offset: (page - 1) * postPerPage,
           order: [["createdAt", "DESC"]],
         });
         postCount = await findedHashtag.countPosts();
       }
     } else if (userId) {
       const { count, rows } = await Post.findAndCountAll({
-        where: { UserId: userId },
+        where: selected
+          ? {
+              [Op.and]: [searchOption, { UserId: userId }],
+            }
+          : { UserId: userId },
         include: [
           {
             model: User,
             attributes: ["id", "nick"],
           },
         ],
-        limit: 10,
-        offset: (page - 1) * 10,
+        limit: postPerPage,
+        offset: (page - 1) * postPerPage,
         order: [["createdAt", "DESC"]],
       });
       posts = rows;
       postCount = count;
     } else {
       const { count, rows } = await Post.findAndCountAll({
+        where: selected ? searchOption : {},
         include: [
           {
             model: User,
             attributes: ["id", "nick"],
           },
         ],
-        limit: 10,
-        offset: (page - 1) * 10,
+        limit: postPerPage,
+        offset: (page - 1) * postPerPage,
         order: [["createdAt", "DESC"]],
       });
       posts = rows;
       postCount = count;
     }
-    ctx.set("Last-Page", Math.ceil(postCount / 10));
+    ctx.set("Last-Page", Math.ceil(postCount / postPerPage));
     ctx.body = posts;
   } catch (err) {
     console.error(err);

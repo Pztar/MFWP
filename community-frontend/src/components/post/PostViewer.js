@@ -512,6 +512,7 @@ const PostViewer = ({
     id,
     title,
     content,
+    views,
     likes,
     hates,
     reports,
@@ -561,6 +562,7 @@ const PostViewer = ({
             updatedTime={new Date(updatedAt)}
             likeCount={likeCount}
             reports={reports}
+            views={views}
             hasMarginTop
           />
           <Tags Hashtags={Hashtags} />

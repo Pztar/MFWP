@@ -33,6 +33,9 @@ const TitleBlock = styled.div`
   }
   span {
     font-size: 1rem;
+    text-align: center;
+    margin: auto 0;
+    color: ${palette.gray[8]};
   }
 `;
 const PostItemBlock = styled.div`
@@ -55,6 +58,7 @@ const PostItem = ({ post }) => {
     views,
     likes,
     hates,
+    reports,
     commentCounts,
     createdAt,
     updatedAt,
@@ -73,12 +77,13 @@ const PostItem = ({ post }) => {
         updatedTime={new Date(updatedAt)}
         views={views}
         likeCount={likeCount}
+        reports={reports}
       />
       <TitleBlock>
         <h2>
           <Link to={`/posts/${userId}/${postId}`}>{title}</Link>
         </h2>
-        {commentCounts > 0 ? <span>{`[${commentCounts}]`}</span> : null}
+        {commentCounts > 0 ? <span>{`댓글: [${commentCounts}]`}</span> : null}
       </TitleBlock>
       {Hashtags && <Tags Hashtags={Hashtags} />}
       {/*<p>{content}</p> */}

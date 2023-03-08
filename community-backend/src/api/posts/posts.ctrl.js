@@ -168,7 +168,7 @@ export const list = async (ctx, next) => {
           UserId: { [Op.or]: findedUsers.map((user) => user.id) },
         };
       } else {
-        ctx.set("Last-Page", Math.ceil(0 / postPerPage));
+        ctx.set("Last-Page", 0);
         ctx.body = [];
       }
     }

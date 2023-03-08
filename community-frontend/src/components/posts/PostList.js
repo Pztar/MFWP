@@ -80,7 +80,7 @@ const PostItem = ({ post }) => {
         </h2>
         {commentCounts > 0 ? <span>{`[${commentCounts}]`}</span> : null}
       </TitleBlock>
-      <Tags Hashtags={Hashtags} />
+      {Hashtags && <Tags Hashtags={Hashtags} />}
       {/*<p>{content}</p> */}
     </PostItemBlock>
   );

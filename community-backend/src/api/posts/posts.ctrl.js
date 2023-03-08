@@ -177,6 +177,17 @@ export const list = async (ctx, next) => {
       ["createdAt", "DESC"],
     ];
 
+    const includeOption = [
+      {
+        model: User,
+        attributes: ["id", "nick"],
+      },
+      {
+        model: Hashtag,
+        attributes: ["title"],
+      },
+    ];
+
     if (hashtag) {
       const findedHashtag = await Hashtag.findOne({
         where: { title: hashtag },
@@ -184,16 +195,7 @@ export const list = async (ctx, next) => {
       if (findedHashtag) {
         posts = await findedHashtag.getPosts({
           where: selected ? searchOption : {},
-          include: [
-            {
-              model: User,
-              attributes: ["id", "nick"],
-            },
-            {
-              model: Hashtag,
-              attributes: ["title"],
-            },
-          ],
+          include: includeOption,
           limit: postPerPage,
           offset: (page - 1) * postPerPage,
           order: orderOption,
@@ -207,16 +209,7 @@ export const list = async (ctx, next) => {
               [Op.and]: [searchOption, { UserId: userId }],
             }
           : { UserId: userId },
-        include: [
-          {
-            model: User,
-            attributes: ["id", "nick"],
-          },
-          {
-            model: Hashtag,
-            attributes: ["title"],
-          },
-        ],
+        include: includeOption,
         limit: postPerPage,
         offset: (page - 1) * postPerPage,
         order: orderOption,
@@ -226,16 +219,7 @@ export const list = async (ctx, next) => {
     } else {
       const { count, rows } = await Post.findAndCountAll({
         where: selected ? searchOption : {},
-        include: [
-          {
-            model: User,
-            attributes: ["id", "nick"],
-          },
-          {
-            model: Hashtag,
-            attributes: ["title"],
-          },
-        ],
+        include: includeOption,
         limit: postPerPage,
         offset: (page - 1) * postPerPage,
         order: orderOption,

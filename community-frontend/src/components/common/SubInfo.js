@@ -13,15 +13,23 @@ const SubInfoBlock = styled.div`
   color: ${palette.gray[6]};
   span {
     white-space: nowrap;
+    .userLevel {
+      font-size: 0.8rem;
+      margin: 0 0.1rem;
+      padding: 0 0.3rem;
+      border-radius: 5px;
+      background-color: ${palette.gray[4]};
+      color: ${(props) => props.userLevelColor};
+      text-shadow: 0px 0px 2px black;
+    }
 
     .likes {
       color: ${(props) => props.likeCountColor};
-      font-weight: ${(props) =>
-        400 * (1 + Math.abs(props.likeCount) / props.views)};
     }
     .reports {
       color: ${(props) => props.reportsColor};
-      font-weight: ${(props) => 400 * (1 + props.reports / props.views)};
+      text-shadow: ${(props) =>
+        props.reportsColor ? `0px 0px 2px black` : null};
     }
   }
   span + span:before {
@@ -44,20 +52,30 @@ const SubInfo = ({
   const { id, nick } = user;
   const userId = id;
   const isUpdated = updatedTime - createdTime;
-  const likesColor = `hsl(0 ${(10 * 100 * likeCount) / views}% 45%)`;
-  const hatesColor = `hsl(240 ${(10 * -100 * likeCount) / views}% 45%)`;
-  const reportsColor = `hsl(60 ${(10 * 100 * reports) / views}% 45%)`;
+  const userLevel = Math.trunc(Math.pow(user.experience / 100, 2 / 3));
+  const userLevelColor = `hsl(${userLevel % 360} ${
+    10 * (userLevel % 10)
+  }% 65%)`;
+  const likesColor = `hsl(0 100% 45%)`;
+  const hatesColor = `hsl(240 100% 45%)`;
+  const reportsColor = `hsl(60 100% 50%)`;
+
   return (
     <SubInfoBlock
       hasMarginTop={hasMarginTop}
       likeCount={views > 10 && likeCount}
       reports={views > 10 && reports}
       views={views}
-      likeCountColor={views > 10 && (likeCount > 0 ? likesColor : hatesColor)}
-      reportsColor={reportsColor}
+      userLevelColor={userLevelColor}
+      likeCountColor={
+        views < likeCount * likeCount &&
+        (likeCount > 0 ? likesColor : hatesColor)
+      }
+      reportsColor={views < reports * reports && reportsColor}
     >
       <span>
         <b>
+          <span className="userLevel">{userLevel}</span>
           <Link to={`/posts/${userId}`}>{nick}</Link>
         </b>
       </span>

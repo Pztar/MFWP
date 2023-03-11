@@ -135,13 +135,19 @@ const Editor = ({ title, content, password, levelLimit, onChangeField }) => {
   }, [content]);
 
   const onChangeTitle = (e) => {
-    onChangeField({ key: "title", value: e.target.value });
+    if (e.target.value.length <= 50) {
+      onChangeField({ key: "title", value: e.target.value });
+    }
   };
   const onChangePassword = (e) => {
-    onChangeField({ key: "password", value: e.target.value });
+    if (e.target.value.length <= 20) {
+      onChangeField({ key: "password", value: e.target.value });
+    }
   };
   const onChangeLevelLimit = (e) => {
-    onChangeField({ key: "levelLimit", value: e.target.value });
+    if (e.target.value <= 1000 && e.target.value >= 0) {
+      onChangeField({ key: "levelLimit", value: e.target.value });
+    }
   };
 
   return (
@@ -168,6 +174,7 @@ const Editor = ({ title, content, password, levelLimit, onChangeField }) => {
             onChange={onChangeLevelLimit}
             value={levelLimit}
             min="0"
+            max="1000"
           />
         </label>
       </PostOptionBlock>

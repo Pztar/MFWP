@@ -21,7 +21,10 @@ const TitleBlock = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0;
+  white-space: nowrap;
   h2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
     display: inline;
     font-size: 1.3rem;
     margin-bottom: 0;

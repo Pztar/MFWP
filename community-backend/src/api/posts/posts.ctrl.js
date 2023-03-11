@@ -16,7 +16,7 @@ export const getPostById = async (ctx, next) => {
       include: [
         {
           model: User,
-          attributes: ["id", "nick"],
+          attributes: ["id", "nick", "experience", "provider"],
         },
         {
           model: Hashtag,
@@ -193,7 +193,7 @@ export const list = async (ctx, next) => {
     const includeOption = [
       {
         model: User,
-        attributes: ["id", "nick"],
+        attributes: ["id", "nick", "experience", "provider"],
       },
       {
         model: Hashtag,

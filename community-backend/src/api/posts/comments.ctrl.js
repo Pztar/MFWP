@@ -13,7 +13,7 @@ export const getCommentById = async (ctx, next) => {
       include: [
         {
           model: mySQL.User,
-          attributes: ["id", "nick"],
+          attributes: ["id", "nick", "experience", "provider"],
         },
       ],
     });

@@ -54,7 +54,8 @@ const PostItem = ({ post }) => {
   const {
     id,
     title,
-    content,
+    password,
+    levelLimit,
     views,
     likes,
     hates,
@@ -81,6 +82,8 @@ const PostItem = ({ post }) => {
       />
       <TitleBlock>
         <h2>
+          {levelLimit > 0 ? `lv${levelLimit}` : null}
+          {password ? "🔒" : null}
           <Link to={`/posts/${userId}/${postId}`}>{title}</Link>
         </h2>
         {commentCounts > 0 ? <span>{`댓글: [${commentCounts}]`}</span> : null}

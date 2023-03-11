@@ -7,26 +7,44 @@ import WriteActionButtons from "../../components/write/WriteActionButtons";
 const WriteActionButtonsContainer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { title, content, post, postError, originalPostId } = useSelector(
-    ({ write }) => ({
-      title: write.title,
-      content: write.content,
-      //tags: write.tags,
-      post: write.post,
-      postError: write.postError,
-      originalPostId: write.originalPostId,
-    })
-  );
+  const {
+    title,
+    content,
+    password,
+    levelLimit,
+    post,
+    postError,
+    originalPostId,
+  } = useSelector(({ write }) => ({
+    title: write.title,
+    content: write.content,
+    password: write.password,
+    levelLimit: write.levelLimit,
+    //tags: write.tags,
+    post: write.post,
+    postError: write.postError,
+    originalPostId: write.originalPostId,
+  }));
 
   const onPublish = () => {
     if (originalPostId) {
-      dispatch(updatePost({ title, content, postId: originalPostId }));
+      dispatch(
+        updatePost({
+          title,
+          content,
+          password,
+          levelLimit,
+          postId: originalPostId,
+        })
+      );
       return;
     }
     dispatch(
       writePost({
         title,
         content,
+        password,
+        levelLimit,
         //tags,
       })
     );

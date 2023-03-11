@@ -12,6 +12,14 @@ export default class Post extends Sequelize.Model {
           type: Sequelize.STRING(5000),
           allowNull: false,
         },
+        password: {
+          type: Sequelize.STRING(20),
+          allowNull: true,
+        },
+        levelLimit: {
+          type: Sequelize.INTEGER(10),
+          allowNull: true,
+        },
         views: {
           type: Sequelize.INTEGER,
           allowNull: false,

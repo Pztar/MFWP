@@ -35,6 +35,7 @@ const PromptBlock = styled.div`
   width: auto;
   height: auto;
   position: relative;
+  display: flex;
   //top: 10%;
   //left: 50%;
   //transform: translateX(-50%);

@@ -26,7 +26,7 @@ export default class User extends Sequelize.Model {
           type: Sequelize.STRING(30),
           allowNull: true,
         },
-        exp: {
+        experience: {
           type: Sequelize.INTEGER,
           allowNull: false,
           defaultValue: 0,

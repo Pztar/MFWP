@@ -18,8 +18,13 @@ const TitleInput = styled.input`
   padding-bottom: 0.5rem;
   border: none;
   border-bottom: 1px solid ${palette.gray[4]};
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   width: 100%;
+`;
+const PostOptionBlock = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
 `;
 
 const QuillWrapper = styled.div`
@@ -40,7 +45,7 @@ const QuillWrapper = styled.div`
   }
 `;
 
-const Editor = ({ title, content, onChangeField }) => {
+const Editor = ({ title, content, password, levelLimit, onChangeField }) => {
   const quillElement = useRef(null);
   const quillInstence = useRef(null);
 
@@ -132,6 +137,12 @@ const Editor = ({ title, content, onChangeField }) => {
   const onChangeTitle = (e) => {
     onChangeField({ key: "title", value: e.target.value });
   };
+  const onChangePassword = (e) => {
+    onChangeField({ key: "password", value: e.target.value });
+  };
+  const onChangeLevelLimit = (e) => {
+    onChangeField({ key: "levelLimit", value: e.target.value });
+  };
 
   return (
     <EditorBlock>
@@ -140,6 +151,26 @@ const Editor = ({ title, content, onChangeField }) => {
         onChange={onChangeTitle}
         value={title}
       />
+      <PostOptionBlock>
+        <label>
+          비밀글
+          <input
+            placeholder="비밀번호를 입력하세요"
+            onChange={onChangePassword}
+            value={password}
+          />
+        </label>
+        <label>
+          읽기 레벨 제한
+          <input
+            type="number"
+            placeholder="레벨 제한을 입력하세요"
+            onChange={onChangeLevelLimit}
+            value={levelLimit}
+            min="0"
+          />
+        </label>
+      </PostOptionBlock>
       <QuillWrapper>
         <div ref={quillElement} />
       </QuillWrapper>

@@ -45,9 +45,12 @@ export const checkOwnPost = (ctx, next) => {
 };
 
 export const write = async (ctx, next) => {
+  console.log(ctx.request.body);
   const schema = Joi.object().keys({
     title: Joi.string().required(),
     content: Joi.string().required(),
+    password: Joi.string().allow(null),
+    levelLimit: Joi.number().required(),
   });
 
   const result = schema.validate(ctx.request.body);
@@ -60,6 +63,8 @@ export const write = async (ctx, next) => {
     const post = await Post.create({
       title: sanitizeHtml(ctx.request.body.title, sanitizeOption),
       content: sanitizeHtml(ctx.request.body.content, sanitizeOption),
+      password: ctx.request.body.password,
+      levelLimit: ctx.request.body.levelLimit,
       UserId: ctx.state.user.id,
     });
     const hashtags = ctx.request.body.content.match(/#[^\s#<]*/g);
@@ -177,6 +182,14 @@ export const list = async (ctx, next) => {
       ["createdAt", "DESC"],
     ];
 
+    const whereOption = selected
+      ? {
+          [Op.and]: [searchOption, userId && { UserId: userId }],
+        }
+      : userId
+      ? { UserId: userId }
+      : {};
+
     const includeOption = [
       {
         model: User,
@@ -188,42 +201,25 @@ export const list = async (ctx, next) => {
       },
     ];
 
+    const findPostsOption = {
+      where: whereOption,
+      attributes: { exclude: ["content"] },
+      include: includeOption,
+      limit: postPerPage,
+      offset: (page - 1) * postPerPage,
+      order: orderOption,
+    };
+
     if (hashtag) {
       const findedHashtag = await Hashtag.findOne({
         where: { title: hashtag },
       });
       if (findedHashtag) {
-        posts = await findedHashtag.getPosts({
-          where: selected ? searchOption : {},
-          include: includeOption,
-          limit: postPerPage,
-          offset: (page - 1) * postPerPage,
-          order: orderOption,
-        });
+        posts = await findedHashtag.getPosts(findPostsOption);
         postCount = await findedHashtag.countPosts();
       }
-    } else if (userId) {
-      const { count, rows } = await Post.findAndCountAll({
-        where: selected
-          ? {
-              [Op.and]: [searchOption, { UserId: userId }],
-            }
-          : { UserId: userId },
-        include: includeOption,
-        limit: postPerPage,
-        offset: (page - 1) * postPerPage,
-        order: orderOption,
-      });
-      posts = rows;
-      postCount = count;
     } else {
-      const { count, rows } = await Post.findAndCountAll({
-        where: selected ? searchOption : {},
-        include: includeOption,
-        limit: postPerPage,
-        offset: (page - 1) * postPerPage,
-        order: orderOption,
-      });
+      const { count, rows } = await Post.findAndCountAll(findPostsOption);
       posts = rows;
       postCount = count;
     }
@@ -320,6 +316,8 @@ export const update = async (ctx) => {
   const schema = Joi.object().keys({
     title: Joi.string().required(),
     content: Joi.string().required(),
+    password: Joi.string().allow(null),
+    levelLimit: Joi.number().required(),
   });
 
   const result = schema.validate(ctx.request.body);
@@ -338,7 +336,12 @@ export const update = async (ctx) => {
   }
   try {
     await Post.update(
-      { title: nextData.title, content: nextData.content },
+      {
+        title: nextData.title,
+        content: nextData.content,
+        password: nextData.password,
+        levelLimit: nextData.levelLimit,
+      },
       {
         where: {
           id: postId,

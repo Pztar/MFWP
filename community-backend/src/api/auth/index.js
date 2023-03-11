@@ -17,6 +17,7 @@ export const generateToken = (account) => {
     {
       id: account.id,
       nick: account.nick,
+      experience: account.experience,
     },
     process.env.JWT_SECRET,
     jwtCookieConfig.jwt.options

@@ -13,6 +13,7 @@ const jwtMiddleware = async (ctx, next) => {
     ctx.state.user = {
       id: decoded.id,
       nick: decoded.nick,
+      level: Math.trunc(Math.pow(decoded.experience / 100, 2 / 3)),
     };
 
     //console.log(ctx.state.user);

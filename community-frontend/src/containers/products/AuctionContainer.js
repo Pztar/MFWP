@@ -30,11 +30,10 @@ const AuctionContainer = () => {
     return () => {
       dispatch(unloadProduct());
     };
-  }, [dispatch, productId]);
+  }, [productId]);
 
   useScript("https://unpkg.com/event-source-polyfill/src/eventsource.min.js");
 
-  const [listening, setListening] = useState(false);
   const [serverTime, setServerTime] = useState(null);
   const [autoScroll, setAutoScroll] = useState(true);
 
@@ -53,31 +52,20 @@ const AuctionContainer = () => {
 
   useEffect(() => {
     const es = new EventSource("/sse");
-
-    if (!listening) {
-      es.onopen = (event) => {
-        console.log("sse connection opened");
-      };
-      es.onmessage = function (e) {
-        setServerTime(e.data);
-      };
-      es.onerror = (event) => {
-        console.log(event.target.readyState);
-        if (event.target.readyState === EventSource.CLOSED) {
-          console.log("eventsource closed (" + event.target.readyState + ")");
-        }
-        es.close();
-      };
-      setListening(true);
-    }
-
-    return () => {
-      es.close();
-      console.log("eventsource closed");
+    es.onopen = (event) => {
+      console.log("sse connection opened");
     };
-  }, []);
+    es.onmessage = function (e) {
+      setServerTime(e.data);
+    };
+    es.onerror = (event) => {
+      console.log(event.target.readyState);
+      if (event.target.readyState === EventSource.CLOSED) {
+        console.log("eventsource closed (" + event.target.readyState + ")");
+      }
+      es.close();
+    };
 
-  useEffect(() => {
     const socket = io.connect(`${process.env.REACT_APP_SERVER_URL}/auction`, {
       //pangtestserver.iptime.org로 접속해야함
       // 네임스페이스
@@ -85,15 +73,17 @@ const AuctionContainer = () => {
       transports: ["websocket"],
     });
     socket.emit("join", { productId, User: user });
-
     socket.on("bid", function (data) {
       // 누군가 채팅
       dispatch(concatAuction(data));
     });
+
     return () => {
+      es.close();
+      console.log("eventsource closed");
       socket.disconnect(); //언마운트시 auction 네임스페이스 접속 해제
     };
-  }, [listening]);
+  }, []);
 
   return (
     <div ref={scollToRef}>

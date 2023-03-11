@@ -18,19 +18,26 @@ export const changeField = createAction(CHANGE_FIELD, ({ key, value }) => ({
   key,
   value,
 }));
-export const writePost = createAction(WRITE_POST, ({ title, content }) => ({
-  title,
-  content,
-}));
+export const writePost = createAction(
+  WRITE_POST,
+  ({ title, content, password, levelLimit }) => ({
+    title,
+    content,
+    password,
+    levelLimit,
+  })
+);
 
 export const setOriginalPost = createAction(SET_ORIGINAL_POST, (post) => post);
 
 export const updatePost = createAction(
   UPDATE_POST,
-  ({ postId, title, content }) => ({
+  ({ postId, title, content, password, levelLimit }) => ({
     postId,
     title,
     content,
+    password,
+    levelLimit,
   })
 );
 
@@ -45,6 +52,8 @@ export function* writeSaga() {
 const initialState = {
   title: "",
   content: "",
+  password: null,
+  levelLimit: 0,
   post: null,
   postError: null,
 };

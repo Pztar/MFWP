@@ -148,6 +148,9 @@ const Chat = ({
   onToggleAutoScroll,
 }) => {
   if (error) {
+    if (error.response.status === 406) {
+      return <ChatBlock>비밀번호가 틀렸습니다.</ChatBlock>;
+    }
     return <ChatBlock>에러가 발생했습니다.</ChatBlock>;
   }
 

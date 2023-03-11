@@ -11,7 +11,7 @@ export const listRooms = async (ctx, next) => {
   }*/
   try {
     //const roomPerPage = 20;
-    const rooms = await Room.find({});
+    const findedRooms = await Room.find({});
     /* 페이지네이션 기능 추가시
       .sort({ _id: -1 })
       .limit(roomPerPage)
@@ -20,6 +20,10 @@ export const listRooms = async (ctx, next) => {
     const roomCount = await Room.countDocuments().exec();
     ctx.set("Last-Page", Math.ceil(roomCount / roomPerPage));
     */
+    const rooms = findedRooms.map((room) => {
+      room.password ? (room.password = true) : (room.password = null);
+      return room;
+    });
     ctx.body = rooms;
   } catch (error) {
     console.error(error);
@@ -56,7 +60,8 @@ export const enterRoom = async (ctx, next) => {
       return ctx.redirect("존재하지 않는 방입니다.");
     }
     if (room.password && room.password !== ctx.query.password) {
-      return ctx.redirect("/?error=비밀번호가 틀렸습니다.");
+      ctx.status = 406;
+      return;
     }
     const chats = reversedChats.reverse();
     const roomAndChats = { room, chats };

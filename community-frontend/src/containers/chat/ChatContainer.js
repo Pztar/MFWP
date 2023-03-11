@@ -31,11 +31,44 @@ const ChatContainer = () => {
 
   useEffect(() => {
     dispatch(enterRoom({ roomId, inputPassword }));
-  }, [dispatch, roomId, inputPassword, user]);
+  }, [roomId]);
 
-  const onToggleAutoScroll = () => {
-    setAutoScroll(!autoScroll);
-  };
+  useEffect(() => {
+    if (room && !error) {
+      const socket = io.connect(`${process.env.REACT_APP_SERVER_URL}/chat`, {
+        //pangtestserver.iptime.org로 접속해야함
+        // 네임스페이스
+        path: "/socket.io",
+        transports: ["websocket"],
+      });
+
+      socket.emit("join", { roomId, User: user });
+      socket.on("join", function (data) {
+        //다른사람 입장시
+        const newChat = data.chat;
+        dispatch(concatChats({ newChat }));
+        const onlines = data.Onlines;
+        dispatch(listOnlines({ onlines }));
+      });
+      socket.on("exit", function (data) {
+        // 누군가 퇴장
+        const newChat = data.chat;
+        dispatch(concatChats({ newChat }));
+        const onlines = data.Onlines;
+        dispatch(listOnlines({ onlines }));
+      });
+      socket.on("chat", function (data) {
+        // 누군가 채팅
+        const newChat = data.chat;
+        dispatch(concatChats({ newChat }));
+      });
+
+      return () => {
+        socket.disconnect(); //언마운트시 chat 네임스페이스 접속 해제
+      };
+    }
+  }, [room]);
+
   useEffect(() => {
     if (autoScroll) {
       scollToRef.current.scrollIntoView({
@@ -45,40 +78,9 @@ const ChatContainer = () => {
       });
     }
   }, [loading, chats]);
-
-  useEffect(() => {
-    const socket = io.connect(`${process.env.REACT_APP_SERVER_URL}/chat`, {
-      //pangtestserver.iptime.org로 접속해야함
-      // 네임스페이스
-      path: "/socket.io",
-      transports: ["websocket"],
-    });
-
-    socket.emit("join", { roomId, User: user });
-    socket.on("join", function (data) {
-      //다른사람 입장시
-      const newChat = data.chat;
-      dispatch(concatChats({ newChat }));
-      const onlines = data.Onlines;
-      dispatch(listOnlines({ onlines }));
-    });
-    socket.on("exit", function (data) {
-      // 누군가 퇴장
-      const newChat = data.chat;
-      dispatch(concatChats({ newChat }));
-      const onlines = data.Onlines;
-      dispatch(listOnlines({ onlines }));
-    });
-    socket.on("chat", function (data) {
-      // 누군가 채팅
-      const newChat = data.chat;
-      dispatch(concatChats({ newChat }));
-    });
-
-    return () => {
-      socket.disconnect(); //언마운트시 chat 네임스페이스 접속 해제
-    };
-  }, []);
+  const onToggleAutoScroll = () => {
+    setAutoScroll(!autoScroll);
+  };
 
   return (
     <>

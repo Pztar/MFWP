@@ -8,6 +8,7 @@ import { listPosts } from "../../modules/posts";
 const PostListContainer = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const { userId } = params;
   const { search } = useLocation();
   const { posts, error, loading, user } = useSelector(
     ({ posts, loading, user }) => ({
@@ -19,13 +20,11 @@ const PostListContainer = () => {
   );
 
   useEffect(() => {
-    const { userId } = params;
     const query = qs.parse(search, {
       ignoreQueryPrefix: true,
     });
-
     dispatch(listPosts({ userId, query }));
-  }, [dispatch, search, params]);
+  }, [search, userId]);
 
   return (
     <PostList

@@ -58,7 +58,7 @@ const Prompt = ({ onClosePrompt, LinkedRoomId }) => {
   };
   const onMove = () => {
     window.open(
-      `http://localhost:3000/chat/${LinkedRoomId}?password=${inputPassword}`,
+      `${process.env.REACT_APP_SERVER_URL}/chat/${LinkedRoomId}?password=${inputPassword}`,
       "_blank"
     );
   };
@@ -140,14 +140,12 @@ const RoomItem = ({ room, loggedIn }) => {
         <td>{max}</td>
         <td>{Owner.nick}</td>
       </RoomItemBlock>
-      {showPrompt ? (
+      {showPrompt && (
         <tr>
           <td colSpan={4}>
             <Prompt onClosePrompt={onClosePrompt} LinkedRoomId={LinkedRoomId} />
           </td>
         </tr>
-      ) : (
-        <></>
       )}
     </>
   );

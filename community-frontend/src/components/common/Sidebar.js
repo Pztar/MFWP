@@ -3,24 +3,36 @@ import palette from "../../lib/styles/palette";
 import { Link } from "react-router-dom";
 
 const Sidebarblock = styled.div`
+  overflow: hidden;
+  position: fixed;
   background: ${palette.gray[5]};
-  padding: 5.5rem 10px 10px 10px;
-  width: 200px;
-  height: auto;
-  position: absolute;
-  border-radius: 5px;
-
+  padding: 0;
+  z-index: 30;
+  transition: all 0.3s ease-in-out;
+  .menus {
+    margin: 1rem 0.5rem 1rem;
+  }
   li {
     width: 100%;
     margin-top: 5px;
+    margin-left: -1rem;
+    padding: 0.3rem 0;
     background: ${palette.gray[3]};
     border: none;
     border-radius: 4px;
   }
   .MenuItem {
-    display: block;
     width: 100%;
     padding: 0.25rem 1rem;
+  }
+  &.show {
+    width: 30%;
+    height: 100%;
+  }
+  &.hide {
+    visibility: visible;
+    width: 0;
+    height: 0;
   }
 `;
 
@@ -36,10 +48,10 @@ const UserInfo = styled(Link)`
   padding: 0.5rem 1rem;
 `;
 
-const Sidebar = ({ user }) => {
+const Sidebar = ({ user, openSidebar }) => {
   return (
-    <>
-      <Sidebarblock>
+    <Sidebarblock className={openSidebar ? "show" : "hide"}>
+      <div className="menus">
         {user ? <UserInfo to="/">{user.nick}'s myPage</UserInfo> : null}
         <ul>
           <li>
@@ -63,8 +75,8 @@ const Sidebar = ({ user }) => {
             </Link>
           </li>
         </ul>
-      </Sidebarblock>
-    </>
+      </div>
+    </Sidebarblock>
   );
 };
 

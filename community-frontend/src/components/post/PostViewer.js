@@ -10,7 +10,7 @@ import Button from "../common/Button";
 import Report from "../common/Report";
 
 const PostViewerBlock = styled(Responsive)`
-  margin-top: 4rem;
+  margin-top: 3rem;
   .hide {
     max-height: 0;
     overflow: hidden;
@@ -497,6 +497,8 @@ const PostViewer = ({
   if (error) {
     if (error.response && error.response.status === 404) {
       return <PostViewerBlock>존재하지 않는 포스트입니다.</PostViewerBlock>;
+    } else if (error.response && error.response.status === 406) {
+      return <PostViewerBlock>비밀번호가 올바르지 않습니다.</PostViewerBlock>;
     }
     return <PostViewerBlock>오류발생!</PostViewerBlock>;
   }

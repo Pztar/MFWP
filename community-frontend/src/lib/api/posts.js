@@ -4,7 +4,8 @@ import client from "./client";
 export const writePost = ({ title, content, password, levelLimit }) =>
   client.post("/api/posts", { title, content, password, levelLimit });
 
-export const readPost = (postId) => client.get(`/api/posts/${postId}`);
+export const readPost = ({ postId, password }) =>
+  client.get(`/api/posts/${postId}?password=${password}`);
 
 export const listPosts = ({ userId, query }) => {
   const queryString = qs.stringify({

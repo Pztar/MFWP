@@ -10,7 +10,7 @@ const Spacer = styled.div`
 `;
 
 const RoomLitstBlock = styled(Responsive)`
-  margin-top: 3rem;
+  margin-top: 1rem;
 
   table {
     width: 100%;
@@ -86,7 +86,7 @@ const Prompt = ({ onClosePrompt, LinkedRoomId }) => {
 const CreateRoomButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-top: 3rem;
+  margin-top: 1rem;
   margin-bottom: 5px;
 `;
 

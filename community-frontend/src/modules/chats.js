@@ -48,6 +48,7 @@ const chats = handleActions(
       ...state,
       room: roomAndChats.room,
       chats: roomAndChats.chats,
+      error: null,
     }),
     [ENTER_ROOM_FAILURE]: (state, { payload: error }) => ({
       ...state,

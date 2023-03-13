@@ -233,6 +233,11 @@ export const list = async (ctx, next) => {
 
 export const read = async (ctx) => {
   const post = ctx.state.post; //getPostById에서 이미 포스트 조회함 Promise.all으로 최적화 할까 했지만...굳이...?
+  if (post.password && post.password !== ctx.query.password) {
+    console.log(post.password, ctx.query.password);
+    ctx.status = 406;
+    return;
+  }
   try {
     const viewsCount = post.views;
     const [updatedPost, comments] = await Promise.all([

@@ -108,6 +108,7 @@ const SendCommentBox = ({
   parentId,
   onPublish,
   contentLength,
+  postError,
 }) => {
   const [showCommentEditor, setShowCommentEditor] = useState(false);
   const quillElement = useRef(null);
@@ -195,6 +196,10 @@ const SendCommentBox = ({
       }
     });
   }, [onChangeField]);
+
+  if (postError) {
+    return <div></div>;
+  }
 
   return (
     <CommentViewerBlock>

@@ -36,6 +36,7 @@ const product = handleActions(
       product: productAuction.product,
       auctions: productAuction.auctions,
       point: productAuction.point,
+      error: null,
     }),
     [READ_PRODUCT_FIALURE]: (state, { payload: error }) => ({
       ...state,

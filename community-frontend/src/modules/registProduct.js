@@ -87,6 +87,7 @@ const regist = handleActions(
     [REGIST_PRODUCT_SUCCESS]: (state, { payload: product }) => ({
       ...state,
       product,
+      productError: null,
     }),
     [REGIST_PRODUCT_FAILURE]: (state, { payload: productError }) => ({
       ...state,

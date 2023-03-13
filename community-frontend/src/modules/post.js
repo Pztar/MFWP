@@ -9,7 +9,10 @@ const [READ_POST, READ_POST_SUCCESS, READ_POST_FIALURE] =
   createRequestActionTypes("post/READ_POST");
 const UNLOAD_POST = "post/UNLOAD_POST";
 
-export const readPost = createAction(READ_POST, (postId) => postId);
+export const readPost = createAction(READ_POST, ({ postId, password }) => ({
+  postId,
+  password,
+}));
 export const unloadPost = createAction(UNLOAD_POST);
 
 const readPostSaga = createRequestSaga(READ_POST, postsAPI.readPost);
@@ -29,6 +32,7 @@ const post = handleActions(
       ...state,
       post: postAndComments.post,
       comments: postAndComments.comments,
+      error: null,
     }),
     [READ_POST_FIALURE]: (state, { payload: error }) => ({
       ...state,

@@ -43,6 +43,7 @@ const rooms = handleActions(
       ...state,
       rooms,
       lastPage: parseInt(response.headers["last-page"], 10),
+      error: null,
     }),
     [LIST_ROOMS_FAILURE]: (state, { payload: error }) => ({
       ...state,

@@ -9,13 +9,12 @@ import { useState } from "react";
 //import Tags from "../common/Tags";
 
 const PostLitstBlock = styled(Responsive)`
-  margin-top: 3rem;
+  margin-top: 1rem;
 `;
 
 const WritePostButtonWrapper = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-top: 3rem;
   margin-bottom: 5px;
 `;
 

@@ -11,6 +11,7 @@ const HeaderBlock = styled.div`
   width: 100%;
   background: white;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+  z-index: 100;
 `;
 
 const Wrapper = styled(Responsive)`
@@ -40,7 +41,6 @@ const Header = ({ user, onLogout }) => {
   };
   return (
     <>
-      {openSidebar ? <Sidebar user={user} /> : null}
       <HeaderBlock>
         <Wrapper>
           <Button onClick={toggleOpenSidebar}>menu</Button>
@@ -57,9 +57,9 @@ const Header = ({ user, onLogout }) => {
             </div>
           )}
         </Wrapper>
-        <Menu />
       </HeaderBlock>
       <Spacer />
+      <Sidebar user={user} openSidebar={openSidebar} />
     </>
   );
 };

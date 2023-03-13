@@ -10,7 +10,7 @@ const Spacer = styled.div`
 `;
 
 const ProductLitstBlock = styled(Responsive)`
-  margin-top: 3rem;
+  margin-top: 1rem;
 
   table {
     width: 100%;

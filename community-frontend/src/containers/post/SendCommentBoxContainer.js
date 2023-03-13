@@ -20,13 +20,15 @@ const SendCommentBoxContainer = () => {
     comment,
     commentError,
     originalCommentId,
-  } = useSelector(({ comment }) => ({
+    postError,
+  } = useSelector(({ comment, post }) => ({
     ordinalNumber: comment.ordinalNumber,
     content: comment.content,
     parentId: comment.parentId,
     comment: comment.comment,
     commentError: comment.commentError,
     originalCommentId: comment.originalCommentId,
+    postError: post.error,
   }));
 
   const onChange = (e) => {
@@ -93,6 +95,7 @@ const SendCommentBoxContainer = () => {
       parentId={parentId}
       onPublish={onPublish}
       contentLength={content.length}
+      postError={postError}
     />
   );
 };

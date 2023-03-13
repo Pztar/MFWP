@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import qs from "qs";
 import PostViewer from "../../components/post/PostViewer";
 import { removePost } from "../../lib/api/posts";
 import { changeField } from "../../modules/comment";
@@ -16,6 +17,7 @@ import PostActionButtons from "./PostAcktionButtons";
 
 const PostViewerContainer = () => {
   const { postId } = useParams();
+  const { search } = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { post, comments, parentId, error, loading, user } = useSelector(
@@ -30,7 +32,10 @@ const PostViewerContainer = () => {
   );
 
   useEffect(() => {
-    dispatch(readPost(postId));
+    const { password } = qs.parse(search, {
+      ignoreQueryPrefix: true,
+    });
+    dispatch(readPost({ postId, password }));
 
     return () => {
       dispatch(unloadPost());
@@ -45,7 +50,7 @@ const PostViewerContainer = () => {
   const onRemove = async () => {
     try {
       await removePost(postId);
-      navigate("/");
+      navigate(-1);
     } catch (e) {
       console.log(e);
     }
@@ -72,7 +77,10 @@ const PostViewerContainer = () => {
       loading={loading}
       error={error}
       actionButtons={
-        ownPost && <PostActionButtons onEdit={onEdit} onRemove={onRemove} />
+        ownPost &&
+        !comments[0] && (
+          <PostActionButtons onEdit={onEdit} onRemove={onRemove} />
+        )
       }
       parentId={parentId}
       onChangeField={onChangeField}

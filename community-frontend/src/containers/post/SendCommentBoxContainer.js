@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+//import qs from "qs";
 import SendCommentBox from "../../components/post/SendCommentBox";
 import {
   changeField,
@@ -8,9 +9,11 @@ import {
   updateComment,
   initialize,
 } from "../../modules/comment";
+//import { readPost, unloadPost } from "../../modules/post";
 
 const SendCommentBoxContainer = () => {
   const dispatch = useDispatch();
+  //const { search } = useLocation();
   const { postId } = useParams();
   const navigate = useNavigate();
   const {
@@ -78,9 +81,13 @@ const SendCommentBoxContainer = () => {
 
   useEffect(() => {
     if (comment) {
-      const { PostId, UserId } = comment;
-      navigate(`/posts/${UserId}/${PostId}`);
+      //const { PostId, UserId } = comment;
+      //navigate(`/posts/${UserId}/${PostId}`);
       window.location.reload();
+      // const { password } = qs.parse(search, {
+      //   ignoreQueryPrefix: true,
+      // });
+      // dispatch(readPost({ postId, password }));
     }
     if (commentError) {
       console.log(commentError);

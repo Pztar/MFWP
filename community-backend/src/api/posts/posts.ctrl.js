@@ -64,7 +64,7 @@ export const write = async (ctx, next) => {
       title: sanitizeHtml(ctx.request.body.title, sanitizeOption),
       content: sanitizeHtml(ctx.request.body.content, sanitizeOption),
       password: ctx.request.body.password,
-      levelLimit: ctx.request.body.levelLimit,
+      levelLimit: Math.min(ctx.request.body.levelLimit, ctx.state.user.level),
       UserId: ctx.state.user.id,
     });
     const hashtags = ctx.request.body.content.match(/#[^\s#<]*/g);
@@ -233,12 +233,14 @@ export const list = async (ctx, next) => {
 
 export const read = async (ctx) => {
   const post = ctx.state.post; //getPostById에서 이미 포스트 조회함 Promise.all으로 최적화 할까 했지만...굳이...?
-  if (post.password && post.password !== ctx.query.password) {
-    console.log(post.password, ctx.query.password);
-    ctx.status = 406;
-    return;
-  }
   try {
+    if (post.password && post.password !== ctx.query.password) {
+      ctx.status = 406;
+      return;
+    } else if (post.levelLimit && post.levelLimit > ctx.state.user.level) {
+      ctx.status = 412;
+      return;
+    }
     const viewsCount = post.views;
     const [updatedPost, comments] = await Promise.all([
       post.update(

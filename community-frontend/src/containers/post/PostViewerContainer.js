@@ -78,6 +78,7 @@ const PostViewerContainer = () => {
       error={error}
       actionButtons={
         ownPost &&
+        comments &&
         !comments[0] && (
           <PostActionButtons onEdit={onEdit} onRemove={onRemove} />
         )

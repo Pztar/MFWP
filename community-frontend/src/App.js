@@ -8,6 +8,7 @@ import PostListPage from "./pages/PostListPage";
 import PostPage from "./pages/PostPage";
 import RegisterPage from "./pages/RegisterPage";
 import WritePage from "./pages/WritePage";
+import HashtagListPage from "./pages/HashtagListPage";
 import ProductListPage from "./pages/ProductsListPage";
 import RegistProductPage from "./pages/RegistProductPage";
 import AuctionPage from "./pages/AuctionPage";
@@ -33,6 +34,7 @@ const App = () => {
         <Route element={<PostListPage />} path={"/posts/:userId"} />
         <Route element={<WritePage />} path="/posts/write" />
         <Route element={<PostPage />} path="/posts/:userId/:postId" />
+        <Route element={<HashtagListPage />} path="/hashtags" />
         <Route element={<ChatRoomListPage />} path="/chat" />
         <Route element={<CreateRoomPage />} path="/chat/createRoom" />
         <Route element={<ChatPage />} path="/chat/:roomId" />

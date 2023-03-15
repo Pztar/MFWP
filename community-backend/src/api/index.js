@@ -2,6 +2,7 @@ import Router from "koa-router";
 import multer from "@koa/multer";
 import multerOption from "./multerOption";
 import posts from "./posts";
+import hashtags from "./hashtags";
 import auth from "./auth";
 import auction from "./auction";
 import room from "./room";
@@ -24,6 +25,7 @@ const file = async (ctx, next) => {
 
 api.post("/file", upload.single("file"), file);
 api.use("/posts", posts.routes());
+api.use("/hashtags", hashtags.routes());
 api.use("/auth", auth.routes());
 api.use("/auction", auction.routes());
 api.use("/room", room.routes());

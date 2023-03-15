@@ -60,7 +60,7 @@ const Sidebar = ({ user, openSidebar }) => {
             </Link>
           </li>
           <li>
-            <Link to="/" className="MenuItem">
+            <Link to="/hashtags" className="MenuItem">
               hashtags
             </Link>
           </li>

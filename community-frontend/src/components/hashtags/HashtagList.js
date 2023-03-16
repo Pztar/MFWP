@@ -7,6 +7,11 @@ const HashtagListBlock = styled(Responsive)`
 `;
 const HashtagList = ({ hashtags, page, lastPage }) => {
   const Hashtags = hashtags;
+  if (!hashtags) {
+    return <HashtagListBlock>에러 발생</HashtagListBlock>;
+  } else if (hashtags.length === 0) {
+    return <HashtagListBlock>검색된 해시태그가 없습니다</HashtagListBlock>;
+  }
   return (
     <HashtagListBlock>
       <Tags Hashtags={Hashtags} tagedPostCount={true} />

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Button from "../common/Button";
 import qs from "qs";
+import { useEffect } from "react";
 
 const Spacer = styled.div`
   height: 1rem;
@@ -21,8 +22,12 @@ const buildLink = ({ query, page }) => {
 };
 
 const Pagination = ({ page = 1, lastPage, query }) => {
-  const Page = parseInt(page, 10);
-  console.log(Page, lastPage);
+  let Page = page;
+  let LastPage = lastPage;
+  useEffect(() => {
+    Page = parseInt(page, 10);
+    LastPage = lastPage;
+  }, [page, lastPage]);
   return (
     <>
       <PaginationBlock>
@@ -33,7 +38,7 @@ const Pagination = ({ page = 1, lastPage, query }) => {
               ? undefined
               : buildLink({
                   query,
-                  page: page - 1,
+                  page: Page - 1,
                 })
           }
         >
@@ -41,9 +46,9 @@ const Pagination = ({ page = 1, lastPage, query }) => {
         </Button>
         <PageNumber>{page}</PageNumber>
         <Button
-          disabled={Page === lastPage}
+          disabled={Page === LastPage}
           to={
-            page === lastPage
+            Page === LastPage
               ? undefined
               : buildLink({
                   query,

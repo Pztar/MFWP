@@ -36,7 +36,7 @@ const Tags = ({ Hashtags, tagedPostCount }) => {
     <TagsBlock>
       {Hashtags &&
         Hashtags.map((hashtag) => (
-          <span>
+          <span key={hashtag.title}>
             <Link
               className="hashtag"
               to={`/posts?hashtag=${hashtag.title}`}

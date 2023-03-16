@@ -149,14 +149,14 @@ export const list = async (ctx, next) => {
     let searchOption = {
       [Op.and]: [
         { createdAt: { [Op.gte]: searchStartDate } },
-        { [searchColumn]: { [Op.substring]: searchKeyword } },
+        searchWord && { [searchColumn]: { [Op.substring]: searchKeyword } },
       ],
     };
     if (selected === "title+content") {
       searchOption = {
         [Op.and]: [
           { createdAt: { [Op.gte]: searchStartDate } },
-          {
+          searchWord && {
             [Op.or]: [
               { title: { [Op.substring]: searchKeyword } },
               { content: { [Op.substring]: searchKeyword } },

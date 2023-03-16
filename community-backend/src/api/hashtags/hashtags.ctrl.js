@@ -12,7 +12,12 @@ export const list = async (ctx, next) => {
     return;
   }
   try {
-    const { selected, searchWord, order = "createdAt", dateRange } = ctx.query;
+    const {
+      selected = "title",
+      searchWord,
+      order = "updatedAt",
+      dateRange,
+    } = ctx.query;
     let hashtags = [];
     let hashtagCount = undefined;
 
@@ -43,8 +48,8 @@ export const list = async (ctx, next) => {
     let searchKeyword = searchWord;
     let searchOption = {
       [Op.and]: [
-        { createdAt: { [Op.gte]: searchStartDate } },
-        { [searchColumn]: { [Op.substring]: searchKeyword } },
+        { updatedAt: { [Op.gte]: searchStartDate } },
+        searchWord && { [searchColumn]: { [Op.substring]: searchKeyword } },
       ],
     };
     let orderOption = [

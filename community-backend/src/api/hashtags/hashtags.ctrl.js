@@ -6,7 +6,7 @@ const { Hashtag } = mySQL;
 export const list = async (ctx, next) => {
   //쿼리는 문자열이므로 숫자로 변환
   const page = parseInt(ctx.query.page || "1", 10);
-  const hashtagPerPage = 10;
+  const hashtagPerPage = 1;
   if (page < 1) {
     ctx.status = 400;
     return;
@@ -65,7 +65,7 @@ export const list = async (ctx, next) => {
 
     const findhashtagsOption = {
       where: whereOption,
-      limit: hashtagPerPage,
+      //limit: hashtagPerPage,
       offset: (page - 1) * hashtagPerPage,
       order: orderOption,
     };

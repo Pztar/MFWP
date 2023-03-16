@@ -115,7 +115,7 @@ export const list = async (ctx, next) => {
       userId,
       selected,
       searchWord,
-      order = "createdAt",
+      order = "updatedAt",
       dateRange,
     } = ctx.query;
     let posts = [];
@@ -179,7 +179,7 @@ export const list = async (ctx, next) => {
     }
     let orderOption = [
       [order, "DESC"],
-      ["createdAt", "DESC"],
+      ["updatedAt", "DESC"],
     ];
 
     const whereOption = selected

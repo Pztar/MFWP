@@ -14,14 +14,20 @@ const HashtagListContainer = () => {
   //     user: user.user,
   //   }));
   const [hashtags, setHashtags] = useState([]);
+  const [page, setPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
   useEffect(() => {
     const query = qs.parse(search, {
       ignoreQueryPrefix: true,
     });
+    setPage(query.page);
     //dispatch(listPosts({ userId, query }));
-    listHashtags({ query }).then((result) => setHashtags(result.data));
+    listHashtags({ query }).then((result) => {
+      setHashtags(result.data);
+      setLastPage(parseInt(result.headers["last-page"], 10));
+    });
   }, [search]);
-  return <HashtagList hashtags={hashtags} />;
+  return <HashtagList hashtags={hashtags} page={page} lastPage={lastPage} />;
 };
 
 export default HashtagListContainer;

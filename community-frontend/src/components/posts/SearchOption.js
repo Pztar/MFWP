@@ -35,7 +35,7 @@ const buildLink = ({
 };
 
 const SearchOption = ({ userId, hashtag }) => {
-  const [order, setOrder] = useState("createdAt");
+  const [order, setOrder] = useState("updatedAt");
   const [dateRange, setDateRange] = useState("all");
   const [selected, setSelected] = useState("title+content");
   const [searchWord, setSearchWord] = useState("");
@@ -43,7 +43,7 @@ const SearchOption = ({ userId, hashtag }) => {
     <>
       <SearchOptionBlock>
         <select onChange={(e) => setOrder(e.target.value)} value={order}>
-          <option value="createdAt">기본</option>
+          <option value="updatedAt">기본</option>
           <option value="views">조회수</option>
           <option value="likes">좋아요</option>
           <option value="hates">싫어요</option>

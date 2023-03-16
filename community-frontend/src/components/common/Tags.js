@@ -4,30 +4,30 @@ import palette from "../../lib/styles/palette";
 
 const TagsBlock = styled.div`
   margin-top: 0.1rem;
-  .hashtag {
+  span {
     display: inline-block;
-    color: ${palette.cyan[7]};
-    text-decoration: none;
     margin-left: 0.5rem;
-    &:hover {
-      color: ${palette.cyan[6]};
-    }
-    :first-child {
-      margin-left: 0;
-    }
-    span {
-      margin-left: 0.5rem;
-      color: ${palette.cyan[3]};
-    }
-    ::after {
-      margin-left: 0.5rem;
-      content: "/";
-    }
+    color: ${palette.cyan[3]};
     :last-child {
       ::after {
         content: "";
       }
     }
+    :first-child {
+      margin-left: 0;
+    }
+  }
+
+  .hashtag {
+    display: inline-block;
+    color: ${palette.cyan[7]};
+    text-decoration: none;
+    &:hover {
+      color: ${palette.cyan[6]};
+    }
+  }
+  :first-child {
+    margin-left: 0;
   }
 `;
 
@@ -36,14 +36,16 @@ const Tags = ({ Hashtags, tagedPostCount }) => {
     <TagsBlock>
       {Hashtags &&
         Hashtags.map((hashtag) => (
-          <Link
-            className="hashtag"
-            to={`/posts?hashtag=${hashtag.title}`}
-            key={hashtag.title}
-          >
-            #{hashtag.title}
-            <span>{tagedPostCount && ": " + hashtag.tagedPostCount}</span>
-          </Link>
+          <span>
+            <Link
+              className="hashtag"
+              to={`/posts?hashtag=${hashtag.title}`}
+              key={hashtag.title}
+            >
+              #{hashtag.title}
+            </Link>
+            {tagedPostCount && " : " + hashtag.tagedPostCount}
+          </span>
         ))}
     </TagsBlock>
   );

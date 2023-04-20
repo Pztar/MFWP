@@ -22,7 +22,7 @@ import {
 } from "./lib/koaCsrfMiddleware";
 //import logger from "../logger";
 //import helmet from "helmet";
-//import hpp from "hpp";//
+//import hpp from "hpp";
 
 const { PORT, MONGO_URI, MONGODB_USER, MONGODB_PASS } = process.env;
 

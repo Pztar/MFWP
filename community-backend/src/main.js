@@ -15,11 +15,7 @@ import sse from "./sse";
 import webSocket from "./socket";
 import checkAuction from "./lib/checkAuction";
 //import send from "koa-send";
-import {
-  assertCSRF,
-  csrfOption,
-  setCsrfTokenInCookie,
-} from "./lib/koaCsrfMiddleware";
+import { assertCSRF, csrfOption, setCsrfTokenInCookie } from "./lib/koaCsrfMiddleware";
 //import logger from "../logger";
 //import helmet from "helmet";
 //import hpp from "hpp";
@@ -27,9 +23,12 @@ import {
 const { PORT, MONGO_URI, MONGODB_USER, MONGODB_PASS } = process.env;
 
 console.log("MONGODB연결 시작");
-const URI = `mongodb://${MONGODB_USER}:${MONGODB_PASS}@${MONGO_URI}`;
+const URI = `mongodb://${MONGODB_USER}:${MONGODB_PASS}@${MONGO_URI}?directConnection=true`;
 mongoose
-  .connect(URI)
+  .connect(URI, {
+    dbName: "mongodb-tp",
+    useNewUrlParser: true,
+  })
   .then(() => {
     console.log("MongoDB 연결성공");
   })

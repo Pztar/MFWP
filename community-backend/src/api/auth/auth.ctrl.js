@@ -87,13 +87,12 @@ export const check = async (ctx) => {
   //console.log("@", exUser);
   //console.log(Object.getOwnPropertyNames(exUser.__proto__));
   //인스턴트에 연결된 메서드 목록 확인 방법
-  [user.likePosts, user.hatePosts, user.likeComments, user.hateComments] =
-    await Promise.all([
-      exUser.getLikePosts({ attributes: ["id"] }),
-      exUser.getHatePosts({ attributes: ["id"] }),
-      exUser.getLikeComments({ attributes: ["id"] }),
-      exUser.getHateComments({ attributes: ["id"] }),
-    ]);
+  [user.likePosts, user.hatePosts, user.likeComments, user.hateComments] = await Promise.all([
+    exUser.getLikePosts({ attributes: ["id"] }),
+    exUser.getHatePosts({ attributes: ["id"] }),
+    exUser.getLikeComments({ attributes: ["id"] }),
+    exUser.getHateComments({ attributes: ["id"] }),
+  ]);
   ctx.body = user;
 };
 

@@ -1,6 +1,6 @@
 import Sequelize from "sequelize";
 const env = process.env.NODE_ENV || "development";
-const config = require("../config/config.js")[env];
+const config = require("../config/config")[env];
 import User from "./user";
 import Post from "./post";
 import Hashtag from "./hashtag";
@@ -10,12 +10,7 @@ import Product from "./product";
 import Report from "./report";
 
 const db = {};
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  config
-);
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 db.sequelize = sequelize;
 db.User = User;
